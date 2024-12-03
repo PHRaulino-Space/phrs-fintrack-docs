@@ -1,0 +1,15 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "hediet.vscode-drawio.theme": "atlas",
+    "editor.fontFamily": "Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "hediet.vscode-drawio.customFonts": ["monospace"],
+    "excalidraw.theme": "light",
+    "svg.preview.background": "white"
+  }
+}

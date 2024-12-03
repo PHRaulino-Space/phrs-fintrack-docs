@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/go:latest
+FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu
 
 RUN git config user.name phraulino
 RUN git config user.email phraulino@outlook.com
