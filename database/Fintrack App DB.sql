@@ -1,9 +1,10 @@
+SET search_path TO private;
 CREATE TABLE "users" (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(100) NOT NULL,
   "email" VARCHAR(100) UNIQUE NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "accounts" (
@@ -11,10 +12,10 @@ CREATE TABLE "accounts" (
   "user_id" UUID NOT NULL,
   "name" VARCHAR(100) NOT NULL,
   "type" VARCHAR(50) NOT NULL,
-  "initial_balance" "NUMERIC(15, 2)" NOT NULL,
+  "initial_balance" NUMERIC(15,2) NOT NULL,
   "currency" VARCHAR(10) NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "categories" (
@@ -23,32 +24,32 @@ CREATE TABLE "categories" (
   "color" VARCHAR(100) NOT NULL,
   "icon" VARCHAR(100) NOT NULL,
   "transaction_type" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "subcategories" (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(100) NOT NULL,
   "category_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "transaction_statuses" (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(50) NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "cards" (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(100) NOT NULL,
-  "credit_limit" "NUMERIC(15, 2)" NOT NULL,
+  "credit_limit" NUMERIC(15,2) NOT NULL,
   "account_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "invoices" (
@@ -57,24 +58,24 @@ CREATE TABLE "invoices" (
   "billing_month" DATE NOT NULL,
   "due_date" DATE NOT NULL,
   "status" VARCHAR(50) NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "transfers" (
   "id" UUID PRIMARY KEY,
   "transfer_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "source_account_id" UUID NOT NULL,
   "destination_account_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "recurring_transactions" (
   "id" UUID PRIMARY KEY,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "description" VARCHAR(50) NOT NULL,
   "frequency" VARCHAR(50) NOT NULL,
   "start_date" DATE NOT NULL,
@@ -82,8 +83,8 @@ CREATE TABLE "recurring_transactions" (
   "account_id" UUID NOT NULL,
   "category_id" UUID NOT NULL,
   "subcategory_id" UUID,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "investments" (
@@ -96,142 +97,142 @@ CREATE TABLE "investments" (
   "liquidity" VARCHAR(50),
   "fl_rescued" BOOLEAN,
   "validity" DATE,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "tags" (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(100) NOT NULL,
   "color" VARCHAR(20),
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "recurring_transactions_tags" (
   "recurring_transactions_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "incomes" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "account_id" UUID NOT NULL,
   "recurring_transaction_id" UUID,
   "category_id" UUID NOT NULL,
   "subcategory_id" UUID,
   "transaction_status_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "expenses" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "account_id" UUID NOT NULL,
   "category_id" UUID NOT NULL,
   "subcategory_id" UUID,
   "transaction_status_id" UUID NOT NULL,
   "recurring_transaction_id" UUID,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "expenses_card" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "subcategory_id" UUID,
   "category_id" UUID,
   "recurring_transaction_id" UUID,
   "invoice_id" UUID,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "chargeback_card" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "invoice_id" UUID,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "payment_card" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "account_id" UUID NOT NULL,
   "invoice_id" UUID,
   "fl_finaly" BOOLEAN,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "investment_deposit" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "recurring_transaction_id" UUID,
   "investment_id" UUID,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "investment_withdrawal" (
   "id" UUID PRIMARY KEY,
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
-  "amount" "NUMERIC(15, 2)" NOT NULL,
+  "amount" NUMERIC(15,2) NOT NULL,
   "recurring_transaction_id" UUID,
   "investment_id" UUID,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "incomes_tags" (
   "income_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "expenses_tags" (
   "expense_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "investments_tags" (
   "investment_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "expense_card_tags" (
   "expense_card_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "transactions_types" (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(50) NOT NULL,
-  "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
