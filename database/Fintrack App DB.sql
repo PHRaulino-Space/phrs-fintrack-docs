@@ -65,7 +65,6 @@ CREATE TABLE "invoices" (
 CREATE TABLE "transfers" (
   "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "transfer_date" DATE NOT NULL,
-  "description" TEXT,
   "amount" NUMERIC(15,2) NOT NULL,
   "source_account_id" UUID NOT NULL,
   "destination_account_id" UUID NOT NULL,
