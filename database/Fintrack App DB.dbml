@@ -68,7 +68,6 @@ Table users {
   Table transfers {
     id UUID [primary key, default: `uuid_generate_v4()`]
     transfer_date DATE [not null]
-    description TEXT
     amount NUMERIC(15, 2) [not null]
     source_account_id UUID [not null, ref: > accounts.id]
     destination_account_id UUID [not null, ref: > accounts.id]
