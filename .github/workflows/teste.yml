@@ -2,6 +2,6 @@ name: Teste Runner
 on: [push]
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: arc-runner-set
     steps:
       - run: echo "Runner funcionando!"
