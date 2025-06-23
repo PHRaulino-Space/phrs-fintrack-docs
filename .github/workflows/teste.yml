@@ -1,0 +1,7 @@
+name: Teste Runner
+on: [push]
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - run: echo "Runner funcionando!"
