@@ -46,6 +46,12 @@ Enum "transaction_frequency" {
   "yearly"
 }
 
+Enum "transaction_status" {
+  "paid"
+  "pending"
+  "ignore"
+}
+
 Enum "sync_type" {
   "incomes"
   "expenses"
@@ -111,17 +117,13 @@ Table "categories" {
 
 Table "subcategories" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
-  "name" VARCHAR(100) [unique, not null]
+  "name" VARCHAR(100) [not null]
   "category_id" UUID [not null]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
-}
-
-Table "transaction_statuses" {
-  "id" UUID [pk, default: `uuid_generate_v4()`]
-  "name" VARCHAR(50) [unique, not null]
-  "created_at" timestamp [default: `now()`]
-  "updated_at" timestamp [default: `now()`]
+  Indexes {
+    (name, category_id) [unique]
+  }
 }
 
 Table "cards" {
@@ -150,16 +152,35 @@ Indexes {
 
 Table "transfers" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
+  "recurring_transfer_id" UUID
   "transfer_date" DATE [not null]
   "amount" "NUMERIC(15, 2)" [not null]
   "source_account_id" UUID [not null]
   "destination_account_id" UUID [not null]
+  "transaction_status" transaction_status [not null, default: "pending"]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
 Indexes {
   source_account_id [name: "idx_transfers_source_account_id"]
   destination_account_id [name: "idx_transfers_destination_account_id"]
+}
+}
+
+Table "recurring_transfers" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "amount" "NUMERIC(15, 2)" [not null]
+  "source_account_id" UUID [not null]
+  "destination_account_id" UUID [not null]
+  "frequency" transaction_frequency [not null]
+  "start_date" DATE [not null]
+  "end_date" DATE
+  "created_at" timestamp [default: `now()`]
+  "updated_at" timestamp [default: `now()`]
+
+Indexes {
+  source_account_id [name: "idx_recurring_transactions_source_account_id"]
+  destination_account_id [name: "idx_recurring_transactions_destination_account_id"]
 }
 }
 
@@ -210,7 +231,7 @@ Table "tags" {
 }
 
 Table "recurring_transactions_tags" {
-  "recurring_transactions_id" UUID [not null]
+  "recurring_transaction_id" UUID [not null]
   "tag_id" UUID [not null]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
@@ -225,7 +246,7 @@ Table "incomes" {
   "recurring_transaction_id" UUID
   "category_id" UUID [not null]
   "subcategory_id" UUID
-  "transaction_status_id" UUID [not null]
+  "transaction_status" transaction_status [not null, default: "pending"]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
@@ -234,7 +255,6 @@ Indexes {
   recurring_transaction_id [name: "idx_incomes_recurring_transaction_id"]
   category_id [name: "idx_incomes_category_id"]
   subcategory_id [name: "idx_incomes_subcategory_id"]
-  transaction_status_id [name: "idx_incomes_transaction_status_id"]
 }
 }
 
@@ -246,7 +266,7 @@ Table "expenses" {
   "account_id" UUID [not null]
   "category_id" UUID [not null]
   "subcategory_id" UUID
-  "transaction_status_id" UUID [not null]
+  "transaction_status" transaction_status [not null, default: "pending"]
   "recurring_transaction_id" UUID
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
@@ -256,7 +276,6 @@ Indexes {
   recurring_transaction_id [name: "idx_expenses_recurring_transaction_id"]
   category_id [name: "idx_expenses_category_id"]
   subcategory_id [name: "idx_expenses_subcategory_id"]
-  transaction_status_id [name: "idx_expenses_transaction_status_id"]
 }
 }
 
@@ -316,11 +335,14 @@ Table "investment_deposit" {
   "amount" "NUMERIC(15, 2)" [not null]
   "recurring_transaction_id" UUID
   "investment_id" UUID
+  "account_id" UUID [not null]
+  "transaction_status" transaction_status [not null, default: "pending"]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
 Indexes {
   investment_id [name: "idx_investment_deposit_investment_id"]
+  account_id [name: "idx_investment_deposit_account_id"]
   recurring_transaction_id [name: "idx_investment_deposit_recurring_transaction_id"]
 }
 }
@@ -332,11 +354,14 @@ Table "investment_withdrawal" {
   "amount" "NUMERIC(15, 2)" [not null]
   "recurring_transaction_id" UUID
   "investment_id" UUID
+  "account_id" UUID [not null]
+  "transaction_status" transaction_status [not null, default: "pending"]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
 Indexes {
   investment_id [name: "idx_investment_withdrawal_investment_id"]
+  account_id [name: "idx_investment_withdrawal_account_id"]
   recurring_transaction_id [name: "idx_investment_withdrawal_recurring_transaction_id"]
 }
 }
@@ -369,31 +394,47 @@ Table "card_expense_tags" {
   "updated_at" timestamp [default: `now()`]
 }
 
-Ref:"recurring_transactions"."id" < "recurring_transactions_tags"."recurring_transactions_id" [delete: cascade]
+Ref:"recurring_transfers"."id" < "transfers"."recurring_transfer_id" [delete: set null]
 
-Ref:"tags"."id" < "recurring_transactions_tags"."tag_id" [delete: cascade]
+Ref:"accounts"."id" < "recurring_transfers"."source_account_id" [delete: cascade]
+
+Ref:"accounts"."id" < "recurring_transfers"."destination_account_id" [delete: cascade]
+
+Ref:"recurring_transactions"."id" < "card_expenses"."recurring_transaction_id" [delete: set null]
+
+Ref:"recurring_transactions"."id" < "expenses"."recurring_transaction_id" [delete: set null]
+
+Ref:"recurring_transactions"."id" < "incomes"."recurring_transaction_id" [delete: set null]
+
+Ref:"recurring_transactions"."id" < "recurring_transactions_tags"."recurring_transaction_id" [delete: set null]
+
+Ref:"tags"."id" < "recurring_transactions_tags"."tag_id" [delete: set null]
 
 Ref:"incomes"."id" < "incomes_tags"."income_id" [delete: cascade]
 
-Ref:"tags"."id" < "incomes_tags"."tag_id" [delete: cascade]
+Ref:"tags"."id" < "incomes_tags"."tag_id" [delete: set null]
 
 Ref:"expenses"."id" < "expenses_tags"."expense_id" [delete: cascade]
 
-Ref:"tags"."id" < "expenses_tags"."tag_id" [delete: cascade]
+Ref:"tags"."id" < "expenses_tags"."tag_id" [delete: set null]
 
-Ref:"investments"."id" < "investments_tags"."investment_id" [delete: cascade]
+Ref:"investments"."id" < "investments_tags"."investment_id" [delete: set null]
 
-Ref:"tags"."id" < "investments_tags"."tag_id" [delete: cascade]
+Ref:"tags"."id" < "investments_tags"."tag_id" [delete: set null]
 
-Ref:"card_expenses"."id" < "card_expense_tags"."card_expense_id" [delete: cascade]
+Ref:"card_expenses"."id" < "card_expense_tags"."card_expense_id" [delete: set null]
 
-Ref:"tags"."id" < "card_expense_tags"."tag_id" [delete: cascade]
+Ref:"tags"."id" < "card_expense_tags"."tag_id" [delete: set null]
 
 Ref:"users"."id" < "accounts"."user_id" [delete: cascade]
 
 Ref:"accounts"."id" < "cards"."account_id" [delete: cascade]
 
 Ref:"accounts"."id" < "investments"."account_id" [delete: cascade]
+
+Ref:"accounts"."id" < "investment_deposit"."account_id" [delete: cascade]
+
+Ref:"accounts"."id" < "investment_withdrawal"."account_id" [delete: cascade]
 
 Ref:"accounts"."id" < "recurring_transactions"."account_id" [delete: cascade]
 
