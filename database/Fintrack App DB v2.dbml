@@ -156,7 +156,7 @@ Indexes {
 Table "transfers" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "recurring_transfer_id" UUID
-  "transfer_date" DATE [not null]
+  "transaction_date" DATE [not null]
   "amount" NUMERIC(15, 2) [not null]
   "source_account_id" UUID [not null]
   "destination_account_id" UUID [not null]
@@ -246,9 +246,9 @@ Table "incomes" {
   "description" TEXT
   "amount" NUMERIC(15, 2) [not null]
   "account_id" UUID [not null]
-  "recurring_transaction_id" UUID
   "category_id" UUID [not null]
   "subcategory_id" UUID
+  "recurring_transaction_id" UUID
   "transaction_status" transaction_status [not null, default: "pending"]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
@@ -269,8 +269,8 @@ Table "expenses" {
   "account_id" UUID [not null]
   "category_id" UUID [not null]
   "subcategory_id" UUID
-  "transaction_status" transaction_status [not null, default: "pending"]
   "recurring_transaction_id" UUID
+  "transaction_status" transaction_status [not null, default: "pending"]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
