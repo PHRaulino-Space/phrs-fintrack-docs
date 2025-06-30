@@ -96,7 +96,7 @@ Table "accounts" {
   "user_id" UUID [not null]
   "name" VARCHAR(100) [unique, not null]
   "type" account_type [not null]
-  "initial_balance" "NUMERIC(15, 2)" [not null]
+  "initial_balance" NUMERIC(15, 2) [not null]
   "currency" currency [not null]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
@@ -115,7 +115,7 @@ Table "categories" {
   "updated_at" timestamp [default: `now()`]
 }
 
-Table "subcategories" {
+Table "sub_categories" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "name" VARCHAR(100) [not null]
   "category_id" UUID [not null]
@@ -129,7 +129,7 @@ Table "subcategories" {
 Table "cards" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "name" VARCHAR(100) [unique, not null]
-  "credit_limit" "NUMERIC(15, 2)" [not null]
+  "credit_limit" NUMERIC(15, 2) [not null]
   "account_id" UUID [not null]
   "closing_date" INTEGER [not null]
   "due_date" INTEGER [not null]
@@ -154,7 +154,7 @@ Table "transfers" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "recurring_transfer_id" UUID
   "transfer_date" DATE [not null]
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "source_account_id" UUID [not null]
   "destination_account_id" UUID [not null]
   "transaction_status" transaction_status [not null, default: "pending"]
@@ -169,7 +169,7 @@ Indexes {
 
 Table "recurring_transfers" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "source_account_id" UUID [not null]
   "destination_account_id" UUID [not null]
   "frequency" transaction_frequency [not null]
@@ -186,7 +186,7 @@ Indexes {
 
 Table "recurring_transactions" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "description" VARCHAR(50) [not null]
   "frequency" transaction_frequency [not null]
   "start_date" DATE [not null]
@@ -241,7 +241,7 @@ Table "incomes" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
   "description" TEXT
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "account_id" UUID [not null]
   "recurring_transaction_id" UUID
   "category_id" UUID [not null]
@@ -262,7 +262,7 @@ Table "expenses" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
   "description" TEXT
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "account_id" UUID [not null]
   "category_id" UUID [not null]
   "subcategory_id" UUID
@@ -283,11 +283,11 @@ Table "card_expenses" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
   "description" TEXT
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "subcategory_id" UUID
   "category_id" UUID
   "recurring_transaction_id" UUID
-  "invoice_id" UUID
+  "invoice_id" UUID [not null]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
@@ -302,8 +302,8 @@ Table "card_chargebacks" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
   "description" TEXT
-  "amount" "NUMERIC(15, 2)" [not null]
-  "invoice_id" UUID
+  "amount" NUMERIC(15, 2) [not null]
+  "invoice_id" UUID [not null]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
@@ -315,7 +315,7 @@ Indexes {
 Table "card_payments" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "account_id" UUID [not null]
   "invoice_id" UUID [not null]
   "is_finalized" BOOLEAN [not null, default: false]
@@ -332,7 +332,7 @@ Table "investment_deposit" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
   "description" TEXT
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "recurring_transaction_id" UUID
   "investment_id" UUID
   "account_id" UUID [not null]
@@ -351,7 +351,7 @@ Table "investment_withdrawal" {
   "id" UUID [pk, default: `uuid_generate_v4()`]
   "transaction_date" DATE [not null]
   "description" TEXT
-  "amount" "NUMERIC(15, 2)" [not null]
+  "amount" NUMERIC(15, 2) [not null]
   "recurring_transaction_id" UUID
   "investment_id" UUID
   "account_id" UUID [not null]
@@ -458,16 +458,16 @@ Ref:"investments"."id" < "investment_deposit"."investment_id" [delete: cascade]
 
 Ref:"investments"."id" < "investment_withdrawal"."investment_id" [delete: cascade]
 
-Ref:"categories"."id" < "subcategories"."category_id" [delete: cascade]
+Ref:"categories"."id" < "sub_categories"."category_id" [delete: cascade]
 
 Ref:"categories"."id" < "incomes"."category_id" [delete: restrict]
 
-Ref:"subcategories"."id" < "incomes"."subcategory_id" [delete: set null]
+Ref:"sub_categories"."id" < "incomes"."subcategory_id" [delete: set null]
 
 Ref:"categories"."id" < "expenses"."category_id" [delete: restrict]
 
-Ref:"subcategories"."id" < "expenses"."subcategory_id" [delete: set null]
+Ref:"sub_categories"."id" < "expenses"."subcategory_id" [delete: set null]
 
 Ref:"categories"."id" < "recurring_transactions"."category_id" [delete: restrict]
 
-Ref:"subcategories"."id" < "recurring_transactions"."subcategory_id" [delete: set null]
+Ref:"sub_categories"."id" < "recurring_transactions"."subcategory_id" [delete: set null]

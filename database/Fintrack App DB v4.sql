@@ -107,7 +107,7 @@ CREATE TABLE "categories" (
   "updated_at" timestamp DEFAULT (now())
 );
 
-CREATE TABLE "subcategories" (
+CREATE TABLE "sub_categories" (
   "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "name" VARCHAR(100) NOT NULL,
   "category_id" UUID NOT NULL,
@@ -238,7 +238,7 @@ CREATE TABLE "card_expenses" (
   "subcategory_id" UUID,
   "category_id" UUID,
   "recurring_transaction_id" UUID,
-  "invoice_id" UUID,
+  "invoice_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now())
 );
@@ -248,7 +248,7 @@ CREATE TABLE "card_chargebacks" (
   "transaction_date" DATE NOT NULL,
   "description" TEXT,
   "amount" NUMERIC(15, 2) NOT NULL,
-  "invoice_id" UUID,
+  "invoice_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now())
 );
@@ -382,25 +382,25 @@ ALTER TABLE "investment_deposit" ADD FOREIGN KEY ("investment_id") REFERENCES "i
 
 ALTER TABLE "investment_withdrawal" ADD FOREIGN KEY ("investment_id") REFERENCES "investments" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "subcategories" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
+ALTER TABLE "sub_categories" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "incomes" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
 
-ALTER TABLE "incomes" ADD FOREIGN KEY ("subcategory_id") REFERENCES "subcategories" ("id") ON DELETE SET NULL;
+ALTER TABLE "incomes" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
 
-ALTER TABLE "expenses" ADD FOREIGN KEY ("subcategory_id") REFERENCES "subcategories" ("id") ON DELETE SET NULL;
+ALTER TABLE "expenses" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
 
-ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("subcategory_id") REFERENCES "subcategories" ("id") ON DELETE SET NULL;
+ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
 
 CREATE INDEX "idx_external_sync_id_local" ON "external_sync" ("id_local");
 
 CREATE INDEX "idx_accounts_user_id" ON "accounts" ("user_id");
 
-CREATE UNIQUE INDEX ON "subcategories" ("name", "category_id");
+CREATE UNIQUE INDEX ON "sub_categories" ("name", "category_id");
 
 CREATE UNIQUE INDEX ON "invoices" ("card_id", "billing_month");
 
