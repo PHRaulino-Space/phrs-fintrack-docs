@@ -87,6 +87,7 @@ Table "users" {
   "name" VARCHAR(100) [not null]
   "username" VARCHAR(100) [unique, not null]
   "email" VARCHAR(100) [unique, not null]
+  "is_active" BOOLEAN [not null, default: true]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 }
@@ -98,6 +99,7 @@ Table "accounts" {
   "type" account_type [not null]
   "initial_balance" NUMERIC(15, 2) [not null]
   "currency" currency [not null]
+  "is_active" BOOLEAN [not null, default: true]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
@@ -133,6 +135,7 @@ Table "cards" {
   "account_id" UUID [not null]
   "closing_date" INTEGER [not null]
   "due_date" INTEGER [not null]
+  "is_active" BOOLEAN [not null, default: true]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 }
@@ -318,7 +321,7 @@ Table "card_payments" {
   "amount" NUMERIC(15, 2) [not null]
   "account_id" UUID [not null]
   "invoice_id" UUID [not null]
-  "is_finalized" BOOLEAN [not null, default: false]
+  "is_final_payment" BOOLEAN [not null, default: false]
   "created_at" timestamp [default: `now()`]
   "updated_at" timestamp [default: `now()`]
 
