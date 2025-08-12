@@ -15,6 +15,7 @@ Enum "investment_type" {
   "renda_fixa"
   "renda_variavel"
   "tesouro_direto"
+  "fundo_investimento"
 }
 
 Enum "index_type" {
