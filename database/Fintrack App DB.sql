@@ -14,7 +14,8 @@ CREATE TYPE "currency" AS ENUM (
 CREATE TYPE "investment_type" AS ENUM (
   'renda_fixa',
   'renda_variavel',
-  'tesouro_direto'
+  'tesouro_direto',
+  'fundo_investimento'
 );
 
 CREATE TYPE "index_type" AS ENUM (
