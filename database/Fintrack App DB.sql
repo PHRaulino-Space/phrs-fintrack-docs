@@ -203,7 +203,8 @@ CREATE TABLE "recurring_transactions_tags" (
   "recurring_transaction_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "updated_at" timestamp DEFAULT (now()),
+  PRIMARY KEY ("recurring_transaction_id", "tag_id")
 );
 
 CREATE TABLE "incomes" (
@@ -298,30 +299,35 @@ CREATE TABLE "incomes_tags" (
   "income_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "updated_at" timestamp DEFAULT (now()),
+  PRIMARY KEY ("income_id", "tag_id")
 );
 
 CREATE TABLE "expenses_tags" (
   "expense_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "updated_at" timestamp DEFAULT (now()),
+  PRIMARY KEY ("expense_id", "tag_id")
 );
 
 CREATE TABLE "investments_tags" (
   "investment_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "updated_at" timestamp DEFAULT (now()),
+  PRIMARY KEY ("investment_id", "tag_id")
 );
 
 CREATE TABLE "card_expense_tags" (
   "card_expense_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "updated_at" timestamp DEFAULT (now()),
+  PRIMARY KEY ("card_expense_id", "tag_id")
 );
 
+-- Foreign Keys
 ALTER TABLE "transfers" ADD FOREIGN KEY ("recurring_transfer_id") REFERENCES "recurring_transfers" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "recurring_transfers" ADD FOREIGN KEY ("source_account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
@@ -334,25 +340,25 @@ ALTER TABLE "expenses" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "
 
 ALTER TABLE "incomes" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "recurring_transactions_tags" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE SET NULL;
+ALTER TABLE "recurring_transactions_tags" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "recurring_transactions_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE SET NULL;
+ALTER TABLE "recurring_transactions_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "incomes_tags" ADD FOREIGN KEY ("income_id") REFERENCES "incomes" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "incomes_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE SET NULL;
+ALTER TABLE "incomes_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "expenses_tags" ADD FOREIGN KEY ("expense_id") REFERENCES "expenses" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "expenses_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE SET NULL;
+ALTER TABLE "expenses_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "investments_tags" ADD FOREIGN KEY ("investment_id") REFERENCES "investments" ("id") ON DELETE SET NULL;
+ALTER TABLE "investments_tags" ADD FOREIGN KEY ("investment_id") REFERENCES "investments" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "investments_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE SET NULL;
+ALTER TABLE "investments_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "card_expense_tags" ADD FOREIGN KEY ("card_expense_id") REFERENCES "card_expenses" ("id") ON DELETE SET NULL;
+ALTER TABLE "card_expense_tags" ADD FOREIGN KEY ("card_expense_id") REFERENCES "card_expenses" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "card_expense_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE SET NULL;
+ALTER TABLE "card_expense_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 
@@ -375,6 +381,8 @@ ALTER TABLE "incomes" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id"
 ALTER TABLE "expenses" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "card_payments" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "invoices" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "card_expenses" ADD FOREIGN KEY ("invoice_id") REFERENCES "invoices" ("id") ON DELETE CASCADE;
 
@@ -400,6 +408,11 @@ ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("category_id") REFERENCES 
 
 ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
 
+ALTER TABLE "card_expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
+
+ALTER TABLE "card_expenses" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
+
+-- Indexes
 CREATE INDEX "idx_external_sync_id_local" ON "external_sync" ("id_local");
 
 CREATE INDEX "idx_accounts_user_id" ON "accounts" ("user_id");
