@@ -32,6 +32,7 @@ import time
 from collections import deque
 import threading
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from onepasswordconnectsdk.client import new_client_from_environment
 
@@ -204,11 +205,12 @@ class RateLimiter:
 class OpenAITransactionProcessor:
     """Handles OpenAI GPT-5 Nano integration for transaction processing with rate limiting and batch processing"""
 
-    def __init__(self, api_key: str, max_rpm: int = 400, batch_size: int = 25):
+    def __init__(self, api_key: str, max_rpm: int = 400, batch_size: int = 25, max_workers: int = 4):
         self.client = OpenAI()
         self.model = "gpt-5-nano"  # Using GPT-5 Nano
         self.rate_limiter = RateLimiter(max_rpm)
         self.batch_size = batch_size  # Process transactions in batches
+        self.max_workers = max_workers  # Number of parallel threads
         self.total_requests = 0
         self.successful_requests = 0
         self.failed_requests = 0
@@ -216,6 +218,90 @@ class OpenAITransactionProcessor:
         self.total_transactions_enhanced = 0
         self.response_cache = None
         self.prompt_cache = None
+        self.category_creation_lock = threading.Lock()  # Lock for thread-safe category creation
+
+    def process_single_batch(self, batch_data):
+        """Process a single batch of transactions - thread-safe method"""
+        transactions, categories, subcategories_by_category, conn_config = batch_data
+        
+        # Each thread needs its own database connection (PostgreSQL connections are not thread-safe)
+        thread_conn = psycopg2.connect(**conn_config)
+        thread_conn.set_session(autocommit=False)
+        
+        try:
+            result = self.improve_and_categorize_transactions_batch(
+                transactions, categories, subcategories_by_category, thread_conn
+            )
+            thread_conn.commit()
+            return result
+        except Exception as e:
+            thread_conn.rollback()
+            raise e
+        finally:
+            thread_conn.close()
+
+    def process_transactions_parallel(self, transactions, categories, subcategories_by_category, conn, db_config=None):
+        """Process transactions in parallel using ThreadPoolExecutor"""
+        if not transactions:
+            return []
+            
+        # Get connection configuration for creating new connections in each thread
+        # Use provided db_config or fallback to parsing DSN (less reliable)
+        if db_config:
+            conn_config = {
+                'host': db_config.host,
+                'database': db_config.database,
+                'user': db_config.user,
+                'password': db_config.password,
+                'port': db_config.port,
+                'cursor_factory': RealDictCursor
+            }
+        else:
+            # Fallback method - may not work if password is not in DSN
+            dsn_params = conn.get_dsn_parameters()
+            conn_config = {
+                'host': dsn_params['host'],
+                'database': dsn_params['dbname'],
+                'user': dsn_params['user'],
+                'password': dsn_params.get('password', ''),
+                'port': dsn_params['port'],
+                'cursor_factory': RealDictCursor
+            }
+            
+        # Split transactions into batches
+        batches = []
+        for i in range(0, len(transactions), self.batch_size):
+            batch = transactions[i:i + self.batch_size]
+            batches.append((batch, categories, subcategories_by_category, conn_config))
+        
+        logger.info(f"Processing {len(transactions)} transactions in {len(batches)} batches using {self.max_workers} threads")
+        
+        all_results = []
+        
+        # Process batches in parallel
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # Submit all batches
+            future_to_batch = {
+                executor.submit(self.process_single_batch, batch_data): i 
+                for i, batch_data in enumerate(batches)
+            }
+            
+            # Collect results as they complete
+            for future in as_completed(future_to_batch):
+                batch_index = future_to_batch[future]
+                try:
+                    batch_results = future.result()
+                    all_results.extend(batch_results)
+                    logger.info(f"✓ Completed batch {batch_index + 1}/{len(batches)}")
+                except Exception as e:
+                    logger.error(f"❌ Batch {batch_index + 1} failed: {e}")
+                    # Add fallback results for failed batch
+                    batch_data = batches[batch_index]
+                    failed_transactions = batch_data[0]
+                    for tx in failed_transactions:
+                        all_results.append(self._get_fallback_result(tx["description"], tx["id"]))
+        
+        return all_results
 
     def get_categories_and_subcategories(
         self, conn
@@ -285,7 +371,7 @@ class OpenAITransactionProcessor:
         self, conn, category_name: str, category_type: str = "expense"
     ) -> str:
         """
-        Cria uma nova categoria no banco de dados
+        Cria uma nova categoria no banco de dados (thread-safe)
 
         Args:
             conn: Conexão com o banco de dados
@@ -295,10 +381,12 @@ class OpenAITransactionProcessor:
         Returns:
             ID da nova categoria criada
         """
-        new_category_id = str(uuid.uuid4())
+        # Use lock to prevent concurrent category creation with same name
+        with self.category_creation_lock:
+            new_category_id = str(uuid.uuid4())
 
-        with conn.cursor() as cursor:
-            cursor.execute(
+            with conn.cursor() as cursor:
+                cursor.execute(
                 """
                 INSERT INTO fintrack.categories (id, name, type, color, icon, is_active, created_at, updated_at)
                 VALUES (%s, %s, %s, %s, %s, %s, now(), now())
@@ -313,32 +401,32 @@ class OpenAITransactionProcessor:
                     "default",  # Ícone padrão
                     True,
                 ),
-            )
-            result = cursor.fetchone()
-            if result:
-                actual_id = str(result["id"])
-                logger.info(
-                    f"✓ Created new {category_type} category: '{category_name}' (ID: {actual_id})"
                 )
-                return actual_id
-            else:
-                # Se ON CONFLICT foi acionado, buscar o ID existente
-                cursor.execute(
-                    "SELECT id FROM fintrack.categories WHERE name = %s AND type = %s",
-                    (category_name, category_type),
-                )
-                existing = cursor.fetchone()
-                if existing:
-                    existing_id = str(existing["id"])
-                    logger.debug(
-                        f"Category '{category_name}' already exists with ID: {existing_id}"
+                result = cursor.fetchone()
+                if result:
+                    actual_id = str(result["id"])
+                    logger.info(
+                        f"✓ Created new {category_type} category: '{category_name}' (ID: {actual_id})"
                     )
-                    return existing_id
+                    return actual_id
                 else:
-                    logger.error(
-                        f"Failed to create or find category: {category_name}"
+                    # Se ON CONFLICT foi acionado, buscar o ID existente
+                    cursor.execute(
+                        "SELECT id FROM fintrack.categories WHERE name = %s AND type = %s",
+                        (category_name, category_type),
                     )
-                    return None
+                    existing = cursor.fetchone()
+                    if existing:
+                        existing_id = str(existing["id"])
+                        logger.debug(
+                            f"Category '{category_name}' already exists with ID: {existing_id}"
+                        )
+                        return existing_id
+                    else:
+                        logger.error(
+                            f"Failed to create or find category: {category_name}"
+                        )
+                        return None
 
     def create_new_subcategory(
         self, conn, subcategory_name: str, category_id: str
@@ -732,13 +820,14 @@ Processe TODAS as transações na mesma ordem da entrada."""
 class FintrackMigrator:
     """Main migration class with enhanced transaction processing"""
 
-    def __init__(self, use_ai: bool = True):
+    def __init__(self, use_ai: bool = True, test_limit: int = None):
         self.source_config = DatabaseConfig("SOURCE")
         self.target_config = DatabaseConfig("TARGET")
         self.source_conn = None
         self.target_conn = None
         self.ai_processor = None
         self.use_ai = use_ai  # Toggle para usar ou não a IA
+        self.test_limit = test_limit  # Limitar registros para teste
         self.category_id_mapping = (
             {}
         )  # Mapeamento old_id -> {income_id, expense_id}
@@ -756,10 +845,10 @@ class FintrackMigrator:
         if self.use_ai:
             try:
                 self.ai_processor = OpenAITransactionProcessor(
-                    openai_creds["api_key"], max_rpm=400, batch_size=25
+                    openai_creds["api_key"], max_rpm=400, batch_size=25, max_workers=4
                 )
                 logger.info(
-                    "✓ OpenAI GPT-5 Nano processor initialized with 400 RPM rate limit and batch processing (25 transactions/request)"
+                    "✓ OpenAI GPT-5 Nano processor initialized with 400 RPM rate limit and parallel batch processing (25 transactions/request, 4 threads)"
                 )
             except Exception as e:
                 logger.warning(f"OpenAI processor initialization failed: {e}")
@@ -1697,63 +1786,52 @@ class FintrackMigrator:
         """Migrate expenses with AI-enhanced descriptions and categorization using batch processing"""
         logger.info("Migrating expenses with AI batch enhancement...")
         with self.source_conn.cursor() as src_cursor, self.target_conn.cursor() as tgt_cursor:
-            src_cursor.execute("SELECT * FROM public.expenses")
+            if self.test_limit:
+                src_cursor.execute(f"SELECT * FROM public.expenses LIMIT {self.test_limit}")
+                logger.info(f"🧪 Test mode: Loading only {self.test_limit} expenses")
+            else:
+                src_cursor.execute("SELECT * FROM public.expenses")
             expenses = src_cursor.fetchall()
 
             if expenses:
+                # Prepare all transactions for AI processing
+                ai_results = {}
                 total_enhanced = 0
+                
+                if self.ai_processor and categories:
+                    try:
+                        # Prepare all transactions for parallel processing
+                        all_transactions = [
+                            {
+                                "id": exp["id"],
+                                "description": exp["description"],
+                                "amount": float(exp["amount"]),
+                            }
+                            for exp in expenses
+                            if exp["description"]
+                        ]
 
-                # Process expenses in batches
-                for i in range(
-                    0,
-                    len(expenses),
-                    self.ai_processor.batch_size if self.ai_processor else 1,
-                ):
-                    batch = expenses[
-                        i : i
-                        + (
-                            self.ai_processor.batch_size
-                            if self.ai_processor
-                            else 1
-                        )
-                    ]
-
-                    # Prepare batch for AI processing if available
-                    ai_results = {}
-                    if self.ai_processor and categories:
-                        try:
-                            # Prepare batch data for AI
-                            batch_transactions = [
-                                {
-                                    "id": exp["id"],
-                                    "description": exp["description"],
-                                    "amount": float(exp["amount"]),
-                                }
-                                for exp in batch
-                                if exp["description"]
-                            ]
-
-                            if batch_transactions:
-                                ai_batch_results = self.ai_processor.improve_and_categorize_transactions_batch(
-                                    batch_transactions,
-                                    categories,
-                                    subcategories_by_category,
-                                    self.target_conn,
-                                )
-
-                                # Index results by transaction ID
-                                for result in ai_batch_results:
-                                    if result["confidence"] > 0.7:
-                                        ai_results[result["id"]] = result
-                                        total_enhanced += 1
-
-                        except Exception as e:
-                            logger.warning(
-                                f"AI batch processing failed for expenses batch {i//self.ai_processor.batch_size}: {e}"
+                        if all_transactions:
+                            # Process all transactions in parallel
+                            ai_batch_results = self.ai_processor.process_transactions_parallel(
+                                all_transactions,
+                                categories,
+                                subcategories_by_category,
+                                self.target_conn,
+                                self.target_config,
                             )
 
-                    # Insert batch into database
-                    for expense in batch:
+                            # Index results by transaction ID
+                            for result in ai_batch_results:
+                                if result["confidence"] > 0.7:
+                                    ai_results[result["id"]] = result
+                                    total_enhanced += 1
+
+                    except Exception as e:
+                        logger.warning(f"AI parallel processing failed for expenses: {e}")
+
+                # Insert all expenses into database
+                for expense in expenses:
                         status = (
                             "validating"
                             if expense["transaction_status"] == "pending"
@@ -1802,11 +1880,15 @@ class FintrackMigrator:
                                     original_subcat_id
                                 ]["expense"]
 
-                        # Apply AI enhancement to description only
+                        # Apply AI enhancement to description and categories
                         if expense["id"] in ai_results:
                             ai_result = ai_results[expense["id"]]
                             description = ai_result["improved_description"]
-                            # Note: AI category suggestions are ignored as we use mapped categories
+                            # Use AI category suggestions over mapped categories
+                            if ai_result.get("category_id"):
+                                category_id = ai_result["category_id"]
+                            if ai_result.get("subcategory_id"):
+                                subcategory_id = ai_result["subcategory_id"]
 
                         tgt_cursor.execute(
                             """
@@ -1907,69 +1989,65 @@ class FintrackMigrator:
         """Migrate card expenses with AI batch enhancement"""
         logger.info("Migrating card_expenses with AI batch enhancement...")
         with self.source_conn.cursor() as src_cursor, self.target_conn.cursor() as tgt_cursor:
-            src_cursor.execute(
+            if self.test_limit:
+                src_cursor.execute(
+                    f"""
+                    SELECT ce.*, i.card_id, i.billing_month
+                    FROM public.card_expenses ce
+                    JOIN public.invoices i ON ce.invoice_id = i.id
+                    LIMIT {self.test_limit}
                 """
-                SELECT ce.*, i.card_id, i.billing_month
-                FROM public.card_expenses ce
-                JOIN public.invoices i ON ce.invoice_id = i.id
-            """
-            )
+                )
+                logger.info(f"🧪 Test mode: Loading only {self.test_limit} card_expenses")
+            else:
+                src_cursor.execute(
+                    """
+                    SELECT ce.*, i.card_id, i.billing_month
+                    FROM public.card_expenses ce
+                    JOIN public.invoices i ON ce.invoice_id = i.id
+                """
+                )
             card_expenses = src_cursor.fetchall()
 
             if card_expenses:
+                # Prepare all transactions for AI processing
+                ai_results = {}
                 total_enhanced = 0
+                
+                if self.ai_processor and categories:
+                    try:
+                        # Prepare all transactions for parallel processing
+                        all_transactions = [
+                            {
+                                "id": exp["id"],
+                                "description": exp["description"],
+                                "amount": float(exp["amount"]),
+                            }
+                            for exp in card_expenses
+                            if exp["description"]
+                        ]
 
-                # Process card expenses in batches
-                for i in range(
-                    0,
-                    len(card_expenses),
-                    self.ai_processor.batch_size if self.ai_processor else 1,
-                ):
-                    batch = card_expenses[
-                        i : i
-                        + (
-                            self.ai_processor.batch_size
-                            if self.ai_processor
-                            else 1
-                        )
-                    ]
-
-                    # Prepare batch for AI processing if available
-                    ai_results = {}
-                    if self.ai_processor and categories:
-                        try:
-                            # Prepare batch data for AI
-                            batch_transactions = [
-                                {
-                                    "id": exp["id"],
-                                    "description": exp["description"],
-                                    "amount": float(exp["amount"]),
-                                }
-                                for exp in batch
-                                if exp["description"]
-                            ]
-
-                            if batch_transactions:
-                                ai_batch_results = self.ai_processor.improve_and_categorize_transactions_batch(
-                                    batch_transactions,
-                                    categories,
-                                    subcategories_by_category,
-                                    self.target_conn,
-                                )
-
-                                # Index results by transaction ID
-                                for result in ai_batch_results:
-                                    if result["confidence"] > 0.7:
-                                        ai_results[result["id"]] = result
-                                        total_enhanced += 1
-
-                        except Exception as e:
-                            logger.warning(
-                                f"AI batch processing failed for card expenses batch {i//self.ai_processor.batch_size}: {e}"
+                        if all_transactions:
+                            # Process all transactions in parallel
+                            ai_batch_results = self.ai_processor.process_transactions_parallel(
+                                all_transactions,
+                                categories,
+                                subcategories_by_category,
+                                self.target_conn,
+                                self.target_config,
                             )
 
-                    # Insert batch into database
-                    for expense in batch:
+                            # Index results by transaction ID
+                            for result in ai_batch_results:
+                                if result["confidence"] > 0.7:
+                                    ai_results[result["id"]] = result
+                                    total_enhanced += 1
+
+                    except Exception as e:
+                        logger.warning(f"AI parallel processing failed for card expenses: {e}")
+
+                # Insert all card expenses into database
+                for expense in card_expenses:
                         billing_month = expense["billing_month"].strftime(
                             "%Y-%m"
                         )
@@ -2016,11 +2094,15 @@ class FintrackMigrator:
                                     original_subcat_id
                                 ]["expense"]
 
-                        # Apply AI enhancement to description only
+                        # Apply AI enhancement to description and categories
                         if expense["id"] in ai_results:
                             ai_result = ai_results[expense["id"]]
                             description = ai_result["improved_description"]
-                            # Note: AI category suggestions are ignored as we use mapped categories
+                            # Use AI category suggestions over mapped categories
+                            if ai_result.get("category_id"):
+                                category_id = ai_result["category_id"]
+                            if ai_result.get("subcategory_id"):
+                                subcategory_id = ai_result["subcategory_id"]
 
                         tgt_cursor.execute(
                             """
@@ -2865,44 +2947,7 @@ class FintrackMigrator:
             self.close_connections()
 
 
-def main():
-    """Main function"""
-    import argparse
-
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(
-        description="Fintrack Database Migration Script"
-    )
-    parser.add_argument(
-        "--no-ai",
-        action="store_true",
-        help="Disable AI processing for transaction enhancement (faster for testing)",
-    )
-    args = parser.parse_args()
-
-    try:
-        # Display configuration info
-        logger.info("🔧 Migration Configuration:")
-        logger.info(f"  Source DB: {os.getenv('SOURCE_DB_NAME', 'fintrack')}")
-        logger.info(f"  Target DB: {os.getenv('TARGET_DB_NAME', 'phrspace')}")
-        logger.info(f"  Host: {os.getenv('SOURCE_DB_HOST', 'localhost')}")
-        logger.info(
-            f"  AI Processing: {'Disabled' if args.no_ai else 'Enabled'}"
-        )
-
-        # Run migration
-        migrator = FintrackMigrator(use_ai=not args.no_ai)
-        migrator.run_migration()
-
-    except KeyboardInterrupt:
-        logger.info("❌ Migration cancelled by user")
-        sys.exit(1)
-    except Exception as e:
-        logger.error(f"❌ Migration failed: {e}")
-        sys.exit(1)
-
-
-def main(use_ai=False):
+def main(use_ai=False, test_limit=None):
 
     try:
         # Display configuration info
@@ -2913,7 +2958,7 @@ def main(use_ai=False):
         logger.info(f"  AI Processing: {'Enabled' if use_ai else 'Disabled'}")
 
         # Run migration
-        migrator = FintrackMigrator(use_ai=use_ai)
+        migrator = FintrackMigrator(use_ai=use_ai, test_limit=test_limit)
         migrator.run_migration()
 
     except KeyboardInterrupt:
