@@ -68,6 +68,11 @@ CREATE TYPE "transaction_status" AS ENUM (
   'ignore'
 );
 
+CREATE TYPE "category_type" AS ENUM (
+  'income',
+  'expense'
+);
+
 
 -- =====================================================
 -- LOOKUP TABLES
@@ -127,13 +132,15 @@ CREATE TABLE "accounts" (
 
 CREATE TABLE "categories" (
   "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "name" VARCHAR(100) UNIQUE NOT NULL,
+  "name" VARCHAR(100) NOT NULL,
+  "type" category_type NOT NULL,
   "color" VARCHAR(7) NOT NULL,
   "icon" VARCHAR(100) NOT NULL,
   "is_active" BOOLEAN NOT NULL DEFAULT true,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now()),
-  CONSTRAINT "chk_color_hex" CHECK ("color" ~* '^#[0-9A-Fa-f]{6}$')
+  CONSTRAINT "chk_color_hex" CHECK ("color" ~* '^#[0-9A-Fa-f]{6}$'),
+  CONSTRAINT "uq_categories_name_type" UNIQUE ("name", "type")
 );
 
 CREATE TABLE "sub_categories" (
@@ -142,7 +149,8 @@ CREATE TABLE "sub_categories" (
   "category_id" UUID NOT NULL,
   "is_active" BOOLEAN NOT NULL DEFAULT true,
   "created_at" timestamp DEFAULT (now()),
-  "updated_at" timestamp DEFAULT (now())
+  "updated_at" timestamp DEFAULT (now()),
+  CONSTRAINT "uq_sub_categories_name_category" UNIQUE ("name", "category_id")
 );
 
 CREATE TABLE "cards" (
@@ -222,7 +230,7 @@ CREATE TABLE "recurring_transfers" (
   CONSTRAINT "chk_different_accounts" CHECK ("source_account_id" != "destination_account_id")
 );
 
-CREATE TABLE "recurring_transactions" (
+CREATE TABLE "recurring_incomes" (
   "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "amount" NUMERIC(15, 2) NOT NULL,
   "description" VARCHAR(200) NOT NULL,
@@ -235,8 +243,25 @@ CREATE TABLE "recurring_transactions" (
   "is_active" BOOLEAN NOT NULL DEFAULT true,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now()),
-  CONSTRAINT "chk_recurring_amount" CHECK ("amount" != 0),
-  CONSTRAINT "chk_recurring_dates" CHECK ("end_date" IS NULL OR "end_date" >= "start_date")
+  CONSTRAINT "chk_recurring_income_amount_positive" CHECK ("amount" > 0),
+  CONSTRAINT "chk_recurring_income_dates" CHECK ("end_date" IS NULL OR "end_date" >= "start_date")
+);
+
+CREATE TABLE "recurring_expenses" (
+  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "amount" NUMERIC(15, 2) NOT NULL,
+  "description" VARCHAR(200) NOT NULL,
+  "frequency" transaction_frequency NOT NULL,
+  "start_date" DATE NOT NULL,
+  "end_date" DATE,
+  "account_id" UUID NOT NULL,
+  "category_id" UUID NOT NULL,
+  "subcategory_id" UUID,
+  "is_active" BOOLEAN NOT NULL DEFAULT true,
+  "created_at" timestamp DEFAULT (now()),
+  "updated_at" timestamp DEFAULT (now()),
+  CONSTRAINT "chk_recurring_expense_amount_positive" CHECK ("amount" > 0),
+  CONSTRAINT "chk_recurring_expense_dates" CHECK ("end_date" IS NULL OR "end_date" >= "start_date")
 );
 
 -- =====================================================
@@ -267,7 +292,7 @@ CREATE TABLE "incomes" (
   "account_id" UUID NOT NULL,
   "category_id" UUID NOT NULL,
   "subcategory_id" UUID,
-  "recurring_transaction_id" UUID,
+  "recurring_income_id" UUID,
   "transaction_status" transaction_status NOT NULL DEFAULT 'validating',
   "deleted_at" timestamp NULL,
   "created_at" timestamp DEFAULT (now()),
@@ -283,7 +308,7 @@ CREATE TABLE "expenses" (
   "account_id" UUID NOT NULL,
   "category_id" UUID NOT NULL,
   "subcategory_id" UUID,
-  "recurring_transaction_id" UUID,
+  "recurring_expense_id" UUID,
   "transaction_status" transaction_status NOT NULL DEFAULT 'validating',
   "deleted_at" timestamp NULL,
   "created_at" timestamp DEFAULT (now()),
@@ -405,12 +430,20 @@ CREATE TABLE "investment_withdrawals" (
 -- TAG RELATIONSHIP TABLES
 -- =====================================================
 
-CREATE TABLE "recurring_transactions_tags" (
-  "recurring_transaction_id" UUID NOT NULL,
+CREATE TABLE "recurring_incomes_tags" (
+  "recurring_income_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now()),
-  PRIMARY KEY ("recurring_transaction_id", "tag_id")
+  PRIMARY KEY ("recurring_income_id", "tag_id")
+);
+
+CREATE TABLE "recurring_expenses_tags" (
+  "recurring_expense_id" UUID NOT NULL,
+  "tag_id" UUID NOT NULL,
+  "created_at" timestamp DEFAULT (now()),
+  "updated_at" timestamp DEFAULT (now()),
+  PRIMARY KEY ("recurring_expense_id", "tag_id")
 );
 
 CREATE TABLE "incomes_tags" (
@@ -472,7 +505,8 @@ ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON 
 -- Account relationships
 ALTER TABLE "cards" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 ALTER TABLE "investments" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
-ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
+ALTER TABLE "recurring_incomes" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
+ALTER TABLE "recurring_expenses" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 ALTER TABLE "incomes" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 ALTER TABLE "expenses" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 ALTER TABLE "card_payments" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
@@ -486,14 +520,26 @@ ALTER TABLE "transfers" ADD FOREIGN KEY ("recurring_transfer_id") REFERENCES "re
 ALTER TABLE "recurring_transfers" ADD FOREIGN KEY ("source_account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 ALTER TABLE "recurring_transfers" ADD FOREIGN KEY ("destination_account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
--- Category relationships
+-- Category relationships with type constraints
 ALTER TABLE "sub_categories" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
+
+-- Income table constraints (foreign keys provide basic integrity)
 ALTER TABLE "incomes" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
 ALTER TABLE "incomes" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
+
+-- Expense table constraints (foreign keys provide basic integrity)
 ALTER TABLE "expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
 ALTER TABLE "expenses" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
-ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
-ALTER TABLE "recurring_transactions" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
+
+-- Recurring incomes constraints (foreign keys provide basic integrity)
+ALTER TABLE "recurring_incomes" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
+ALTER TABLE "recurring_incomes" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
+
+-- Recurring expenses constraints (foreign keys provide basic integrity)
+ALTER TABLE "recurring_expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
+ALTER TABLE "recurring_expenses" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
+
+-- Card expenses constraints (foreign keys provide basic integrity)
 ALTER TABLE "card_expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE RESTRICT;
 ALTER TABLE "card_expenses" ADD FOREIGN KEY ("subcategory_id") REFERENCES "sub_categories" ("id") ON DELETE SET NULL;
 
@@ -512,14 +558,14 @@ ALTER TABLE "investment_deposits" ADD FOREIGN KEY ("investment_id") REFERENCES "
 ALTER TABLE "investment_withdrawals" ADD FOREIGN KEY ("investment_id") REFERENCES "investments" ("id") ON DELETE CASCADE;
 
 -- Recurring transaction relationships
-ALTER TABLE "incomes" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE SET NULL;
-ALTER TABLE "expenses" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE SET NULL;
-ALTER TABLE "investment_deposits" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE SET NULL;
-ALTER TABLE "investment_withdrawals" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE SET NULL;
+ALTER TABLE "incomes" ADD FOREIGN KEY ("recurring_income_id") REFERENCES "recurring_incomes" ("id") ON DELETE SET NULL;
+ALTER TABLE "expenses" ADD FOREIGN KEY ("recurring_expense_id") REFERENCES "recurring_expenses" ("id") ON DELETE SET NULL;
 
 -- Tag relationships
-ALTER TABLE "recurring_transactions_tags" ADD FOREIGN KEY ("recurring_transaction_id") REFERENCES "recurring_transactions" ("id") ON DELETE CASCADE;
-ALTER TABLE "recurring_transactions_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
+ALTER TABLE "recurring_incomes_tags" ADD FOREIGN KEY ("recurring_income_id") REFERENCES "recurring_incomes" ("id") ON DELETE CASCADE;
+ALTER TABLE "recurring_incomes_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
+ALTER TABLE "recurring_expenses_tags" ADD FOREIGN KEY ("recurring_expense_id") REFERENCES "recurring_expenses" ("id") ON DELETE CASCADE;
+ALTER TABLE "recurring_expenses_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 ALTER TABLE "incomes_tags" ADD FOREIGN KEY ("income_id") REFERENCES "incomes" ("id") ON DELETE CASCADE;
 ALTER TABLE "incomes_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id") ON DELETE CASCADE;
 ALTER TABLE "expenses_tags" ADD FOREIGN KEY ("expense_id") REFERENCES "expenses" ("id") ON DELETE CASCADE;
@@ -540,7 +586,8 @@ CREATE INDEX "idx_accounts_user_id" ON "accounts" ("user_id");
 CREATE INDEX "idx_accounts_active" ON "accounts" ("is_active") WHERE "is_active" = true;
 
 -- Category indexes
-CREATE UNIQUE INDEX "uq_sub_categories_name_category" ON "sub_categories" ("name", "category_id");
+CREATE INDEX "idx_categories_type" ON "categories" ("type");
+CREATE INDEX "idx_categories_type_active" ON "categories" ("type", "is_active") WHERE "is_active" = true;
 
 -- Card and invoice indexes
 CREATE INDEX "idx_invoices_status" ON "invoices" ("status");
@@ -578,9 +625,10 @@ CREATE INDEX "idx_card_expenses_category" ON "card_expenses" ("category_id");
 CREATE INDEX "idx_card_expenses_subcategory" ON "card_expenses" ("subcategory_id");
 
 -- Recurring transaction indexes
-CREATE INDEX "idx_incomes_recurring" ON "incomes" ("recurring_transaction_id");
-CREATE INDEX "idx_expenses_recurring" ON "expenses" ("recurring_transaction_id");
-CREATE INDEX "idx_recurring_transactions_account" ON "recurring_transactions" ("account_id");
+CREATE INDEX "idx_incomes_recurring" ON "incomes" ("recurring_income_id");
+CREATE INDEX "idx_expenses_recurring" ON "expenses" ("recurring_expense_id");
+CREATE INDEX "idx_recurring_incomes_account" ON "recurring_incomes" ("account_id");
+CREATE INDEX "idx_recurring_expenses_account" ON "recurring_expenses" ("account_id");
 CREATE INDEX "idx_recurring_transfers_source" ON "recurring_transfers" ("source_account_id");
 CREATE INDEX "idx_recurring_transfers_destination" ON "recurring_transfers" ("destination_account_id");
 
@@ -708,7 +756,8 @@ CREATE TRIGGER trigger_invoices_updated_at BEFORE UPDATE ON "invoices" FOR EACH 
 CREATE TRIGGER trigger_investments_updated_at BEFORE UPDATE ON "investments" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_tags_updated_at BEFORE UPDATE ON "tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_recurring_transfers_updated_at BEFORE UPDATE ON "recurring_transfers" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER trigger_recurring_transactions_updated_at BEFORE UPDATE ON "recurring_transactions" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER trigger_recurring_incomes_updated_at BEFORE UPDATE ON "recurring_incomes" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER trigger_recurring_expenses_updated_at BEFORE UPDATE ON "recurring_expenses" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_transfers_updated_at BEFORE UPDATE ON "transfers" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_incomes_updated_at BEFORE UPDATE ON "incomes" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_expenses_updated_at BEFORE UPDATE ON "expenses" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -719,7 +768,8 @@ CREATE TRIGGER trigger_card_payments_updated_at BEFORE UPDATE ON "card_payments"
 CREATE TRIGGER trigger_investment_deposits_updated_at BEFORE UPDATE ON "investment_deposits" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_investment_withdrawals_updated_at BEFORE UPDATE ON "investment_withdrawals" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_currencies_updated_at BEFORE UPDATE ON "currencies" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER trigger_recurring_transactions_tags_updated_at BEFORE UPDATE ON "recurring_transactions_tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER trigger_recurring_incomes_tags_updated_at BEFORE UPDATE ON "recurring_incomes_tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER trigger_recurring_expenses_tags_updated_at BEFORE UPDATE ON "recurring_expenses_tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_incomes_tags_updated_at BEFORE UPDATE ON "incomes_tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_expenses_tags_updated_at BEFORE UPDATE ON "expenses_tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trigger_investments_tags_updated_at BEFORE UPDATE ON "investments_tags" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
