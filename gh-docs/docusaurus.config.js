@@ -17,12 +17,12 @@ const config = {
   url: 'https://phraulino-space.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub Pages deployment, it is often '/<projectName>/'
-  baseUrl: '/fintrack/',
+  baseUrl: '/fintrack-docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'PHRaulino-Space', // Usually your GitHub org/user name.
-  projectName: 'fintrack', // Usually your repo name.
+  projectName: 'fintrack-docs', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -50,14 +50,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/PHRaulino-Space/fintrack/tree/main/gh-docs/',
+            'https://github.com/PHRaulino-Space/fintrack-docs/tree/main/gh-docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/PHRaulino-Space/fintrack/tree/main/gh-docs/',
+            'https://github.com/PHRaulino-Space/fintrack-docs/tree/main/gh-docs/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -86,7 +86,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/PHRaulino-Space/fintrack',
+            href: 'https://github.com/PHRaulino-Space/fintrack-docs',
             label: 'GitHub',
             position: 'right',
           },
@@ -113,7 +113,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/PHRaulino-Space/fintrack',
+                href: 'https://github.com/PHRaulino-Space/fintrack-docs',
               },
             ],
           },
