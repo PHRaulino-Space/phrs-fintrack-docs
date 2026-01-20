@@ -1,41 +1,33 @@
-# Website
+# Documentação FinTrack (Docusaurus)
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Este diretório contém a documentação técnica gerada com Docusaurus.
 
-## Installation
+## Como Publicar no GitHub Pages
 
-```bash
-yarn
-```
+A configuração já foi realizada. Para que a documentação fique online:
 
-## Local Development
+1.  **Workflow Automático**: Um arquivo `.github/workflows/deploy-docs.yml` foi criado. Toda vez que você fizer push na `main` alterando a pasta `gh-docs/`, o GitHub Actions irá construir o site e publicar na branch `gh-pages`.
 
-```bash
-yarn start
-```
+2.  **Configuração do Repositório**:
+    - Vá na aba **Settings** do seu repositório no GitHub.
+    - No menu lateral esquerdo, clique em **Pages**.
+    - Em **Build and deployment**, selecione **Deploy from a branch**.
+    - Em **Branch**, selecione `gh-pages` e a pasta `/ (root)`.
+    - Clique em **Save**.
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Após alguns minutos, sua documentação estará acessível em:
+`https://phraulino-space.github.io/fintrack/`
 
-## Build
-
-```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
+## Rodando Localmente
 
 ```bash
-USE_SSH=true yarn deploy
+npm install
+npm start
 ```
+Acesse `http://localhost:3000`.
 
-Not using SSH:
+## Estrutura
 
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+- `docs/`: Arquivos Markdown da documentação.
+- `src/`: Componentes React e páginas customizadas.
+- `docusaurus.config.js`: Configurações principais.
