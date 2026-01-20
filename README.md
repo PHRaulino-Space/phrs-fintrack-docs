@@ -3,6 +3,31 @@
 ## Visão Geral
 Este banco de dados foi projetado para gerenciar transações financeiras, controlar receitas, despesas, transferências, faturas, investimentos e gerar relatórios detalhados para um melhor planejamento financeiro pessoal.
 
+## Estrutura do Projeto
+
+Este repositório contém a documentação do projeto Fintrack. Os repositórios de código fonte (frontend e backend) estão organizados como submódulos Git:
+
+- **Frontend**: [phrs-fintrack-frontend](https://github.com/PHRaulino-Space/phrs-fintrack-frontend)
+- **Backend**: [phrs-fintrack-backend](https://github.com/PHRaulino-Space/phrs-fintrack-backend)
+
+### Instalando os Submódulos
+
+Para clonar o projeto completo com todos os submódulos, execute:
+
+```bash
+# Clonar o repositório com submódulos
+git clone --recurse-submodules https://github.com/PHRaulino-Space/fintrack-docs.git
+
+# OU, se já clonou o repositório, execute o script de instalação:
+bash install-submodules.sh
+```
+
+Para atualizar os submódulos posteriormente:
+
+```bash
+git submodule update --remote --recursive
+```
+
 ---
 
 ## Entidades e Regras de Negócio
