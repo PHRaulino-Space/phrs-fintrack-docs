@@ -1,267 +1,42 @@
----
-sidebar_position: 3
----
+# Importando Transações
 
-# Importando Transacoes
+O FinTrack foi desenhado para eliminar a digitação manual através da importação de arquivos bancários.
 
-O processo de importacao permite adicionar multiplas transacoes de uma vez a partir de extratos bancarios.
+## Passo 1: Obter o arquivo (CSV)
 
-## Fluxo de Importacao
+Acesse o internet banking do seu banco e procure pela opção "Extrato". Exporte o período desejado em formato **CSV** (Planilha).
+*Nota: OFX também é um padrão comum, mas o FinTrack foca primariamente em CSV pela flexibilidade de leitura.*
 
-```mermaid
-flowchart TB
-    A[Upload CSV] --> B[Criar Sessao]
-    B --> C[Parse do Arquivo]
-    C --> D[Criar Staged Transactions]
-    D --> E[Enriquecimento IA]
-    E --> F[Revisao Usuario]
-    F --> G{Aprovado?}
-    G -->|Sim| H[Commit]
-    G -->|Nao| I[Editar]
-    I --> F
-    H --> J[Transacoes Definitivas]
-```
+## Passo 2: Criar Sessão de Importação
 
-## Sessoes de Importacao
+1.  No FinTrack, acesse o menu **Importações**.
+2.  Clique em **Nova Importação**.
+3.  Selecione o destino:
+    - É uma importação para uma **Conta** (débito/extrato direto)?
+    - Ou para um **Cartão de Crédito** (fatura)?
+4.  Faça o upload do arquivo CSV.
 
-Uma sessao de importacao e um ambiente temporario onde as transacoes sao preparadas antes de se tornarem definitivas.
+## Passo 3: Mapeamento (Parsing)
 
-### Estados da Sessao
+Se for a primeira vez que importa desse banco, o sistema pode pedir para confirmar quais colunas representam o quê (Data, Descrição, Valor). O sistema tenta detectar automaticamente.
 
-| Estado | Descricao |
-|--------|-----------|
-| Aberta | Aceitando uploads e edicoes |
-| Fechada | Nao aceita mais modificacoes |
-| Committed | Transacoes foram confirmadas |
+## Passo 4: Revisão (Staging)
 
-### Criar Sessao
+Após o upload, você não verá as transações imediatamente no seu extrato oficial. Elas vão para uma área de rascunho.
 
-```bash
-curl -X POST http://localhost:8080/api/v1/import-sessions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id" \
-  -d '{
-    "account_id": "conta-uuid",
-    "description": "Extrato Janeiro 2024"
-  }'
-```
+Nesta tela, você verá lista de transações importadas. O sistema de IA já terá tentado preencher a **Categoria** e **Subcategoria** para cada uma.
 
-Para cartoes de credito:
+- **Verde**: O sistema tem alta confiança.
+- **Amarelo/Vermelho**: O sistema está em dúvida, verifique com atenção.
 
-```bash
-curl -X POST http://localhost:8080/api/v1/import-sessions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id" \
-  -d '{
-    "card_id": "cartao-uuid",
-    "billing_month": "2024-01",
-    "target_value": 3500.00
-  }'
-```
+Você pode:
+- Editar descrições para ficarem mais limpas.
+- Alterar categorias em massa.
+- Excluir transações duplicadas ou indesejadas.
 
-## Upload de Arquivo
+## Passo 5: Efetivar (Commit)
 
-### Formato CSV Esperado
-
-```csv
-data,descricao,valor
-2024-01-15,SUPERMERCADO EXTRA,-150.50
-2024-01-16,PIX RECEBIDO JOAO,500.00
-2024-01-17,UBER *TRIP,-25.90
-2024-01-18,SALARIO EMPRESA XYZ,5000.00
-```
-
-### Colunas Obrigatorias
-
-| Coluna | Formato | Descricao |
-|--------|---------|-----------|
-| `data` | YYYY-MM-DD | Data da transacao |
-| `descricao` | Texto | Descricao original |
-| `valor` | Decimal | Negativo = saida, Positivo = entrada |
-
-### Enviar Arquivo
-
-```bash
-curl -X POST http://localhost:8080/api/v1/import-sessions/{id}/upload \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id" \
-  -F "file=@extrato-janeiro.csv"
-```
-
-## Staged Transactions
-
-Transacoes temporarias aguardando revisao.
-
-### Status das Staged Transactions
-
-| Status | Descricao |
-|--------|-----------|
-| `QUEUED` | Aguardando processamento |
-| `PROCESSING` | Sendo processada pela IA |
-| `COMPLETED` | Processamento concluido |
-| `PENDING` | Aguardando revisao do usuario |
-| `READY` | Pronta para commit |
-
-### Tipos de Transacao
-
-| Tipo | Descricao |
-|------|-----------|
-| `INCOME` | Receita (entrada de dinheiro) |
-| `EXPENSE` | Despesa (saida de conta) |
-| `TRANSFER` | Transferencia entre contas |
-| `CARD_EXPENSE` | Despesa no cartao de credito |
-| `CARD_PAYMENT` | Pagamento de fatura |
-| `CARD_CHARGEBACK` | Estorno no cartao |
-| `INVESTMENT_DEPOSIT` | Aporte em investimento |
-| `INVESTMENT_WITHDRAWAL` | Resgate de investimento |
-
-### Listar Staged Transactions
-
-```bash
-curl -X GET http://localhost:8080/api/v1/import-sessions/{id}/staged-transactions \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id"
-```
-
-### Editar Staged Transaction
-
-```bash
-curl -X PUT http://localhost:8080/api/v1/staged-transactions/{id} \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id" \
-  -d '{
-    "status": "READY",
-    "data": {
-      "description": "Supermercado Extra",
-      "category_id": "cat-uuid",
-      "subcategory_id": "subcat-uuid"
-    }
-  }'
-```
-
-## Sugestoes da IA
-
-O sistema usa embeddings vetoriais para sugerir categorias.
-
-### Obter Sugestoes
-
-```bash
-curl -X GET http://localhost:8080/api/v1/import-sessions/{id}/suggestions \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id"
-```
-
-**Resposta:**
-
-```json
-{
-  "suggestions": [
-    {
-      "staged_transaction_id": "st-123",
-      "original_description": "SUPERMERCADO EXTRA 123",
-      "suggested_description": "Supermercado Extra",
-      "suggested_category": {
-        "id": "cat-alimentacao",
-        "name": "Alimentacao"
-      },
-      "suggested_subcategory": {
-        "id": "subcat-supermercado",
-        "name": "Supermercado"
-      },
-      "confidence": 0.92
-    }
-  ]
-}
-```
-
-### Nivel de Confianca
-
-| Nivel | Valor | Acao Recomendada |
-|-------|-------|------------------|
-| Alto | > 0.85 | Aceitar automaticamente |
-| Medio | 0.60-0.85 | Revisar rapidamente |
-| Baixo | < 0.60 | Revisar cuidadosamente |
-
-## Commit da Sessao
-
-Apos revisar todas as transacoes:
-
-```bash
-curl -X POST http://localhost:8080/api/v1/import-sessions/{id}/commit \
-  -H "Authorization: Bearer seu-token-jwt" \
-  -H "X-Workspace-ID: workspace-id"
-```
-
-### O Que Acontece no Commit
-
-1. Transacoes `READY` sao movidas para tabelas definitivas
-2. Saldos de contas sao atualizados
-3. Despesas de cartao sao vinculadas a faturas
-4. Sessao e marcada como committed
-
-## Fluxo Visual Detalhado
-
-```mermaid
-sequenceDiagram
-    participant U as Usuario
-    participant F as Frontend
-    participant B as Backend
-    participant AI as Servico IA
-    participant DB as Database
-
-    U->>F: Seleciona arquivo CSV
-    F->>B: POST /import-sessions
-    B->>DB: Criar sessao
-    B-->>F: Session ID
-
-    F->>B: POST /upload (arquivo)
-    B->>B: Parse CSV
-    B->>DB: Criar staged transactions
-
-    loop Para cada transacao
-        B->>AI: Gerar embedding
-        AI-->>B: Vetor 768d
-        B->>DB: Buscar categorias similares
-    end
-
-    B-->>F: Transacoes com sugestoes
-
-    U->>F: Revisa e edita
-    F->>B: PUT /staged-transactions/{id}
-    B->>DB: Atualizar status para READY
-
-    U->>F: Clica em Confirmar
-    F->>B: POST /commit
-    B->>DB: Mover para tabelas definitivas
-    B->>DB: Atualizar saldos
-    B-->>F: Sucesso
-    F-->>U: Importacao concluida!
-```
-
-## Troubleshooting
-
-### Erro de Parse do CSV
-
-- Verifique o encoding (use UTF-8)
-- Confirme o separador (virgula ou ponto-e-virgula)
-- Verifique o formato das datas
-
-### Sugestoes Incorretas
-
-- A IA aprende com correcoes
-- Corrija manualmente e o sistema melhora
-- Adicione mais exemplos de categorizacao
-
-### Valores Incorretos
-
-- Negativo = saida de dinheiro
-- Positivo = entrada de dinheiro
-- Use ponto como separador decimal
-
-## Proximos Passos
-
-- [Entenda a categorizacao](/docs/user-guide/categorization)
-- [Visualize nos dashboards](/docs/user-guide/dashboards)
+Ao finalizar a revisão, clique em **Concluir Importação**.
+- As transações saem do rascunho e entram no livro razão oficial.
+- Seus saldos são atualizados.
+- O modelo de IA é treinado com suas correções para acertar mais na próxima vez.

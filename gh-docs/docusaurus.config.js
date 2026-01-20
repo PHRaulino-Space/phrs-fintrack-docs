@@ -1,27 +1,35 @@
 // @ts-check
+// `@type` JSDoc annotations allow editor autocompletion and type checking
+// (when paired with `@docusaurus/module-type-aliases`).
+//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'FinTrack',
-  tagline: 'Gestao de Financas Pessoais Auto-Hospedada com IA',
+  tagline: 'Gestão Financeira Pessoal com IA e Privacidade',
   favicon: 'img/favicon.ico',
 
-  future: {
-    v4: true,
-  },
-
+  // Set the production url of your site here
   url: 'https://phraulino-space.github.io',
-  baseUrl: '/fintrack-docs/',
+  // Set the /<baseUrl>/ pathname under which your site is served
+  // For GitHub Pages deployment, it is often '/<projectName>/'
+  baseUrl: '/fintrack/',
 
-  organizationName: 'PHRaulino-Space',
-  projectName: 'fintrack-docs',
-  deploymentBranch: 'gh-pages',
-  trailingSlash: false,
+  // GitHub pages deployment config.
+  // If you aren't using GitHub pages, you don't need these.
+  organizationName: 'PHRaulino-Space', // Usually your GitHub org/user name.
+  projectName: 'fintrack', // Usually your repo name.
 
-  onBrokenLinks: 'warn',
+  onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
+  // Even if you don't use internationalization, you can use this field to set
+  // useful metadata like html lang. For example, if your site is Chinese, you
+  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'pt-BR',
     locales: ['pt-BR', 'en'],
@@ -30,7 +38,6 @@ const config = {
   markdown: {
     mermaid: true,
   },
-
   themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
@@ -40,15 +47,17 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          editUrl: 'https://github.com/PHRaulino-Space/fintrack-docs/tree/main/gh-docs/',
+          // Please change this to your repo.
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+            'https://github.com/PHRaulino-Space/fintrack/tree/main/gh-docs/',
         },
         blog: {
           showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          editUrl: 'https://github.com/PHRaulino-Space/fintrack-docs/tree/main/gh-docs/',
+          // Please change this to your repo.
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+            'https://github.com/PHRaulino-Space/fintrack/tree/main/gh-docs/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -60,11 +69,8 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/fintrack-social-card.png',
-      colorMode: {
-        defaultMode: 'dark',
-        respectPrefersColorScheme: true,
-      },
+      // Replace with your project's social card
+      image: 'img/docusaurus-social-card.jpg',
       navbar: {
         title: 'FinTrack',
         logo: {
@@ -74,26 +80,13 @@ const config = {
         items: [
           {
             type: 'docSidebar',
-            sidebarId: 'docsSidebar',
+            sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Documentacao',
+            label: 'Documentação',
           },
+          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            to: '/docs/api-reference/authentication',
-            label: 'API',
-            position: 'left',
-          },
-          {
-            to: '/blog',
-            label: 'Blog',
-            position: 'left',
-          },
-          {
-            type: 'localeDropdown',
-            position: 'right',
-          },
-          {
-            href: 'https://github.com/PHRaulino-Space/fintrack-docs',
+            href: 'https://github.com/PHRaulino-Space/fintrack',
             label: 'GitHub',
             position: 'right',
           },
@@ -103,66 +96,42 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Documentacao',
+            title: 'Docs',
             items: [
               {
-                label: 'Introducao',
+                label: 'Introdução',
                 to: '/docs/intro',
               },
               {
-                label: 'Guia de Inicio',
-                to: '/docs/getting-started/installation',
-              },
-              {
-                label: 'API Reference',
-                to: '/docs/api-reference/authentication',
+                label: 'Guia do Usuário',
+                to: '/docs/user-guide/workspaces',
               },
             ],
           },
           {
-            title: 'Desenvolvimento',
-            items: [
-              {
-                label: 'Frontend',
-                to: '/docs/frontend-guide/project-structure',
-              },
-              {
-                label: 'Backend',
-                to: '/docs/backend-guide/project-structure',
-              },
-              {
-                label: 'Database',
-                to: '/docs/database/schema',
-              },
-            ],
-          },
-          {
-            title: 'Comunidade',
+            title: 'Community',
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/PHRaulino-Space/fintrack-docs',
+                href: 'https://github.com/PHRaulino-Space/fintrack',
               },
+            ],
+          },
+          {
+            title: 'More',
+            items: [
               {
-                label: 'Issues',
-                href: 'https://github.com/PHRaulino-Space/fintrack-docs/issues',
-              },
-              {
-                label: 'Discussions',
-                href: 'https://github.com/PHRaulino-Space/fintrack-docs/discussions',
+                label: 'Blog',
+                to: '/blog',
               },
             ],
           },
         ],
-        copyright: `Copyright ${new Date().getFullYear()} FinTrack. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} FinTrack Project. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
-        additionalLanguages: ['bash', 'go', 'typescript', 'json', 'yaml', 'sql'],
-      },
-      mermaid: {
-        theme: {light: 'neutral', dark: 'dark'},
       },
     }),
 };

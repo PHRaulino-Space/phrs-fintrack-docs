@@ -1,11 +1,16 @@
+// @ts-check
+
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
-  docsSidebar: [
-    'intro',
+  tutorialSidebar: [
+    {
+      type: 'doc',
+      id: 'intro',
+      label: 'Introdução',
+    },
     {
       type: 'category',
-      label: 'Guia de Inicio',
-      collapsed: false,
+      label: 'Getting Started',
       items: [
         'getting-started/installation',
         'getting-started/configuration',
@@ -14,7 +19,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Guia do Usuario',
+      label: 'Guia do Usuário',
       items: [
         'user-guide/workspaces',
         'user-guide/accounts-and-cards',
@@ -38,7 +43,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Referencia da API',
+      label: 'API Reference',
       items: [
         'api-reference/authentication',
         'api-reference/workspaces',
@@ -52,7 +57,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Guia do Frontend',
+      label: 'Guia Frontend',
       items: [
         'frontend-guide/project-structure',
         'frontend-guide/components',
@@ -64,7 +69,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Guia do Backend',
+      label: 'Guia Backend',
       items: [
         'backend-guide/project-structure',
         'backend-guide/controllers',
@@ -109,7 +114,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Contribuicao',
+      label: 'Contribuindo',
       items: [
         'contributing/how-to-contribute',
         'contributing/code-of-conduct',

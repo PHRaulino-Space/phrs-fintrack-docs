@@ -1,267 +1,71 @@
----
-sidebar_position: 3
----
+# Accounts
 
-# Accounts (Contas)
+Endpoints para gestão de contas bancárias e carteiras.
 
-Endpoints para gerenciar contas bancarias e financeiras.
+## `GET /accounts`
 
-## Endpoints
+Lista todas as contas ativas do workspace atual.
 
-| Metodo | Endpoint | Descricao |
-|--------|----------|-----------|
-| GET | `/accounts` | Listar contas do workspace |
-| POST | `/accounts` | Criar nova conta |
-| GET | `/accounts/:id` | Obter conta por ID |
+**Header Obrigatório**: `X-Workspace-ID: <uuid>`
 
-## Listar Contas
-
-```http
-GET /api/v1/accounts
-Authorization: Bearer {token}
-X-Workspace-ID: {workspace_id}
-```
-
-**Response (200 OK):**
+### Response (200 OK)
 
 ```json
 [
   {
-    "id": "acc-123-456-789",
-    "workspace_id": "ws-123-456",
-    "name": "Nubank Conta Corrente",
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "workspace_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "Nubank",
     "type": "CHECKING",
-    "initial_balance": 2500.00,
+    "initial_balance": 1500.50,
     "currency_code": "BRL",
     "is_active": true,
-    "currency": {
-      "code": "BRL",
-      "name": "Brazilian Real",
-      "symbol": "R$",
-      "is_active": true
-    },
-    "created_at": "2024-01-15T10:30:00Z",
-    "updated_at": "2024-01-15T10:30:00Z"
-  },
-  {
-    "id": "acc-789-012-345",
-    "workspace_id": "ws-123-456",
-    "name": "Bradesco Poupanca",
-    "type": "SAVINGS",
-    "initial_balance": 10000.00,
-    "currency_code": "BRL",
-    "is_active": true,
-    "currency": {
-      "code": "BRL",
-      "name": "Brazilian Real",
-      "symbol": "R$",
-      "is_active": true
-    },
-    "created_at": "2024-01-16T14:00:00Z",
-    "updated_at": "2024-01-16T14:00:00Z"
+    "created_at": "2023-10-01T10:00:00Z",
+    "updated_at": "2023-10-01T10:00:00Z"
   }
 ]
 ```
 
-## Criar Conta
+## `POST /accounts`
 
-```http
-POST /api/v1/accounts
-Authorization: Bearer {token}
-X-Workspace-ID: {workspace_id}
-Content-Type: application/json
-```
+Cria uma nova conta no workspace.
 
-**Request Body:**
+**Header Obrigatório**: `X-Workspace-ID: <uuid>`
 
-```json
-{
-  "name": "Nubank Conta Corrente",
-  "type": "CHECKING",
-  "initial_balance": 2500.00,
-  "currency_code": "BRL",
-  "is_active": true
-}
-```
+### Request Body
 
-**Campos:**
-
-| Campo | Tipo | Obrigatorio | Descricao |
+| Campo | Tipo | Obrigatório | Descrição |
 |-------|------|-------------|-----------|
-| `name` | string | Sim | Nome da conta (1-100 chars) |
-| `type` | string | Sim | Tipo da conta (enum) |
-| `initial_balance` | number | Nao | Saldo inicial (default: 0) |
-| `currency_code` | string | Nao | Codigo da moeda (default: BRL) |
-| `is_active` | boolean | Nao | Conta ativa (default: true) |
-
-**Tipos de Conta:**
-
-| Tipo | Descricao |
-|------|-----------|
-| `CHECKING` | Conta Corrente |
-| `SAVINGS` | Poupanca |
-| `WALLET` | Carteira Digital |
-| `INVESTMENT` | Investimentos |
-| `CRIPTO` | Exchange Crypto |
-| `CRIPTOWALLET` | Carteira Crypto |
-
-**Response (201 Created):**
+| `name` | string | Sim | Nome da conta (ex: Nubank, Carteira) |
+| `type` | string | Sim | `CHECKING`, `SAVINGS`, `WALLET`, `INVESTMENT`, `CRIPTO` |
+| `initial_balance` | number | Sim | Saldo inicial da conta |
+| `currency_code` | string | Sim | Código ISO da moeda (ex: BRL) |
 
 ```json
 {
-  "id": "acc-123-456-789",
-  "workspace_id": "ws-123-456",
-  "name": "Nubank Conta Corrente",
-  "type": "CHECKING",
-  "initial_balance": 2500.00,
-  "currency_code": "BRL",
-  "is_active": true,
-  "currency": {
-    "code": "BRL",
-    "name": "Brazilian Real",
-    "symbol": "R$",
-    "is_active": true
-  },
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z"
+  "name": "Investimentos Rico",
+  "type": "INVESTMENT",
+  "initial_balance": 50000.00,
+  "currency_code": "BRL"
 }
 ```
 
-**Erros:**
+### Response (201 Created)
 
-| Status | Descricao |
-|--------|-----------|
-| 400 | Dados invalidos |
-| 409 | Nome ja existe no workspace |
+Retorna o objeto `Account` criado (mesma estrutura do GET).
 
-## Obter Conta
+## `GET /accounts/{id}`
 
-```http
-GET /api/v1/accounts/:id
-Authorization: Bearer {token}
-X-Workspace-ID: {workspace_id}
-```
+Obtém detalhes de uma conta específica.
 
-**Path Parameters:**
+**Parâmetros**: `id` (UUID no path).
 
-| Parametro | Tipo | Descricao |
-|-----------|------|-----------|
-| `id` | UUID | ID da conta |
+## Definições de Tipo
 
-**Response (200 OK):**
-
-```json
-{
-  "id": "acc-123-456-789",
-  "workspace_id": "ws-123-456",
-  "name": "Nubank Conta Corrente",
-  "type": "CHECKING",
-  "initial_balance": 2500.00,
-  "currency_code": "BRL",
-  "is_active": true,
-  "currency": {
-    "code": "BRL",
-    "name": "Brazilian Real",
-    "symbol": "R$",
-    "is_active": true
-  },
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z"
-}
-```
-
-## Modelo de Dados
-
-### Account
-
-```typescript
-interface Account {
-  id: string;              // UUID
-  workspace_id: string;    // UUID
-  name: string;            // 1-100 caracteres
-  type: AccountType;       // Enum
-  initial_balance: number; // Decimal 15,2
-  currency_code: string;   // 3 caracteres (ISO 4217)
-  is_active: boolean;
-  currency?: Currency;     // Relacionamento
-  deleted_at?: string;     // Soft delete
-  created_at: string;      // ISO 8601
-  updated_at: string;      // ISO 8601
-}
-
-type AccountType =
-  | 'CHECKING'
-  | 'SAVINGS'
-  | 'WALLET'
-  | 'INVESTMENT'
-  | 'CRIPTO'
-  | 'CRIPTOWALLET';
-```
-
-### Currency
-
-```typescript
-interface Currency {
-  code: string;      // ISO 4217 (ex: BRL, USD)
-  name: string;      // Nome completo
-  symbol: string;    // Simbolo (ex: R$, $)
-  is_active: boolean;
-}
-```
-
-## Exemplos
-
-### cURL - Listar
-
-```bash
-curl -X GET http://localhost:8080/api/v1/accounts \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \
-  -H "X-Workspace-ID: ws-123-456"
-```
-
-### cURL - Criar
-
-```bash
-curl -X POST http://localhost:8080/api/v1/accounts \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \
-  -H "X-Workspace-ID: ws-123-456" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Inter Conta Digital",
-    "type": "CHECKING",
-    "initial_balance": 500.00,
-    "currency_code": "BRL"
-  }'
-```
-
-### JavaScript
-
-```javascript
-// Listar contas
-const { data: accounts } = await api.get('/accounts');
-
-// Criar conta
-const { data: newAccount } = await api.post('/accounts', {
-  name: 'Binance',
-  type: 'CRIPTO',
-  initial_balance: 0,
-  currency_code: 'USD'
-});
-```
-
-## Calculo de Saldo
-
-O saldo atual de uma conta e calculado como:
-
-```
-Saldo Atual = Saldo Inicial
-            + SUM(Receitas)
-            - SUM(Despesas)
-            + SUM(Transferencias Recebidas)
-            - SUM(Transferencias Enviadas)
-            - SUM(Pagamentos de Cartao)
-```
-
-:::info
-O saldo e calculado dinamicamente, nao e armazenado. Para obter o saldo atual, calcule baseado nas transacoes.
-:::
+### AccountType (Enum)
+- `CHECKING`: Conta Corrente
+- `SAVINGS`: Poupança
+- `WALLET`: Dinheiro Físico
+- `INVESTMENT`: Conta de Investimento
+- `CRIPTO`: Corretora de Cripto
+- `CRIPTOWALLET`: Wallet On-chain
