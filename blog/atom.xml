@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://phraulino-space.github.io/fintrack/blog</id>
+    <id>https://phraulino-space.github.io/fintrack-docs/blog</id>
     <title>FinTrack Blog</title>
     <updated>2026-01-20T20:04:19.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://phraulino-space.github.io/fintrack/blog"/>
+    <link rel="alternate" href="https://phraulino-space.github.io/fintrack-docs/blog"/>
     <subtitle>FinTrack Blog</subtitle>
-    <icon>https://phraulino-space.github.io/fintrack/img/favicon.ico</icon>
+    <icon>https://phraulino-space.github.io/fintrack-docs/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Welcome to the Blog]]></title>
-        <id>https://phraulino-space.github.io/fintrack/blog/welcome</id>
-        <link href="https://phraulino-space.github.io/fintrack/blog/welcome"/>
+        <id>https://phraulino-space.github.io/fintrack-docs/blog/welcome</id>
+        <link href="https://phraulino-space.github.io/fintrack-docs/blog/welcome"/>
         <updated>2026-01-20T20:04:19.000Z</updated>
     </entry>
 </feed>
