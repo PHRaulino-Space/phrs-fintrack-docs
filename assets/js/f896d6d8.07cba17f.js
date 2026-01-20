@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkgh_docs=globalThis.webpackChunkgh_docs||[]).push([[5710],{5005(a){a.exports=JSON.parse('{"metadata":{"permalink":"/fintrack/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
