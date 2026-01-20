@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkgh_docs=globalThis.webpackChunkgh_docs||[]).push([[1903],{1912(s){s.exports=JSON.parse('{"blogBasePath":"/fintrack-docs/blog","blogTitle":"Blog","authorsListPath":"/fintrack-docs/blog/authors"}')}}]);
