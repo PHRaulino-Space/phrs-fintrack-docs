@@ -100,7 +100,17 @@ O nome é gerado automaticamente: `{Nome da Conta/Cartão} | {billing_month}`
 
 ### 2. Adicionar Transações (Staged Transactions)
 
-Crie transações informando `transaction_date`, `description` e `amount`.
+Há duas formas de popular a sessão de importação:
+
+#### A. Upload de Arquivo CSV
+
+É possível fazer o upload de um arquivo CSV contendo o extrato bancário ou fatura do cartão. O sistema processa o arquivo e cria automaticamente as staged transactions.
+
+**Endpoint:** `POST /import-sessions/:id/upload`
+
+#### B. Criação Manual (Lote)
+
+Você pode criar transações manualmente informando `transaction_date`, `description` e `amount`.
 
 **Regra de sinais:**
 
@@ -403,6 +413,7 @@ interface StagedTransaction {
 | Listar Sessões | `GET /import-sessions` | Lista sessões do workspace |
 | Obter Sessão | `GET /import-sessions/:id` | Detalhes da sessão com contexto |
 | Excluir Sessão | `DELETE /import-sessions/:id` | Remove sessão e transações |
+| Upload CSV | `POST /import-sessions/:id/upload` | Importa transações via CSV |
 | Criar Transações | `POST /import-sessions/:id/staged-transactions` | Cria transações em lote |
 | Excluir Todas | `DELETE /import-sessions/:id/staged-transactions` | Remove todas as transações |
 | Commit | `POST /import-sessions/:id/commit` | Efetiva transações |

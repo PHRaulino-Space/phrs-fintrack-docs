@@ -169,6 +169,32 @@ DELETE /import-sessions/:id
 
 ---
 
+### Upload Arquivo CSV
+
+Faz o upload de um arquivo CSV para uma Sessão de Importação existente. O sistema processa o arquivo e cria StagedTransactions.
+
+```http
+POST /import-sessions/:id/upload
+```
+
+**Parameters:**
+- `id` (path, string, required): O UUID da Sessão de Importação.
+- `file` (formData, file, required): O arquivo CSV a ser importado.
+
+**Response (200 OK):** Arquivo processado com sucesso.
+
+```json
+{
+  "message": "45 linhas processadas"
+}
+```
+
+**Códigos de Erro:**
+- `400 Bad Request`: Arquivo inválido ou erro de parsing.
+- `500 Internal Server Error`: Erro no servidor.
+
+---
+
 ### Commit Session
 
 Efetiva todas as transações com status `READY` nas tabelas principais do banco.
