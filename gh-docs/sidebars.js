@@ -51,6 +51,7 @@ const sidebars = {
         'api-reference/accounts',
         'api-reference/cards',
         'api-reference/categories',
+        'api-reference/investments',
         'api-reference/transactions',
         'api-reference/import-sessions',
         'api-reference/recurring-transactions',
