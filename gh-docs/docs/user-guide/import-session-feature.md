@@ -113,6 +113,9 @@ Crie transações informando `transaction_date`, `description` e `amount`.
 
 - Atualizar transações individualmente
 - Alterar tipos, categorias e subcategorias
+- **Adicionar Tags:**
+  - Vincular tags existentes (`tag_ids`)
+  - Criar novas tags informando o nome (`tags`) - elas serão criadas automaticamente no workspace
 - Vincular a transações recorrentes (recurring transactions)
 - Aguardar processamento da IA (status `PROCESSING` → `READY`)
 
