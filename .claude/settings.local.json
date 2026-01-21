@@ -4,7 +4,10 @@
       "Bash(tree:*)",
       "Bash(wc -l:*)",
       "Bash(grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(go build:*)",
+      "Bash(/usr/local/go/bin/go build:*)",
+      "Bash(/opt/homebrew/bin/go build ./...)"
     ]
   }
 }
