@@ -24,6 +24,7 @@ const sidebars = {
         'user-guide/workspaces',
         'user-guide/accounts-and-cards',
         'user-guide/importing-transactions',
+        'user-guide/import-session-feature',
         'user-guide/categorization',
         'user-guide/dashboards',
         'user-guide/reports',

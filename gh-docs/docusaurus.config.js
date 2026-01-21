@@ -75,7 +75,8 @@ const config = {
         title: 'FinTrack',
         logo: {
           alt: 'FinTrack Logo',
-          src: 'img/logo.svg',
+          src: 'img/logo-dark.svg',
+          srcDark: 'img/logo.svg',
         },
         items: [
           {
