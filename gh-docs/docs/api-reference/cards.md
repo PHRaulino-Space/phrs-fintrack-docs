@@ -18,7 +18,7 @@ Lista todos os cartões do workspace.
     "closing_date": 25,
     "due_date": 5,
     "credit_limit": 10000.00,
-    "account_id": "uuid-conta-pagamento"
+    "workspace_id": "uuid-workspace"
   }
 ]
 ```
@@ -37,15 +37,14 @@ Cria um novo cartão de crédito.
 | `closing_date` | integer | Sim | Dia de fechamento da fatura (1-31) |
 | `due_date` | integer | Sim | Dia de vencimento da fatura (1-31) |
 | `credit_limit` | number | Sim | Limite de crédito |
-| `account_id` | uuid | Sim | ID da conta onde o pagamento é debitado |
 
 ```json
 {
   "name": "Visa Infinite",
   "closing_date": 20,
   "due_date": 5,
-  "credit_limit": 50000.00,
-  "account_id": "uuid-conta-corrente"
+  "credit_limit": 50000.00
+  "workspace_id": "uuid-workspace"
 }
 ```
 
@@ -58,7 +57,7 @@ Cria um novo cartão de crédito.
   "closing_date": 20,
   "due_date": 5,
   "credit_limit": 50000.00,
-  "account_id": "uuid-conta-corrente"
+  "workspace_id": "uuid-workspace"
 }
 ```
 
@@ -94,7 +93,6 @@ Atualiza as informações de um cartão existente.
 | `closing_date` | integer | Não | Novo dia de fechamento |
 | `due_date` | integer | Não | Novo dia de vencimento |
 | `credit_limit` | number | Não | Novo limite |
-| `account_id` | uuid | Não | Nova conta de pagamento |
 
 ```json
 {
@@ -111,7 +109,7 @@ Atualiza as informações de um cartão existente.
   "closing_date": 20,
   "due_date": 5,
   "credit_limit": 60000.00,
-  "account_id": "uuid-conta-corrente"
+  "workspace_id": "uuid-workspace"
 }
 ```
 
