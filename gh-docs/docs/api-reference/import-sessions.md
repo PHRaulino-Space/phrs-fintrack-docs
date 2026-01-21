@@ -181,6 +181,12 @@ POST /import-sessions/:id/commit
 - Transações `READY` são salvas com status `VALIDATING`
 - Transações com `ignore: true` no JSON são salvas com status `IGNORE`
 
+**Processamento de Tags:**
+- O sistema verifica os campos `tags` (array de nomes) e `tag_ids` (array de UUIDs) dentro do JSON `data` da transação.
+- Tags informadas por nome em `tags` serão buscadas ou criadas automaticamente no workspace.
+- Tags informadas por ID em `tag_ids` serão vinculadas diretamente.
+- Todas as tags identificadas serão associadas à transação efetivada (Income, Expense, etc).
+
 **Response (200 OK):**
 
 ```json
@@ -396,7 +402,9 @@ PUT /staged-transactions/:id
   "amount": 55.00,
   "data": {
     "description": "UBER *VIAGEM CORRIGIDO",
-    "category_id": "uuid-nova-categoria"
+    "category_id": "uuid-nova-categoria",
+    "tags": ["Viagem", "Uber"],
+    "tag_ids": ["uuid-tag-existente"]
   }
 }
 ```
