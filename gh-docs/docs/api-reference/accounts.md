@@ -60,6 +60,61 @@ Obtém detalhes de uma conta específica.
 
 **Parâmetros**: `id` (UUID no path).
 
+**Response (200 OK):**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "workspace_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Nubank",
+  "type": "CHECKING",
+  "initial_balance": 1500.50,
+  "currency_code": "BRL",
+  "is_active": true,
+  "created_at": "2023-10-01T10:00:00Z",
+  "updated_at": "2023-10-01T10:00:00Z"
+}
+```
+
+## `PUT /accounts/{id}`
+
+Atualiza as informações de uma conta existente.
+
+**Header Obrigatório**: `X-Workspace-ID: <uuid>`
+
+### Request Body
+
+| Campo | Tipo | Obrigatório | Descrição |
+|-------|------|-------------|-----------|
+| `name` | string | Não | Novo nome da conta |
+| `type` | string | Não | Novo tipo da conta |
+| `initial_balance` | number | Não | Novo saldo inicial |
+| `currency_code` | string | Não | Novo código de moeda |
+| `is_active` | boolean | Não | Status de ativação |
+
+```json
+{
+  "name": "Nubank (Principal)",
+  "is_active": true
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Nubank (Principal)",
+  "type": "CHECKING",
+  "is_active": true,
+  "updated_at": "2024-02-15T14:30:00Z"
+}
+```
+
+## `DELETE /accounts/{id}`
+
+Exclui (ou inativa via soft-delete) uma conta específica.
+
+**Response:** `204 No Content`
+
 ## Definições de Tipo
 
 ### AccountType (Enum)
