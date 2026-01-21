@@ -103,9 +103,9 @@ Exclui uma categoria.
 
 ## SubCategories
 
-### `GET /sub-categories`
+### `GET /categories/{id}/sub-categories`
 
-Lista todas as subcategorias do workspace.
+Lista as subcategorias de uma categoria específica.
 
 **Header Obrigatório**: `X-Workspace-ID: <uuid>`
 
@@ -120,16 +120,15 @@ Lista todas as subcategorias do workspace.
 ]
 ```
 
-### `POST /sub-categories`
+### `POST /categories/{id}/sub-categories`
 
-Cria uma subcategoria vinculada a uma categoria pai.
+Cria uma subcategoria vinculada à categoria especificada no path.
 
 **Request Body:**
 
 ```json
 {
-  "name": "Aluguel",
-  "category_id": "uuid-moradia"
+  "name": "Aluguel"
 }
 ```
 

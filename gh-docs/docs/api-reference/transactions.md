@@ -76,6 +76,95 @@ Movimentação entre duas contas do mesmo workspace.
 }
 ```
 
+## Despesas de Cartão (Card Expenses)
+
+Transações de despesa realizadas em cartão de crédito.
+
+### `POST /card-expenses`
+
+**Request Body:**
+
+```json
+{
+  "description": "Uber Viagem",
+  "amount": 45.90,
+  "transaction_date": "2024-03-10",
+  "card_id": "uuid-cartao",
+  "category_id": "uuid-transporte",
+  "billing_month": "2024-03"
+}
+```
+
+## Estornos de Cartão (Card Chargebacks)
+
+Créditos na fatura do cartão (ex: estorno de compra).
+
+### `POST /card-chargebacks`
+
+**Request Body:**
+
+```json
+{
+  "description": "Estorno Uber",
+  "amount": 45.90,
+  "transaction_date": "2024-03-11",
+  "card_id": "uuid-cartao",
+  "billing_month": "2024-03"
+}
+```
+
+## Pagamentos de Fatura (Card Payments)
+
+Pagamento da fatura do cartão usando saldo de uma conta.
+
+### `POST /card-payments`
+
+**Request Body:**
+
+```json
+{
+  "amount": 1500.00,
+  "transaction_date": "2024-03-15",
+  "card_id": "uuid-cartao",
+  "account_id": "uuid-conta-corrente",
+  "billing_month": "2024-02"
+}
+```
+
+## Investimentos (Deposits & Withdrawals)
+
+### `POST /investment-deposits`
+
+Aporte de dinheiro em um investimento.
+
+**Request Body:**
+
+```json
+{
+  "description": "Aporte Mensal",
+  "amount": 1000.00,
+  "transaction_date": "2024-03-05",
+  "investment_id": "uuid-tesouro",
+  "account_id": "uuid-conta-origem"
+}
+```
+
+### `POST /investment-withdrawals`
+
+Resgate de dinheiro de um investimento.
+
+**Request Body:**
+
+```json
+{
+  "description": "Resgate Emergência",
+  "amount": 500.00,
+  "transaction_date": "2024-06-20",
+  "investment_id": "uuid-tesouro",
+  "account_id": "uuid-conta-destino"
+}
+```
+
 ## Modelos
 
 ### TransactionStatus (Enum)
