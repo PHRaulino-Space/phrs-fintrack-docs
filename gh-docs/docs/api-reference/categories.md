@@ -146,6 +146,15 @@ Cria uma subcategoria vinculada a uma categoria pai.
 
 Obtém detalhes de uma subcategoria.
 
+**Response (200 OK):**
+```json
+{
+  "id": "uuid-sub",
+  "name": "Aluguel",
+  "category_id": "uuid-moradia"
+}
+```
+
 ### `PUT /sub-categories/{id}`
 
 Atualiza uma subcategoria.
@@ -154,6 +163,15 @@ Atualiza uma subcategoria.
 ```json
 {
   "name": "Aluguel Apartamento"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "uuid-sub",
+  "name": "Aluguel Apartamento",
+  "category_id": "uuid-moradia"
 }
 ```
 
