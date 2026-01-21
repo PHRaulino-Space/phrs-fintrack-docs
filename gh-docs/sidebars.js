@@ -56,7 +56,6 @@ const sidebars = {
         'api-reference/transactions',
         'api-reference/import-sessions',
         'api-reference/recurring-transactions',
-        'api-reference/reports',
       ],
     },
     {
