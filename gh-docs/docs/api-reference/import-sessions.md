@@ -397,7 +397,6 @@ PUT /staged-transactions/:id
 ```json
 {
   "type": "EXPENSE",
-  "status": "READY",
   "transaction_date": "2024-01-05",
   "amount": 55.00,
   "data": {
@@ -413,6 +412,7 @@ PUT /staged-transactions/:id
 - Os campos principais (`transaction_date`, `amount`) não podem ser nulos ou inválidos
 - O `type` deve respeitar as constantes válidas
 - O campo `data` (JSON) não passa por validação de schema
+- O campo `status` é ignorado se enviado, pois é calculado automaticamente pelo banco de dados
 :::
 
 **Response (200 OK):** Transação atualizada
@@ -441,11 +441,19 @@ PUT /staged-transactions/:id
 
 ### StagedTransactionStatus
 
+:::info Automação
+O status é calculado automaticamente por trigger no banco de dados.
+1. Se `processing_enrichment` for `true` -> `PROCESSING`
+2. Se todos os campos obrigatórios para o `type` estiverem presentes -> `READY`
+3. Caso contrário -> `PENDING`
+:::
+
 | Valor | Descrição |
 |-------|-----------|
-| `PENDING` | Faltam informações para salvar na base |
-| `READY` | Pronta para ser efetivada |
-| `PROCESSING` | Sendo processada pela IA |
+| `PENDING` | Faltam informações obrigatórias |
+| `READY` | Pronta para ser efetivada (possui todos os campos necessários) |
+| `PROCESSING` | Em enriquecimento automático |
+| `COMPLETED` | Processamento concluído (estado transitório) |
 
 ---
 
