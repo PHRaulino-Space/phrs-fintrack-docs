@@ -9,5 +9,9 @@
       "Bash(/usr/local/go/bin/go build:*)",
       "Bash(/opt/homebrew/bin/go build ./...)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "shadcn"
+  ],
+  "enableAllProjectMcpServers": true
 }
