@@ -47,6 +47,7 @@ const sidebars = {
       label: 'API Reference',
       items: [
         'api-reference/authentication',
+        'api-reference/api-keys',
         'api-reference/workspaces',
         'api-reference/accounts',
         'api-reference/cards',
