@@ -1,0 +1,842 @@
+
+Enum "account_type" {
+  "CHECKING"
+  "SAVINGS"
+  "WALLET"
+  "INVESTMENT"
+  "CRIPTO"
+  "CRIPTOWALLET"
+}
+
+Enum "category_type" {
+  "INCOME"
+  "EXPENSE"
+}
+
+Enum "index_type" {
+  "CDI"
+  "IPCA"
+  "SELIC"
+  "FIXED"
+}
+
+Enum "investment_type" {
+  "RENDA_FIXA"
+  "RENDA_VARIAVEL"
+  "TESOURO_DIRETO"
+  "FUNDO_INVESTIMENTO"
+}
+
+Enum "invoice_status" {
+  "OPEN"
+  "PAID"
+  "OVERDUE"
+}
+
+Enum "liquidity_type" {
+  "DAILY"
+  "MONTHLY"
+  "AT_MATURITY"
+}
+
+Enum "staged_transaction_status" {
+  "PROCESSING"
+  "COMPLETED"
+  "PENDING"
+  "READY"
+}
+
+Enum "staged_transaction_type" {
+  "INCOME"
+  "EXPENSE"
+  "TRANSFER"
+  "INVESTMENT_DEPOSIT"
+  "INVESTMENT_WITHDRAWAL"
+  "CARD_PAYMENT"
+  "CARD_EXPENSE"
+  "CARD_CHARGEBACK"
+}
+
+Enum "transaction_frequency" {
+  "DAILY"
+  "WEEKLY"
+  "BIWEEKLY"
+  "MONTHLY"
+  "BIMONTHLY"
+  "QUARTERLY"
+  "YEARLY"
+}
+
+Enum "transaction_status" {
+  "VALIDATING"
+  "PAID"
+  "PENDING"
+  "IGNORE"
+}
+
+Table "category_embeddings" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "description_text" varchar(255) [not null]
+  "description_vector" public.vector
+  "category_vector" public.vector
+  "workspace_id" uuid
+  "sub_category_vector" public.vector
+  "model" varchar(100)
+  "created_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "category_embeddings_pkey"]
+    description_text [unique, name: "uni_category_embeddings_description_text"]
+    description_text [type: btree, name: "idx_category_embeddings_description_text"]
+    workspace_id [type: btree, name: "idx_category_embeddings_workspace_id"]
+  }
+}
+
+Table "currencies" {
+  "code" varchar(3) [not null]
+  "name" varchar(50) [not null]
+  "symbol" varchar(5) [not null]
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    code [pk, name: "currencies_pkey"]
+  }
+}
+
+Table "users" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "name" varchar(100)
+  "email" varchar(255) [not null]
+  "password_hash" varchar(255)
+  "external_id" varchar(255)
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+  "role" varchar(20) [default: `'user'::charactervarying`]
+
+  Indexes {
+    email [unique, name: "uni_users_email"]
+    external_id [unique, name: "uni_users_external_id"]
+    id [pk, name: "users_pkey"]
+    external_id [type: btree, name: "idx_users_external_id"]
+  }
+}
+
+Table "workspaces" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "name" varchar(100) [not null]
+  "default_currency_code" varchar(3) [not null, default: `'BRL'::charactervarying`]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "workspaces_pkey"]
+  }
+}
+
+Table "accounts" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "workspace_id" uuid [not null]
+  "name" varchar(100) [not null]
+  "type" account_type [not null]
+  "initial_balance" numeric(15,2) [not null, default: 0]
+  "currency_code" varchar(3) [not null, default: `'BRL'::charactervarying`]
+  "is_active" bool [not null, default: true]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "accounts_pkey"]
+    (workspace_id, name) [type: btree, unique, name: "uq_accounts_workspace_name"]
+  }
+}
+
+Table "api_keys" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "user_id" uuid [not null]
+  "workspace_id" uuid [not null]
+  "name" varchar(100) [not null]
+  "key_hash" varchar(255) [not null]
+  "key_prefix" varchar(20) [not null]
+  "scopes" _text [default: `'{}'::text[]`]
+  "last_used_at" timestamptz
+  "expires_at" timestamptz
+  "revoked_at" timestamptz
+  "created_at" timestamptz
+  "updated_at" timestamptz
+
+  Indexes {
+    id [pk, name: "api_keys_pkey"]
+    key_prefix [type: btree, name: "idx_api_keys_key_prefix"]
+    user_id [type: btree, name: "idx_api_keys_user_id"]
+    workspace_id [type: btree, name: "idx_api_keys_workspace_id"]
+  }
+}
+
+Table "cards" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "name" varchar(100) [not null]
+  "credit_limit" numeric(15,2) [not null]
+  "workspace_id" uuid [not null]
+  "closing_date" int8 [not null]
+  "due_date" int8 [not null]
+  "is_active" bool [not null, default: true]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `((closing_date >= 1) AND (closing_date <= 31))` [name: 'chk_cards_closing_date']
+    `(credit_limit >= (0)::numeric)` [name: 'chk_cards_credit_limit']
+    `(((due_date >= 1) AND (due_date <= 31)) AND (due_date <> closing_date))` [name: 'chk_cards_due_date']
+  }
+
+  Indexes {
+    id [pk, name: "cards_pkey"]
+    (name, workspace_id) [type: btree, unique, name: "uq_cards_workspace_name"]
+  }
+}
+
+Table "categories" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "workspace_id" uuid [not null]
+  "name" varchar(100) [not null]
+  "type" category_type [not null]
+  "color" varchar(7) [not null]
+  "icon" varchar(100) [not null]
+  "is_active" bool [not null, default: true]
+  "vector" public.vector
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `((color)::text ~ '^#[0-9A-Fa-f]{6}$'::text)` [name: 'chk_categories_color']
+  }
+
+  Indexes {
+    id [pk, name: "categories_pkey"]
+    (workspace_id, name, type) [type: btree, unique, name: "uq_categories_workspace_name_type"]
+  }
+}
+
+Table "exchange_rates" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "from_currency" varchar(3) [not null]
+  "to_currency" varchar(3) [not null]
+  "rate" numeric(15,8) [not null]
+  "rate_date" date [not null]
+  "source" varchar(50)
+  "created_at" timestamptz [default: `now()`]
+
+  Checks {
+    `((from_currency)::text <> (to_currency)::text)` [name: 'chk_exchange_rates_from_currency']
+    `(rate > (0)::numeric)` [name: 'chk_exchange_rates_rate']
+  }
+
+  Indexes {
+    id [pk, name: "exchange_rates_pkey"]
+    (from_currency, to_currency, rate_date) [type: btree, unique, name: "uq_exchange_rates_date_pair"]
+  }
+}
+
+Table "import_sessions" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "workspace_id" uuid [not null]
+  "user_id" uuid [not null]
+  "description" varchar(255)
+  "account_id" uuid
+  "card_id" uuid
+  "billing_month" varchar(7)
+  "target_value" numeric(15,2)
+  "created_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "import_sessions_pkey"]
+  }
+}
+
+Table "investments" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "asset_name" varchar(100) [not null]
+  "type" investment_type [not null]
+  "account_id" uuid [not null]
+  "index_type" index_type
+  "index_value" varchar(50)
+  "liquidity" liquidity_type [not null]
+  "is_rescued" bool [not null, default: false]
+  "validity" date
+  "current_value" numeric(15,2)
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "investments_pkey"]
+  }
+}
+
+Table "invoices" {
+  "card_id" uuid [not null]
+  "billing_month" varchar(7) [not null]
+  "status" invoice_status [not null, default: `'OPEN'::invoice_status`]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(((billing_month)::text ~ '^[0-9]{4}-[0-9]{2}$'::text) AND ((("substring"((billing_month)::text, 6, 2))::integer >= 1) AND (("substring"((billing_month)::text, 6, 2))::integer <= 12)))` [name: 'chk_invoices_billing_month']
+  }
+
+  Indexes {
+    (card_id, billing_month) [pk, name: "invoices_pkey"]
+  }
+}
+
+Table "recurring_transfers" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "description" text
+  "amount" numeric(15,2) [not null]
+  "source_account_id" uuid [not null]
+  "destination_account_id" uuid [not null]
+  "frequency" transaction_frequency [not null]
+  "start_date" date [not null]
+  "end_date" date
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_recurring_transfers_amount']
+    `(source_account_id <> destination_account_id)` [name: 'chk_recurring_transfers_destination_account_id']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_transfers_end_date']
+    `(source_account_id <> destination_account_id)` [name: 'chk_recurring_transfers_source_account_id']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_transfers_start_date']
+  }
+
+  Indexes {
+    id [pk, name: "recurring_transfers_pkey"]
+  }
+}
+
+Table "staged_transactions" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "session_id" uuid [not null]
+  "type" staged_transaction_type [not null]
+  "status" staged_transaction_status [not null, default: `'PENDING'::staged_transaction_status`]
+  "transaction_date" date [not null]
+  "amount" numeric(15,2) [not null]
+  "data" jsonb
+  "line_number" int4
+  "processing_enrichment" bool [default: false]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+  "description" text [not null]
+
+  Indexes {
+    id [pk, name: "staged_transactions_pkey"]
+  }
+}
+
+Table "sub_categories" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "workspace_id" uuid [not null]
+  "name" varchar(100) [not null]
+  "category_id" uuid [not null]
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+  "vector" public.vector
+
+  Indexes {
+    id [pk, name: "sub_categories_pkey"]
+  }
+}
+
+Table "tags" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "workspace_id" uuid [not null]
+  "name" varchar(100) [not null]
+  "color" varchar(7)
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "tags_pkey"]
+  }
+}
+
+Table "transfers" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "recurring_transfer_id" uuid
+  "transaction_date" date [not null]
+  "amount" numeric(15,2) [not null]
+  "source_account_id" uuid [not null]
+  "destination_account_id" uuid [not null]
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "description" text
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_transfers_amount']
+    `(source_account_id <> destination_account_id)` [name: 'chk_transfers_destination_account_id']
+    `(source_account_id <> destination_account_id)` [name: 'chk_transfers_source_account_id']
+  }
+
+  Indexes {
+    id [pk, name: "transfers_pkey"]
+  }
+}
+
+Table "workspace_invites" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "workspace_id" uuid [not null]
+  "email" varchar(255) [not null]
+  "token" varchar(255) [not null]
+  "expires_at" timestamptz [not null]
+  "created_at" timestamptz [default: `now()`]
+
+  Indexes {
+    token [unique, name: "uni_workspace_invites_token"]
+    id [pk, name: "workspace_invites_pkey"]
+    token [type: btree, name: "idx_workspace_invites_token"]
+  }
+}
+
+Table "workspace_members" {
+  "workspace_id" uuid [not null]
+  "user_id" uuid [not null]
+  "role" varchar(50) [not null, default: `'member'::charactervarying`]
+  "created_at" timestamptz [default: `now()`]
+
+  Indexes {
+    (workspace_id, user_id) [pk, name: "workspace_members_pkey"]
+  }
+}
+
+Table "card_chargebacks" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "description" text [not null]
+  "amount" numeric(15,2) [not null]
+  "card_id" uuid [not null]
+  "billing_month" varchar(7) [not null]
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_card_chargebacks_amount']
+    `((billing_month)::text ~ '^[0-9]{4}-[0-9]{2}$'::text)` [name: 'chk_card_chargebacks_billing_month']
+  }
+
+  Indexes {
+    id [pk, name: "card_chargebacks_pkey"]
+  }
+}
+
+Table "card_payments" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "amount" numeric(15,2) [not null]
+  "account_id" uuid [not null]
+  "card_id" uuid [not null]
+  "billing_month" varchar(7) [not null]
+  "is_final_payment" bool [not null, default: false]
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_card_payments_amount']
+    `((billing_month)::text ~ '^[0-9]{4}-[0-9]{2}$'::text)` [name: 'chk_card_payments_billing_month']
+  }
+
+  Indexes {
+    id [pk, name: "card_payments_pkey"]
+  }
+}
+
+Table "investment_deposits" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "description" text
+  "amount" numeric(15,2) [not null]
+  "recurring_transaction_id" uuid
+  "investment_id" uuid [not null]
+  "account_id" uuid [not null]
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "investment_deposits_pkey"]
+  }
+}
+
+Table "investment_withdrawals" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "description" text
+  "amount" numeric(15,2) [not null]
+  "recurring_transaction_id" uuid
+  "investment_id" uuid [not null]
+  "account_id" uuid [not null]
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Indexes {
+    id [pk, name: "investment_withdrawals_pkey"]
+  }
+}
+
+Table "investments_tags" {
+  "investment_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (investment_id, tag_id) [pk, name: "investments_tags_pkey"]
+  }
+}
+
+Table "recurring_card_transactions" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "description" varchar [not null]
+  "amount" numeric(15,2) [not null]
+  "card_id" uuid [not null]
+  "category_id" uuid [not null]
+  "sub_category_id" uuid
+  "frequency" transaction_frequency
+  "start_date" date [not null]
+  "end_date" date
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_recurring_card_transactions_amount']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_card_transactions_end_date']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_card_transactions_start_date']
+  }
+
+  Indexes {
+    id [pk, name: "recurring_card_transactions_pkey"]
+  }
+}
+
+Table "recurring_card_transactions_tags" {
+  "recurring_card_transaction_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (recurring_card_transaction_id, tag_id) [pk, name: "recurring_card_transactions_tags_pkey"]
+  }
+}
+
+Table "recurring_expenses" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "description" varchar(200) [not null]
+  "amount" numeric(15,2) [not null]
+  "account_id" uuid [not null]
+  "category_id" uuid [not null]
+  "sub_category_id" uuid
+  "frequency" transaction_frequency [not null]
+  "start_date" date [not null]
+  "end_date" date
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_recurring_expenses_amount']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_expenses_end_date']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_expenses_start_date']
+  }
+
+  Indexes {
+    id [pk, name: "recurring_expenses_pkey"]
+  }
+}
+
+Table "recurring_expenses_tags" {
+  "recurring_expense_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (recurring_expense_id, tag_id) [pk, name: "recurring_expenses_tags_pkey"]
+  }
+}
+
+Table "recurring_incomes" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "description" varchar(200) [not null]
+  "amount" numeric(15,2) [not null]
+  "account_id" uuid [not null]
+  "category_id" uuid [not null]
+  "sub_category_id" uuid
+  "frequency" transaction_frequency [not null]
+  "start_date" date [not null]
+  "end_date" date
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_recurring_incomes_amount']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_incomes_end_date']
+    `((end_date IS NULL) OR (end_date >= start_date))` [name: 'chk_recurring_incomes_start_date']
+  }
+
+  Indexes {
+    id [pk, name: "recurring_incomes_pkey"]
+  }
+}
+
+Table "recurring_incomes_tags" {
+  "recurring_income_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (recurring_income_id, tag_id) [pk, name: "recurring_incomes_tags_pkey"]
+  }
+}
+
+Table "card_expenses" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "description" text [not null]
+  "amount" numeric(15,2) [not null]
+  "sub_category_id" uuid
+  "category_id" uuid [not null]
+  "card_id" uuid [not null]
+  "billing_month" varchar(7) [not null]
+  "recurring_card_transaction_id" uuid
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_card_expenses_amount']
+    `((billing_month)::text ~ '^[0-9]{4}-[0-9]{2}$'::text)` [name: 'chk_card_expenses_billing_month']
+  }
+
+  Indexes {
+    id [pk, name: "card_expenses_pkey"]
+  }
+}
+
+Table "card_expenses_tags" {
+  "card_expense_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (card_expense_id, tag_id) [pk, name: "card_expenses_tags_pkey"]
+  }
+}
+
+Table "expenses" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "description" text [not null]
+  "amount" numeric(15,2) [not null]
+  "account_id" uuid [not null]
+  "category_id" uuid [not null]
+  "sub_category_id" uuid
+  "recurring_expense_id" uuid
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_expenses_amount']
+  }
+
+  Indexes {
+    id [pk, name: "expenses_pkey"]
+  }
+}
+
+Table "expenses_tags" {
+  "expense_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (expense_id, tag_id) [pk, name: "expenses_tags_pkey"]
+  }
+}
+
+Table "incomes" {
+  "id" uuid [not null, default: `uuid_generate_v4()`]
+  "transaction_date" date [not null]
+  "description" text [not null]
+  "amount" numeric(15,2) [not null]
+  "account_id" uuid [not null]
+  "category_id" uuid [not null]
+  "sub_category_id" uuid
+  "recurring_income_id" uuid
+  "transaction_status" transaction_status [not null, default: `'VALIDATING'::transaction_status`]
+  "deleted_at" timestamptz
+  "created_at" timestamptz [default: `now()`]
+  "updated_at" timestamptz [default: `now()`]
+
+  Checks {
+    `(amount > (0)::numeric)` [name: 'chk_incomes_amount']
+  }
+
+  Indexes {
+    id [pk, name: "incomes_pkey"]
+  }
+}
+
+Table "incomes_tags" {
+  "income_id" uuid [not null]
+  "tag_id" uuid [not null]
+
+  Indexes {
+    (income_id, tag_id) [pk, name: "incomes_tags_pkey"]
+  }
+}
+
+Ref "fk_currencies_accounts":"currencies"."code" < "accounts"."currency_code"
+
+Ref "fk_workspaces_accounts":"workspaces"."id" < "accounts"."workspace_id"
+
+Ref "fk_api_keys_user":"users"."id" < "api_keys"."user_id"
+
+Ref "fk_api_keys_workspace":"workspaces"."id" < "api_keys"."workspace_id"
+
+Ref "fk_workspaces_cards":"workspaces"."id" < "cards"."workspace_id"
+
+Ref "fk_workspaces_categories":"workspaces"."id" < "categories"."workspace_id"
+
+Ref "fk_exchange_rates_from_currency_rel":"currencies"."code" < "exchange_rates"."from_currency"
+
+Ref "fk_exchange_rates_to_currency_rel":"currencies"."code" < "exchange_rates"."to_currency"
+
+Ref "fk_accounts_import_sessions":"accounts"."id" < "import_sessions"."account_id"
+
+Ref "fk_cards_import_sessions":"cards"."id" < "import_sessions"."card_id"
+
+Ref "fk_users_import_sessions":"users"."id" < "import_sessions"."user_id"
+
+Ref "fk_workspaces_import_sessions":"workspaces"."id" < "import_sessions"."workspace_id"
+
+Ref "fk_accounts_investments":"accounts"."id" < "investments"."account_id"
+
+Ref "fk_cards_invoices":"cards"."id" < "invoices"."card_id"
+
+Ref "fk_accounts_recurring_transfers_as_destination":"accounts"."id" < "recurring_transfers"."destination_account_id"
+
+Ref "fk_accounts_recurring_transfers_as_source":"accounts"."id" < "recurring_transfers"."source_account_id"
+
+Ref "fk_import_sessions_staged_transactions":"import_sessions"."id" < "staged_transactions"."session_id"
+
+Ref "fk_categories_sub_categories":"categories"."id" < "sub_categories"."category_id"
+
+Ref "fk_workspaces_sub_categories":"workspaces"."id" < "sub_categories"."workspace_id"
+
+Ref "fk_workspaces_tags":"workspaces"."id" < "tags"."workspace_id"
+
+Ref "fk_accounts_transfers_as_destination":"accounts"."id" < "transfers"."destination_account_id"
+
+Ref "fk_accounts_transfers_as_source":"accounts"."id" < "transfers"."source_account_id"
+
+Ref "fk_recurring_transfers_transfers":"recurring_transfers"."id" < "transfers"."recurring_transfer_id"
+
+Ref "fk_workspaces_invites":"workspaces"."id" < "workspace_invites"."workspace_id"
+
+Ref "fk_users_workspaces":"users"."id" < "workspace_members"."user_id"
+
+Ref "fk_workspaces_members":"workspaces"."id" < "workspace_members"."workspace_id"
+
+Ref "fk_invoices_card_chargebacks":"invoices".("card_id", "billing_month") < "card_chargebacks".("card_id", "billing_month")
+
+Ref "fk_accounts_card_payments":"accounts"."id" < "card_payments"."account_id"
+
+Ref "fk_invoices_card_payments":"invoices".("card_id", "billing_month") < "card_payments".("card_id", "billing_month")
+
+Ref "fk_accounts_investment_deposits":"accounts"."id" < "investment_deposits"."account_id"
+
+Ref "fk_investments_investment_deposits":"investments"."id" < "investment_deposits"."investment_id"
+
+Ref "fk_accounts_investment_withdrawals":"accounts"."id" < "investment_withdrawals"."account_id"
+
+Ref "fk_investments_investment_withdrawals":"investments"."id" < "investment_withdrawals"."investment_id"
+
+Ref "fk_investments_tags":"investments"."id" < "investments_tags"."investment_id"
+
+Ref "fk_investments_tags_tag":"tags"."id" < "investments_tags"."tag_id"
+
+Ref "fk_cards_recurring_card_transactions":"cards"."id" < "recurring_card_transactions"."card_id"
+
+Ref "fk_categories_recurring_card_transactions":"categories"."id" < "recurring_card_transactions"."category_id"
+
+Ref "fk_sub_categories_recurring_card_transactions":"sub_categories"."id" < "recurring_card_transactions"."sub_category_id"
+
+Ref "fk_recurring_card_transactions_tags":"recurring_card_transactions"."id" < "recurring_card_transactions_tags"."recurring_card_transaction_id"
+
+Ref "fk_recurring_card_transactions_tags_tag":"tags"."id" < "recurring_card_transactions_tags"."tag_id"
+
+Ref "fk_accounts_recurring_expenses":"accounts"."id" < "recurring_expenses"."account_id"
+
+Ref "fk_categories_recurring_expenses":"categories"."id" < "recurring_expenses"."category_id"
+
+Ref "fk_sub_categories_recurring_expenses":"sub_categories"."id" < "recurring_expenses"."sub_category_id"
+
+Ref "fk_recurring_expenses_tags":"recurring_expenses"."id" < "recurring_expenses_tags"."recurring_expense_id"
+
+Ref "fk_recurring_expenses_tags_tag":"tags"."id" < "recurring_expenses_tags"."tag_id"
+
+Ref "fk_accounts_recurring_incomes":"accounts"."id" < "recurring_incomes"."account_id"
+
+Ref "fk_categories_recurring_incomes":"categories"."id" < "recurring_incomes"."category_id"
+
+Ref "fk_sub_categories_recurring_incomes":"sub_categories"."id" < "recurring_incomes"."sub_category_id"
+
+Ref "fk_recurring_incomes_tags":"recurring_incomes"."id" < "recurring_incomes_tags"."recurring_income_id"
+
+Ref "fk_recurring_incomes_tags_tag":"tags"."id" < "recurring_incomes_tags"."tag_id"
+
+Ref "fk_categories_card_expenses":"categories"."id" < "card_expenses"."category_id"
+
+Ref "fk_invoices_card_expenses":"invoices".("card_id", "billing_month") < "card_expenses".("card_id", "billing_month")
+
+Ref "fk_recurring_card_transactions_card_expenses":"recurring_card_transactions"."id" < "card_expenses"."recurring_card_transaction_id"
+
+Ref "fk_sub_categories_card_expenses":"sub_categories"."id" < "card_expenses"."sub_category_id"
+
+Ref "fk_card_expenses_tags":"card_expenses"."id" < "card_expenses_tags"."card_expense_id"
+
+Ref "fk_card_expenses_tags_tag":"tags"."id" < "card_expenses_tags"."tag_id"
+
+Ref "fk_accounts_expenses":"accounts"."id" < "expenses"."account_id"
+
+Ref "fk_categories_expenses":"categories"."id" < "expenses"."category_id"
+
+Ref "fk_recurring_expenses_expenses":"recurring_expenses"."id" < "expenses"."recurring_expense_id"
+
+Ref "fk_sub_categories_expenses":"sub_categories"."id" < "expenses"."sub_category_id"
+
+Ref "fk_expenses_tags":"expenses"."id" < "expenses_tags"."expense_id"
+
+Ref "fk_tags_expenses_tags":"tags"."id" < "expenses_tags"."tag_id"
+
+Ref "fk_accounts_incomes":"accounts"."id" < "incomes"."account_id"
+
+Ref "fk_categories_incomes":"categories"."id" < "incomes"."category_id"
+
+Ref "fk_recurring_incomes_incomes":"recurring_incomes"."id" < "incomes"."recurring_income_id"
+
+Ref "fk_sub_categories_incomes":"sub_categories"."id" < "incomes"."sub_category_id"
+
+Ref "fk_incomes_tags":"incomes"."id" < "incomes_tags"."income_id"
+
+Ref "fk_tags_incomes_tags":"tags"."id" < "incomes_tags"."tag_id"
