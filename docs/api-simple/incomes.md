@@ -1,9 +1,6 @@
 ---
 title: Incomes
-description: "Endpoints de receitas"
 ---
-Endpoints de receitas
-
 ## DELETE `/incomes/{id}`
 
 **Resumo:** Delete an income

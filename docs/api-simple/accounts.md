@@ -1,9 +1,6 @@
 ---
 title: Accounts
-description: "Endpoints de contas"
 ---
-Endpoints de contas
-
 ## DELETE `/accounts/{id}`
 
 **Resumo:** Delete an account

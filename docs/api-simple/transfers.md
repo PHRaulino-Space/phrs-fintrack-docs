@@ -1,9 +1,6 @@
 ---
 title: Transfers
-description: "Endpoints de transferências"
 ---
-Endpoints de transferências
-
 ## DELETE `/transfers/{id}`
 
 **Resumo:** Delete a transfer

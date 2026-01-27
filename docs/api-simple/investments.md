@@ -1,9 +1,6 @@
 ---
 title: Investments
-description: "Endpoints de investimentos"
 ---
-Endpoints de investimentos
-
 ## DELETE `/investments/{id}`
 
 **Resumo:** Delete investment

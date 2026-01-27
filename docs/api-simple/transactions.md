@@ -1,9 +1,6 @@
 ---
 title: Transactions
-description: "Endpoints de transações"
 ---
-Endpoints de transações
-
 ## POST `/card-chargebacks`
 
 **Resumo:** Create card chargeback

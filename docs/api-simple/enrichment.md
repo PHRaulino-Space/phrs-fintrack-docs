@@ -1,9 +1,6 @@
 ---
 title: Enrichment
-description: "Endpoints de enrichment"
 ---
-Endpoints de enrichment
-
 ## POST `/enrichment/transactions`
 
 **Resumo:** Enrich a batch of transactions

@@ -1,9 +1,6 @@
 ---
 title: Cards
-description: "Endpoints de cartões"
 ---
-Endpoints de cartões
-
 ## DELETE `/cards/{id}`
 
 **Resumo:** Delete a card

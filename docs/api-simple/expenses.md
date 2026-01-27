@@ -1,9 +1,6 @@
 ---
 title: Expenses
-description: "Endpoints de despesas"
 ---
-Endpoints de despesas
-
 ## DELETE `/expenses/{id}`
 
 **Resumo:** Delete an expense

@@ -1,9 +1,6 @@
 ---
 title: Recurring
-description: "Endpoints de transações recorrentes"
 ---
-Endpoints de transações recorrentes
-
 ## GET `/recurring`
 
 **Resumo:** List recurring transactions

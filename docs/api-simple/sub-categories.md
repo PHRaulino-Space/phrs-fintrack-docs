@@ -1,9 +1,6 @@
 ---
 title: Sub Categories
-description: "Endpoints de subcategorias"
 ---
-Endpoints de subcategorias
-
 ## DELETE `/sub-categories/{id}`
 
 **Resumo:** Delete sub-category

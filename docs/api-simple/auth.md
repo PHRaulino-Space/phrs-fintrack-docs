@@ -1,9 +1,6 @@
 ---
 title: Auth
-description: "Endpoints de autenticação"
 ---
-Endpoints de autenticação
-
 ## GET `/auth/{provider}/callback`
 
 **Resumo:** OAuth callback

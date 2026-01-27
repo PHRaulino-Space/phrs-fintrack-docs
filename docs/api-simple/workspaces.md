@@ -1,9 +1,6 @@
 ---
 title: Workspaces
-description: "Endpoints de workspaces"
 ---
-Endpoints de workspaces
-
 ## DELETE `/workspaces/{id}`
 
 **Resumo:** Delete a workspace

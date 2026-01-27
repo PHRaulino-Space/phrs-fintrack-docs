@@ -1,9 +1,6 @@
 ---
 title: Api Keys
-description: "Endpoints de chaves de API"
 ---
-Endpoints de chaves de API
-
 ## DELETE `/api-keys/{id}`
 
 **Resumo:** Revoke API Key

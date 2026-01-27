@@ -1,9 +1,6 @@
 ---
 title: Tags
-description: "Endpoints de tags"
 ---
-Endpoints de tags
-
 ## DELETE `/tags/{id}`
 
 **Resumo:** Delete tag

@@ -1,9 +1,6 @@
 ---
 title: Staged Transactions
-description: "Endpoints de transações em staging"
 ---
-Endpoints de transações em staging
-
 ## DELETE `/staged-transactions/{id}`
 
 **Resumo:** Delete staged transaction

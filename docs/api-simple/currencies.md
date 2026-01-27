@@ -1,9 +1,6 @@
 ---
 title: Currencies
-description: "Endpoints de moedas"
 ---
-Endpoints de moedas
-
 ## GET `/currencies`
 
 **Resumo:** List all currencies

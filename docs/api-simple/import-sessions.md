@@ -1,9 +1,6 @@
 ---
 title: Import Sessions
-description: "Endpoints de importação"
 ---
-Endpoints de importação
-
 ## DELETE `/import-sessions/{id}`
 
 **Resumo:** Delete import session

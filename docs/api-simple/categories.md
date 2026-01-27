@@ -1,9 +1,6 @@
 ---
 title: Categories
-description: "Endpoints de categorias"
 ---
-Endpoints de categorias
-
 ## DELETE `/categories/{id}`
 
 **Resumo:** Delete category
