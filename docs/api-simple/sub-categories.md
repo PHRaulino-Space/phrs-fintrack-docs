@@ -1,7 +1,7 @@
 ---
 title: Sub Categories
 ---
-## DELETE `/sub-categories/{id}`
+## DELETE `/categories/{category_id}/sub-categories/{id}`
 
 **Resumo:** Delete sub-category
 
@@ -16,6 +16,7 @@ Delete a sub-category
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Category ID |
 | id | path | string | sim | Sub-category ID |
 
 ### Respostas
@@ -27,11 +28,11 @@ Delete a sub-category
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## GET `/sub-categories`
+## GET `/categories/{category_id}/sub-categories`
 
 **Resumo:** List sub-categories
 
-List all sub-categories for a given workspace
+List all sub-categories for a given category
 
 **Consumes:** application/json
 
@@ -42,6 +43,7 @@ List all sub-categories for a given workspace
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Category ID |
 
 ### Respostas
 
@@ -51,7 +53,7 @@ List all sub-categories for a given workspace
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## GET `/sub-categories/{id}`
+## GET `/categories/{category_id}/sub-categories/{id}`
 
 **Resumo:** Get a single sub-category
 
@@ -66,6 +68,7 @@ Get a single sub-category by its ID
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Category ID |
 | id | path | string | sim | Sub-category ID |
 
 ### Respostas
@@ -76,7 +79,7 @@ Get a single sub-category by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## PATCH `/sub-categories/{id}`
+## PATCH `/categories/{category_id}/sub-categories/{id}`
 
 **Resumo:** Update sub-category
 
@@ -91,6 +94,7 @@ Update a sub-category
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Category ID |
 | id | path | string | sim | Sub-category ID |
 | subCategory | body | v1.updateSubCategoryRequest | sim | Sub-category update object |
 
@@ -103,7 +107,7 @@ Update a sub-category
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## POST `/sub-categories`
+## POST `/categories/{category_id}/sub-categories`
 
 **Resumo:** Create a new sub-category
 
@@ -116,6 +120,7 @@ Update a sub-category
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Category ID |
 | subCategory | body | v1.createSubCategoryRequest | sim | Sub-category object |
 
 ### Respostas
@@ -508,7 +513,6 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| category_id | string | sim |  |
 | is_active | boolean | não |  |
 | name | string | sim |  |
 
@@ -516,6 +520,5 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| category_id | string | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
