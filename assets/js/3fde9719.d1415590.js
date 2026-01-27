@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkgh_docs=globalThis.webpackChunkgh_docs||[]).push([[8835],{6454(o){o.exports=JSON.parse('{"metadata":{"permalink":"/phrs-fintrack-docs/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
