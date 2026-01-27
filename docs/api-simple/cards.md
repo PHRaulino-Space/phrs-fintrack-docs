@@ -27,6 +27,33 @@ Delete a card and all its related data (Cascade)
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## DELETE `/cards/{id}/invoices/{billing_month}`
+
+**Resumo:** Delete an invoice
+
+Removes the invoice identified by billing_month for the given card
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## GET `/cards`
 
 **Resumo:** List cards
@@ -76,6 +103,59 @@ Get a single card by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## GET `/cards/{id}/invoices`
+
+**Resumo:** List invoices for a card
+
+Returns all invoices associated with the specified card within the current workspace
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;entity.Invoice&gt; |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## GET `/cards/{id}/invoices/{billing_month}`
+
+**Resumo:** Get a specific invoice
+
+Returns a single invoice identified by billing_month for the provided card
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.Invoice |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## PATCH `/cards/{id}`
 
 **Resumo:** Update an existing card
@@ -103,6 +183,34 @@ Update an existing card by its ID
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## PATCH `/cards/{id}/invoices/{billing_month}`
+
+**Resumo:** Update invoice status
+
+Update the status of an existing invoice for the specified card and billing month
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| status | body | v1.updateInvoiceRequest | sim | Status payload |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.Invoice |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## POST `/cards`
 
 **Resumo:** Create a new card
@@ -123,6 +231,32 @@ Update an existing card by its ID
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 201 | Created | entity.Card |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## POST `/cards/{id}/invoices`
+
+**Resumo:** Create an invoice for a card
+
+Create a new invoice for the specified card and billing month
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| invoice | body | v1.createInvoiceRequest | sim | Invoice object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.Invoice |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -514,6 +648,13 @@ Sem propriedades.
 | is_active | boolean | não |  |
 | name | string | sim |  |
 
+#### v1.createInvoiceRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| billing_month | string | sim |  |
+| status | object | não |  |
+
 #### v1.updateCardRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -523,3 +664,9 @@ Sem propriedades.
 | due_date | integer | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
+
+#### v1.updateInvoiceRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| status | object | sim |  |
