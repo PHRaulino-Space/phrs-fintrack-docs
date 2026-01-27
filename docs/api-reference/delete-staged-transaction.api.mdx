@@ -1,0 +1,72 @@
+---
+id: delete-staged-transaction
+title: "Delete staged transaction"
+description: "Delete a staged transaction by ID"
+sidebar_label: "Delete staged transaction"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9U8GK2zAQ/RUxpxbUtbdsYdEtbVIIlBK229OSw0SaJNq1JUWSlwajfy8Tm252HUpPPdnWPM08v3mvB0NJRxuy9Q4UzKmhTAJFyrgjI3JEl1BzVWyOYjkHCRl3CdQDDJAPZ5AEawkBI7aUKTKof9P//qzfqZnDlkCBNSDBMiJg3oOESIfORjKgcuxIQtJ7ahFUD/kY+EbK0bodlLJmcAreJUpc/1jf8OP13O9efPEuk8tQJNzU9RTyGY24o0NHKYMEPaJVDxhCYzUyrHpMjO2ndPzmkTRfRGMsQ7FZRR8oZjvQeku7lCLh0yUiS5cpOmzED4rPFMUiRh//E6UioaW89wYUmJMXQA4rUVBdWHjVW1NAQjpRHTbexYbRVeM1Nnufsrqtb+sKg62er4H3Zd3WT/97tlqKrY+iRYc763YiUEzMWmytQ6cpXbH7bG6Y9VfrckT9JGar5SgOahanSGAqQ8/rq5oXHnzKLZ5kGg03Gn1qc5CvafUvuv9bOgZRM/3KVWjQOp5/kqQfhbycHAnKGs4PK8agvt9gop+xKYWPDx3FI6iHtYRnjBY3rALnyyZ+N6C22CT6C/t3d2Om3otJDC+yHg/RHYGHNh1/gYQnOg6RLesiYU9oKJ64DIWZ1hTy2ZWJW9kDf2w2X3xb3C+glN8le49U
+sidebar_class_name: "delete api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete staged transaction"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/staged-transactions/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete a staged transaction by ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Transaction ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

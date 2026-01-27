@@ -1,0 +1,72 @@
+---
+id: update-an-existing-account
+title: "Update an existing account"
+description: "Update an existing account by its ID"
+sidebar_label: "Update an existing account"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVluP0zoQ/ivRPB0kl5YjjoTyVkqBCE6ptoVFQlU1dWZbs4kdbKe7VZT/jibOdnvJIjgH7RN5STIez3z2N7cKUnLSqsIroyGGj0WKniLUEd0q55VeRyilKbWPVrtIeRclr0CAx7WD+Au0aw4WAgq0mJMnyyvVid1LY69dgZLCfo05QQyfe3t5r5Er1t0QpmRBgKVvpbKUQuxtSQKc3FCOEFfgdwXvd94qvYa6Fqf+hi3oQ28qvfNQoN/8kv1FUCbnX5p0xxrSaE/a8ycWRaYksuf+V8fuq3NTZvWVpAcBhTUFWa/INWZKa0nL3VKalDo8M2DlFWbLFWao5aGOLvMV2UbHLVF6tT1cXRmTEWpeDufvsB0EpwsCSJc50zt6Ox69SyZvQMBs+CmZvJmBgMvh+/fjOQhIJp/Gs/m/4wn/jC6S6fzD/qNVWgi47bG13hYtw2iipiVnvitotCF5HZweSGe4VXrtjoWXmGXkj2WJ3pLzORNxJB9xJJguWWtlUfMjHoiaQFZ0ZWxUNglxFiw1C1xhtAs8/j0Y8OvY3Id3IH5boFhCT+kSfSeTPxFH6Z/wesTwEhAi50HGbu4q37KTmTY+n3fF1UtMo4tQjv5PgGGaKlbFbHoUah1IGMjzcyAT46PXptTpo8H4p+s+Eu3JasyiGdkt2WhsrbGPBKkWkJPfmDS0Fcl9pWkvMfTvumO/UmkNAlwDL7TH0mas0s+MxGxjnI9fDF4M+lio/vYZcMNhmBf3TWd8i3mRUUfTuE+ss2QeHCVv6HJtN9xvag+1T8amKFyZ82seTpOmJOaocc2TQUHW8SVFV0qzP/eUzSnPKOG10t6ivI6G06TlAiVzUQvgWwg2nz0dsMPCOJ9jw0oL7+FBBE6q9kEv/unxJRzZ063vFxmqpow1jFQteQejjYBYpVxqmCVeqaoVOvpos7pm8beS7A7iLwsBW7QKV3x8HoCU4+8U4ivMHP0A9V8XbW95Eh3NLZ0wWyHqHbDDrOQ/EHBNuzDj1Fx82hnqP+M4mdc6kQSPZzPcHhNPZUFnFFz0uE4eaJwl5f2OoZRU+B/qLg4ybzqcj96CgFU7neUhMSzecOfGm3BFpjlzk8mNrIIM9brENesGo/x8B5LKymk=
+sidebar_class_name: "patch api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Update an existing account"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"patch"}
+  path={"/accounts/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Update an existing account by its ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Account ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","properties":{"currency_code":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]}}}}},"description":"Account object for update","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"created_at":{"type":"string"},"currency_code":{"type":"string"},"id":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]},"updated_at":{"type":"string"},"workspace_id":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"404":{"description":"Not Found","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

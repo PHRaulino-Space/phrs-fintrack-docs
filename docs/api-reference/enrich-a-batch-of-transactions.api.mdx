@@ -1,0 +1,72 @@
+---
+id: enrich-a-batch-of-transactions
+title: "Enrich a batch of transactions"
+description: "Enrich a batch of transactions with category information"
+sidebar_label: "Enrich a batch of transactions"
+hide_title: true
+hide_table_of_contents: true
+api: eJzFVe9r2zAQ/VfEfdpAadKxQfG3tvMgjLWh7VihhHKRL7FaW1IlJW0w/t/H2W6aX2thY5s+3j1J7947nSrIKCivXdTWQAKp8VrlAsUEo8qFnYro0QRUnA/iUcdcKIw0s34ptJlaX2KzVULEWYDkBqg5oiQTYSzBoceSInnOVVu3/bD+PjhUJIafQYLBkiCB694q3mvimrE5YUYeJHh6mGtPGSTRz0lCUDmVCEkFcel4f4hemxnU9bgFU4gnNlsyQlkTmVhSATpXaNWQ798FplPtHoXe45IZRCrDWtxO7khFkOC8deSjpia7Ud0OH9kFthMSyMxLlm54dnr+LQUJ6fUoPbtMWcCnHmd7C/QsT6PwaWfA1dLR0ChbEsiNYPrkyASCcd0suSX71bql0YrWsR1paw4EZ01oq/swGOwUCedfQf5tWZ8b7lZne2Vd5dsG2oN4y5gwn9y+dcsG5pc3/SeLawkf99lzgpm4aN/Ab/i08gOzTDMUi9GGM9svriHyaR+RoYnkDRbikvyCvEi9t/4fUaollBRzm0ECzjZKOIw5JNB/GVb99UEHEkLDs51ac18wuF9YhUVuQ0yOBkeDPjrdXxwCzxnme/Eya9InLF1Be0beqiE6nl0/8Bk8TneFOx4NxdR6UaLBmTYz4cgHLltMtUGjKBzwaTrydfBFm+hR3Yvj0bBTFxWrW0vgctozDw8G3KusRYmNzt3ofX38w85DWrn3Rx9Hq0Skp9h3BWrD3BrJq86njU9FwgansQR2hEFVNcFA331R1xx+mJNfQnIzlrBAr3HSGDKu5fNf0rijAycySKZYBHqlwncX3XR8L7b+rb0F3NNy31+2wGLOYKhl1WFO2yt6/KzXEDvP4WXHsVLk4qvY8VrPj84vr0DCpPsES5vxHo+PPPLxkdlIsK7VM6naWAUFmtkcZ4xtz+T1E2vS12E=
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Enrich a batch of transactions"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/enrichment/transactions"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Enrich a batch of transactions with category information
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"description":{"type":"string"},"type":{"type":"string","enum":["INCOME","EXPENSE"],"x-enum-varnames":["CategoryTypeIncome","CategoryTypeExpense"]}}}}}},"description":"Transactions to enrich","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"category_id":{"type":"string"},"category_name":{"type":"string"},"description":{"type":"string"},"sub_category_id":{"type":"string"},"sub_category_name":{"type":"string"},"type":{"type":"string","enum":["INCOME","EXPENSE"],"x-enum-varnames":["CategoryTypeIncome","CategoryTypeExpense"]}}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

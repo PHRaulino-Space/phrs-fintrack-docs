@@ -1,0 +1,72 @@
+---
+id: delete-tag
+title: "Delete tag"
+description: "Delete a tag"
+sidebar_label: "Delete tag"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9lFFr2zAQx7+KuKcN1DodHRS/ZUsKgTFC17FBycPFujhqbEmR5LBg9N3HxW66xGGwPfRJ9umk++n4/68FRaHw2kVtDeQwoYoiCRQRS5AQsQyQP3XrQoJDjzVF8hxtz87+sH4THBYkZhOQYLAmyOHn1TF+dYhrzl0TKvIgwdO20Z4U5NE3JCEUa6oR8hbi3vH5EL02JaQkz+s9YnlSSauX2x3G9T/dveDk4KwJFHj/w+iWl9N6X634bE0kEyFJuB2NhimfUIkH2jYUIkgo+uy8BXSu0gVyWvYcOLcd4tjlMxV8EJXSnIrV3FtHPuoO6xw7pQPIRdYo7m1j1JthfLzUj5mJ5A1W4hv5HXkx9d76N0JKEmqKa6sgB3WQNchOGTlkLOis1SqBhHBg6xTd+Iq3s8oWWK1tiPnd6G6UodPZ7gZYJ9qs7PCh4/lMrKwXNRostSmFIx8YU6y0QVNQuGY76Vgx5r020WOxEeP5rO8GFtyNJIFRujtvrkcsNGdDrPHQl17ovUk7i55wtK+dHVi561CkXzFzFWrDdx+e2/Zd6W0uIdeKzc7P52jbLjHQd1+lxOFtQ34P+dNCwg69xiU/iYeBDvytIF9hFegvZO8eemO+F0cPX8Trg2j2wMWqhv9Awob2nd/TIsmXWfLfDGdz6yJJV3Ewy45MPJ26nHFRkIt/7A0Ezio6KnMy/TJ9nEJKvwHeKd/H
+sidebar_class_name: "delete api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete tag"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/tags/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete a tag
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Tag ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"404":{"description":"Not Found","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

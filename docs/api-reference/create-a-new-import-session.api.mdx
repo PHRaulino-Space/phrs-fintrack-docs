@@ -1,0 +1,72 @@
+---
+id: create-a-new-import-session
+title: "Create a new import session"
+description: "Create a new import session."
+sidebar_label: "Create a new import session"
+hide_title: true
+hide_table_of_contents: true
+api: eJzFVlGP4kYM/iuRn1opHFx1rU68ZSF3h3rLRoF2D61WyCQG5jaZmZsZ2EWI/155wi0LJMu1ldq8QOxvHPuzx/YWcrKZEdoJJaELPUPoKMBA0mMgSq2MCyxZK5R8AyE4XFjo3kGlae01Fu5D0GiwJEeGAdsTs7fKPFiNGQWDPoQgsSTowpfWs7zl5YKxS8KcDIRg6NtKGMqh68yKQrDZkkqE7hbcRvN564yQC9jt7iswWXel8g0jMiUdScd/UetCZMietL9admd7bkrNvlLmIARtlCbjBFl/NsvUSrqpyGs+G8JMFIWQi2mppFvWIjI0edNph2ZBbrrGYkUvAHJVzsjAjp/whMdBlZFRxXugcVMozM+42rHAaiVtFcYvnbf8U5dqPvw/kXXszmQymbSur7nI/g6JWRXFFF2t+ugbNfoGq9bhgvKpMygtZs7X+JnHKRWeKLsU2h78RmNww8XsqLQ/wFrJpNXk/3Js6Gqy8s+D1kZlXFhyMSVpRLYs6cixmVIFofT8VAXYlBTr0K3suSoEkquSG0iS3vTi0Wgw/Agh9G6uk8/xOOYWkMTDfiVN46g/4c7y1OJTrTUa7hu+/4x8fsaH9Iz8F5PnCCBswvRUqQuqCr/JDMn8VRspYb6Be77DB9U0R0f1F90LmskYDHs31zGEEH9J4uGI/43TaDj6EKcQwmD4ZzwaX8fD8bQfJzejwfhYeDsYf+qn0W30mamM0v40iSas+f56sOpfe5+i9GN8FfV+/1FyxxtNA5mpkuooYW38pEnaRrV/nfum3mB8TdZxufVJKyvcZeCtcMvc4CMWTdgemjzBjS/iVyAXXGdIb8mdeobZg8/5SufN19I3ba7/mobhTYvKn9OmgHkuGIZFctQe9jghHS08gXNlSv4yi357B7vLg6SpADkUS6bpEj9+n831gP18etfpnAd6hXmQVgP534yXC5y89CSEX+scGUhHRmIRjMisyQSxMcr8Ry7tQijJLVUOXdDKM6GRJx+0T9cnbqjsX7U6rUzBoHahMiyWyrru+877Thu1aK/fAi877Gd6WHjiJ+SedjqDD43mZPQeFM+T9SA6LqYOjws5V+fURskgmCsTlChxIeQi0GQsExPMhUSZkfULo3DsGHwQ0hnMHoIoGez5x4z534XAgVc2377p+EGkrCvRZ2K/Kb6ylsLZvHtO7sVttkqaoyfX1gUKP9o8+9t9qmo3XU4Jq7bbGVr6wxS7HYu/rchsoHt3H8IajcAZB37HDWO/0fq1WFhW5NCdY2HpFd9/Svcr3c/ByfZc6/YDbeo26n0aAXbhdo/pVZ9ocXd7gTi7B4cTUZaRdq9i718Ue3Iz4tkz26/ipcr5jMFH3lPxkb0JQennrcrLtlCgXKxwwdjKJj9/AVHcZGc=
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Create a new import session"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/import-sessions"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Create a new import session.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","properties":{"account_id":{"type":"string"},"billing_month":{"type":"string"},"card_id":{"type":"string"},"target_value":{"type":"number"}}}}},"description":"Import Session payload","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"201":{"description":"Created","content":{"application/json":{"schema":{"type":"object","properties":{"account_id":{"type":"string"},"billing_month":{"description":"YYYY-MM","type":"string"},"card_id":{"type":"string"},"created_at":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"staged_transactions":{"description":"Relationships","type":"array","items":{"type":"object","properties":{"amount":{"type":"number"},"created_at":{"type":"string"},"data":{"type":"object"},"description":{"type":"string"},"id":{"type":"string"},"processing_enrichment":{"type":"boolean"},"session_id":{"type":"string"},"status":{"type":"string","enum":["PROCESSING","COMPLETED","PENDING","READY"],"x-enum-varnames":["StagedTransactionStatusProcessing","StagedTransactionStatusCompleted","StagedTransactionStatusPending","StagedTransactionStatusReady"]},"transaction_date":{"type":"string"},"type":{"type":"string","enum":["INCOME","EXPENSE","TRANSFER","INVESTMENT_DEPOSIT","INVESTMENT_WITHDRAWAL","CARD_PAYMENT","CARD_EXPENSE","CARD_CHARGEBACK"],"x-enum-varnames":["StagedTransactionTypeIncome","StagedTransactionTypeExpense","StagedTransactionTypeTransfer","StagedTransactionTypeInvestmentDeposit","StagedTransactionTypeInvestmentWithdrawal","StagedTransactionTypeCardPayment","StagedTransactionTypeCardExpense","StagedTransactionTypeCardChargeback"]},"updated_at":{"type":"string"}}}},"stats":{"description":"Transient","type":"object","additionalProperties":{"type":"integer","format":"int64"}},"target_value":{"type":"number"},"type":{"type":"string"},"user_id":{"type":"string"},"workspace_id":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

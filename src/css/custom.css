@@ -28,15 +28,3 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
-
-.api-docs__swagger .swagger-ui .topbar {
-  display: none;
-}
-
-.api-docs__swagger .swagger-ui {
-  margin-top: 1rem;
-}
-
-.api-docs__redoc .redoc-container {
-  box-shadow: none;
-}

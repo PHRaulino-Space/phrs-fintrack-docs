@@ -1,0 +1,72 @@
+---
+id: create-api-key
+title: "Create API Key"
+description: "Create a new API key for programmatic access"
+sidebar_label: "Create API Key"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVFFP2zAQ/ivZPW2SS8u0B5S3wjYJoWmIgTapqqarc21NE9ucndIS5b9Pl6ZAm4LERF9Snc933/ed76sgkC7ZxDWkowpOCZl4WMY5pKNxPVaQUdBsfDTOQgpnTBgpwcTSfTK8PE8WtE6mjhPPbsZYFBiNTlBrCgEURJwFSEeA3vQWtA4wVuCRsaBIHJqOu/V/O14Ej5qS86+gwGJBkMKf3mO818SN5M4JM2JQwHRXGqYM0sglKQh6TgVCWkFce7kfIhs7g1r4SDKFeOqytWRoZyPZKH/R+9xoFCT92yBwqm4pN7klHXeajjYwhRo7TxwNBblBK2+Ywl+MB6BsuXUx1nW9r7oIfUHrJKOIJg8dyrUEgnc2bDp/HhzL59DoMlD/z3mXn94UHB6m17J/4dRkB8MLWl8yTc3qLYopYLy/oHWX8g8XIiMn6MliSMoCkyU9fJCH2RW9VvBlMOgWOcUsudo8mvfTjpgdvzD9BsiBAd5YLOPcsXl4zym+iqRWUFCcuwxS8K4RwKN4A/QfV1pBIF5u17nkXE77udOYz12I6cngZCDZ/eUxyAIKwKunJfy2wsLntL8wWxyPHvDs7dip66ojOyJGVKDFmbGzxBMHZzFPpsai1RSOZO4mSi/4bmxk1AvxsFZL1KJlrUC4bGoeHw2koTAvsFG1BdPaYLuXsLevz1zlzYa5GUKkVez7HI2V/o2mVav8rpmKwhKrqgkGuuG8riV8VxKLoY8VLJENToT0aFyrrWk2zmuCHGSQTjEP9AqJj1et3XxK9gz6IN6F7GLXtJeYl5IMtaranLNNi961lHnK6LznpxtDrcnHV3PHzx7t5c9f16Bg0rp94TK5w3gPjWsIGgWuodxsQxOrIEc7K3EmuZua8vsH7Gl14A==
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Create API Key"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/api-keys"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Create a new API key for programmatic access
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","required":["name"],"properties":{"expires_at":{"type":"string"},"name":{"type":"string"}}}}},"description":"API Key details","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"201":{"description":"Created","content":{"application/json":{"schema":{"type":"object","properties":{"createdAt":{"type":"string"},"expiresAt":{"type":"string"},"id":{"type":"string"},"keyPrefix":{"type":"string"},"name":{"type":"string"},"rawKey":{"description":"Mostrar apenas uma vez!","type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

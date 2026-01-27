@@ -1,0 +1,72 @@
+---
+id: enrich-staged-transactions
+title: "Enrich staged transactions"
+description: "Trigger enrichment for all PENDING staged transactions in a session."
+sidebar_label: "Enrich staged transactions"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9lMFu2zAMhl9F4GkDtDodNqDwrUO7IRjQBm13KnJgZcZRK0sKpQQLDL37QNvYlibYaejJtkian379VA8NJcM2Zhs81PDAtm2JFXm2Zt2Rz2oVWKFzanF9czW/+aZSxpYalRl9QiN1SVmvUCVKyQZ/BhoytgnqR7BdDJw/TJEESw0RGTvKxJLQv2p/Pyaq+RVo8NgR1GAb0GAlGjGvQQPTZmuZGqgzb0lDMmvqEOoe8j5KRcpsfQulLCU5xeATJYl/nM3kcdjz9jtoMMFn8lmiGKOzBiVaPSdJ6Y9bhKdnMhk0YNNYSUW34BCJsx1bvUYppWj4dKr/F2zUHW22lPKbgXw+BTL3mdijU/fEO2J1zRz4jZCKho7yOjRyzGFQYjjtGqpXHqp625Rq9CdoSAPr6KUtOymoXDDo1iHl+mJ2Masw2mp3DuIG61fheOOXi/ng8g49tta3KhInwVYr69EbSoOnbXaC/dX6zGhe1OViPqmDRtQpGgRl/Of52QyKHvbS4aDTZOfrgfzUFIE+5Or/KP/f5nJUPtPPXEWH1gvjIFs/6X08sxrqYQQnyZcaRFrJ7PsnTPSDXSmyvNkS76F+XGrYIVt8ErlkxG2S9wbqFbpE/9jlu7tptN+rg5vgJPa0iH4P0tBt5Qs0vNB+vDXKsmhYEzbEA8cYuDSGYv6r5MjTYpTfZlzc3j9AKb8A+I/HZA==
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Enrich staged transactions"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/import-sessions/{id}/enrich"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Trigger enrichment for all PENDING staged transactions in a session.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Session ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

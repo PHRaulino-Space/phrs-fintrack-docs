@@ -1,0 +1,72 @@
+---
+id: get-projection-for-a-recurring-item
+title: "Get projection for a recurring item"
+description: "Get timeline of slots with status"
+sidebar_label: "Get projection for a recurring item"
+hide_title: true
+hide_table_of_contents: true
+api: eJyNVN9P2zAQ/lese9qQIWVPKG+VyqpoE1SM8YIqdE2urYdjG/vSUUX536dLSimUTcuLY9+vz9995xYqSmU0gY13kMOUWLGpyRpHyi9Vsp6T+m14rRIjNwk0MK4S5PcQqWxiNG4Fcw0BI9bEFMXUvst68+KpiglocFgT5GAq0GDEHpDXoCHSU2MiVZBzbEhDKtdUI+Qt8DZIROK+XNfNxTkF7xIlsX8ZjWR5W/X6G2govWNyLNaT7ESWo6wYI24FClOdDs794heVDBpC9IEim6EW1r4ZEu78XFMvKEKnoUKmD+Bq2HF3BHE2LiZaFdOr65tLrWaXV5Piagoa0NrrZU/k21QayDW1kH83/l5MxreDu6SRZR8/ZJS+PJ9KxOkGo7De9+02oktYCoQfPa47tKZCHgocWWfYN+r4nFz1l5Bi5XwkmHfzTgO/Wh9M9VE3h09DTbz2FeSwop52UUUO2V5nWWuqLgvRS1+EQA2J4uZFc0204p5ZX6Jd+8T5xehilGEw2eYcRDPGLf1xE8azQi19VDU6XIlIA8XkHVq1NA5dSelMVG/YCuqvxnHE8lGNZ8VOX1iKHDoNAmXIeX42kr4Hn7hGJzV3opcBe71BXxfV/oZKNAj6LcD2VcT/N58DvUzPnAWLxgmSnpx2x+nh7GrI+/4e0DrXIPSJX9suMNHPaLtOjp8ailvI7+caNhgNLoQSGXeT5L+CfIk20T8u8OlmN+Sf1btX4UPYLyPqZEA3aBvZgYZH2g4vSC+xNWFFsUcyGMZlSYEPQmT2RQF7iU0vb6Hr/gCAA7Dp
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get projection for a recurring item"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/recurring/{id}/projection"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get timeline of slots with status
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Recurring ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"array","items":{"type":"object","properties":{"amount":{"type":"number"},"date":{"type":"string"},"status":{"description":"PAID, IGNORE, PENDING","allOf":[{"type":"string","enum":["VALIDATING","PAID","PENDING","IGNORE"],"x-enum-varnames":["TransactionStatusValidating","TransactionStatusPaid","TransactionStatusPending","TransactionStatusIgnore"]}]},"transaction_id":{"type":"string"}}}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

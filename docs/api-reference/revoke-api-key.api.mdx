@@ -1,0 +1,72 @@
+---
+id: revoke-api-key
+title: "Revoke API Key"
+description: "Revoke an API key"
+sidebar_label: "Revoke API Key"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1VE2L2zAQ/StmTu2ibJyyh0W3bDeFpaWU0KWFkMPEnsRqHEkZyaGp0X8vkzjZzQeFFuqLbM2M3pvRe24hUNGwiVvQkxYeCJl42MQK9GSapgpKCgUbH42zoGFMG7ekDG02/PKULWkLCiIuAugJoDe9JW0DTBV4ZFxRJA67Y08PkdKPtM2eHkGBxRWBBlOCAiNRj7ECBUzrxjCVoCM3pCAUFa0QdAtx66UiRDZ2ASmp8/O/OV4GjwWdIHzvHfd7u/0dWkVYEv8V3lSSg3c2UJD4u/xOllMOn1323tlINkJScJfnlykPWGZjWjcUIigoumzdwk3/RpYLBm72gwrJ9ew8cTR7fGJ2fI2oPII9uMR+ttjEyrH5ReX/A08KVhQrV4KGkmqKJPVyvxr6B7n0W1MmUBCINwe9NFxLSr92BdaVC1Hf5/e5lPQ3A5AbMHbuLtsSZc0dZyu0uDB2kXni4CzW2dxYtAWFWxGsibVw/WBsZCyWouVuCFjIEJICobI/c3CbyxV6F+IKrWB2guq80KkZzqzSvgz1umv284r0M/Z9jcYKyK7vthvRK0cp0KYUX8ksJNK2Mwz0zHVKsr1uiMXAUwUbZIMz6U98Z4K8l6DnWAf6A8U3407/b7MTe16l2W2ilUY2WDfyBQqks52V0zSpg7X+mceZja8y2SNeWPvISX4O+5xhUZCPr2IidFHSUaGPo0+jryNI6Tc0RrA6
+sidebar_class_name: "delete api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Revoke API Key"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/api-keys/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Revoke an API key
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"API Key ID","name":"id","in":"path","required":true,"schema":{"type":"string"}},{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Bad Request","content":{"*/*":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}},"401":{"description":"Unauthorized","content":{"*/*":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

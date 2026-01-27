@@ -1,0 +1,72 @@
+---
+id: get-a-single-transfer
+title: "Get a single transfer"
+description: "Get a single transfer by its ID"
+sidebar_label: "Get a single transfer"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV9+P4jYQ/leieWol78FVrXTKG2UpjW7LooXuVlohNDgD+Naxs7ZDD6H876dJgPIjsO1VuqfjhWRmMvNl/I39ZQMpeelUHpQ1EEOfQoSRV2ahKQoOjZ+Ti2brSAUfJbcgIODCQ/wMO6eHiYAcHWYU+C5+3pzkfLLuxecoqU5gMCOI4a+bvf2msiuOXRKm5ECAo9dCOUohDq4gAV4uKUOINxDWOT/vg1NmAWUpTuuNd7APy6l0VyLHsPxPBSYc7HNrPHn2/9Ru899x0fuPIEBaE8gE9mKeayWRva1PnkM25yXs7BPJAAJyZ3NyQdUFMLNFnWUbZ4psRg5KAdIRBkqnGBqQCkhJ01X3AeRmf1CmAj1FKU9QXED7BiRZOEdGrs9b9kC6KuWXKvfMrEuPTqVN6WveV6XNZqOCQj2doUYjqbHRyk9RBrU69M6s1YSG3TWrGnLXhlOHADJFxmPT/b3X/ZgM+iBg1HlMBv0RCHjq3N31xiAgGTz2RuM/egO+6T4kw/H9/mIbNBHw+Yaz3azQMYxqGjv1ao3XOXWXJF/qogfWEa6UWfhj4xNqTeHYlpgV+ZAxjY/sXV4422TbZpmUAoo8vcaFv3cTP21cmbKZgs3BF1fXEfNGmcV0t0VdSuBt4SQdMv06QVHr+3m1wX2fiO8T8W0mYnLG00tsrtjOK2TNlGu+GeQDhsJfW5rHzl1y2xnXizPsVOfpsDe4rQ1Jf3D/0LvQ/vE/hUZVnUfUKsVQFzjzDrE6oM/tZNILjyQLYx293eTqJ+DnplP7V0yjB3otyIf/c3xjmioORT082ggakAj4pQlIYgI5gzoakVuRi3rOWfeNIJUCMgpLm0IMi4r8lUSKobXXeK2NSksQ4Ct0tcgrnOaYlrYS9dL6EH9of2i3MFet1Xtg1aTM3J6/ameYRHProgwNLpRZRDk5z0CjuTK8+/h3vPWpoBnob8oEh/Il6gyTbT9Qcj9KAQylzvn+XZvZnVsfMqw6s5V9jXoWzpTQvs3/RgDXHQz0ObRyjara/apmbLaNOxTHAmKV8oxwh9i12czQ059OlyWbXwtya4ifJwJW6BTO+K1ZQivP1ynEc9SeriD+4WGrZH+MjpVvI9CtEc0auKIu+A4EvNC6VsnVjrOV4V8N5ETyNyKpK559BuwxsbCvYzpSUh4OfGejwGzbc7jfG0NZfgEMy21C
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a single transfer"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/transfers/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a single transfer by its ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Transfer ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"amount":{"type":"number"},"created_at":{"type":"string"},"deleted_at":{"type":"string"},"description":{"type":"string"},"destination_account":{"type":"object","properties":{"created_at":{"type":"string"},"currency":{"description":"Relationships","type":"string"},"currency_code":{"type":"string"},"deleted_at":{"type":"string"},"id":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]},"updated_at":{"type":"string"},"workspace_id":{"type":"string"}}},"destination_account_id":{"type":"string"},"id":{"type":"string"},"recurring_transfer_id":{"type":"string"},"source_account":{"description":"Relationships","allOf":[{"type":"object","properties":{"created_at":{"type":"string"},"currency":{"description":"Relationships","type":"string"},"currency_code":{"type":"string"},"deleted_at":{"type":"string"},"id":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]},"updated_at":{"type":"string"},"workspace_id":{"type":"string"}}}]},"source_account_id":{"type":"string"},"transaction_date":{"type":"string"},"transaction_status":{"type":"string","enum":["VALIDATING","PAID","PENDING","IGNORE"],"x-enum-varnames":["TransactionStatusValidating","TransactionStatusPaid","TransactionStatusPending","TransactionStatusIgnore"]},"updated_at":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

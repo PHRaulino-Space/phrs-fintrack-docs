@@ -1,0 +1,72 @@
+---
+id: o-auth-login-initiation
+title: "OAuth login initiation"
+description: "Initiate OAuth login flow with the specified provider (e.g., github)"
+sidebar_label: "OAuth login initiation"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVFFr20AM/iuHnlo44pQNVvyWwjb6tFC2pxGGYsu2WufueienC8b/fSiOl7TpOgbzi81Juu/TJ33uoaRURA7C3kEOt46FUch8WXTSmNbX7EzV+ifzxNIYacikQAVXTKUJ0W+5pGguaFbPrKlZmm59CRYE6wT5d8BOGlhZCBhxQ0JRT/sXmCPU8bLjNQ43BDlMIbDAWhBQGrAQ6bHjSCXkEjuykIqGNgh5D7ILWpcksqthGOxLyCVqM95EKjlSIQYroTi2e8Sdoj/ET9CPHcUdvIW1UmIpeJcoafzd/IO+nuPfTbjizfP2YbDwfj4/L7nB0tzRY0dJwELhnZATTcMQWi5Q07L7pLn9OT2/vqdCC7EsWVOxXUYfKAqPNF+2oY+FDUnjS8ihJi3eC59DpmPN+onykE26JYrbacZdbDU1a32BbeOT5Nfz63mGgbPtFahM7Cp/3udieWsqH80GHdbsahMoJuVrKnboCkozXTCWVvl+YicRiwezWN4eZMFCZRksKJXxzqvZXHUNPskG9wIdJny65TyuvlbY55z6o9z/zSCj3EI/JQstslN+e8n6g8oH81jIT9Z/FHplQQXVnL5fY6JvsR0GPR7Xc28xTrhu1RwVtone6OgvXniV6QPtzvyxxbbTzP1stxhZ8f+Ry8XdwdOX5s9/hVcZHQ7R7U6pTEyP7loNFhpC/VZqY3hRFBTkpPDMU9rTbzN8/vgVhuEX+uHLWw==
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"OAuth login initiation"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/auth/{provider}/login"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Initiate OAuth login flow with the specified provider (e.g., github)
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"OAuth provider (github)","name":"provider","in":"path","required":true,"schema":{"type":"string"}},{"description":"Path to redirect after login","name":"redirect_to","in":"query","schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"307":{"description":"Redirect to OAuth provider"},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

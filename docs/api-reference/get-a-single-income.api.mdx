@@ -1,0 +1,72 @@
+---
+id: get-a-single-income
+title: "Get a single income"
+description: "Get a single income by its ID"
+sidebar_label: "Get a single income"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VWFr2zAQ/SvmPm2gLOnYoPhbRrNgNtrQdt2ghHCRLo5aW3IlOTQY//dxdpamtbOyDZYvju+d9J7O704VKPLS6SJoayCGKYUII69NmlGkjbQ5RcttpIOPkjMQEDD1EN9CC3mYCyjQYU6BHAPVi/2+W3fvC5TULjeYE8TwY7CPD5q45tw1oSIHAhw9lNqRgji4kgR4uaYcIa4gbAte74PTJoW6Fi/5klbyIZlWvwgKDOs/2n7Oyb6wxpNn/P1oxI/nlBdfQIC0JpAJjGJRZFoio8M7zylVl8Iu70gGEFA4W5ALuiVAKW1pwkKrHjkCMGf0ADJlviTHkMRAqXXbY0ulIwykFhh64WdH6sGP7OpIlo5fFq0hjrH7crl4TWFwaDxKlrBQGOjVJB8wlL6bJoBMmbNLb8Zfk7PxdXI+BQGzceOK2eT8rA0k0/OLywlb+HHAKwYbdOyZxuDXT0RXDc8NZlphaAk66Awbm3XjZNSRJUlqrCOY1wLKQh3/OM1PwIc+731CFV3SQ0k+/IsJUSnNqZjNntmxR4mAj31CEhPIGcyiK3IbctHEOev+k6RaQE5hbRXEkFLTVNzoMQx3U2pYaVWDAN9oa8dU6TLOGGZWYra2PsSno9PREAs93JwAd742K9s96HiWRCvrohwNptqkUUHOs8xopQ0aSf4dj0kdMpb5WZvgUN5H41myqwZKrkYtgKW0e568G7G3C+tDjk1ddqOrZxpDp1f3JX59eLe1C/QYhkWG2jBrU4hqV7KnwS4g1op7g2vDQFUt0dM3l9U1hx9KcluIb+cCNug0Lvm8PP615/8K4hVmnn6j9s3lbg6/jQ6ndq/IXRDNFpgvK/kNBNzTtp3wNbfR7gL5axkvLqteJS1j5wLba+Irqc0ZS0lFOMA6DcAu2zt3OrmGuv4JSMKWzg==
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a single income"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/incomes/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a single income by its ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Income ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"account_id":{"type":"string"},"amount":{"type":"number"},"category_id":{"type":"string"},"created_at":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"recurring_income_id":{"type":"string"},"sub_category_id":{"type":"string"},"transaction_date":{"type":"string"},"transaction_status":{"type":"string","enum":["VALIDATING","PAID","PENDING","IGNORE"],"x-enum-varnames":["TransactionStatusValidating","TransactionStatusPaid","TransactionStatusPending","TransactionStatusIgnore"]},"updated_at":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

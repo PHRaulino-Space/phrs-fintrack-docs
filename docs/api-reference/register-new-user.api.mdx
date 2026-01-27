@@ -1,0 +1,72 @@
+---
+id: register-new-user
+title: "Register new user"
+description: "Register a new user with email and password (native authentication)"
+sidebar_label: "Register new user"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVMFu2zAM/RWBpw3Q6nTYofCtHTagwIAFXXsqcmAkxlZrS6pEJw0M//tA213SpthhmC62JZJ6fO/RPVjKJrnILngo4YYql5mSQuVpp7pMSe0c14padI1Cb1XEnHchWfXBI7stKey4Js/OoBT5CBoYqwzlPcgJrDQkeuoo81Wweyh7MMEzeZZXjLGZE4uHLBB6yKamFuWN95GghLB+IMMw1XGJrNQeAYEGjy2BhhdUcl1MIVJiR1mKTIGHapmT8xUMc+p7B3+KnRxqaJ3/Qb7iGsqLQZZ+Q+GdcJZGHtPYmLLI+Ao9p44G2cgx+DzB/Lw4l8c7tUwiZLIqd8ZQzpuuafaC8sticZpxhVbdTHSD/nem0VonodgsX5H5hqqZgJa4DhZKiGG8NqLQA4XoX6TZUqAhU9pSEmv00KVGQoomGGzqkLm8WFwsCoyu2J7DsNIgKG8Ozvn2jG1s6EjSgyiTkofvg4BHqjq/CaeEXS6v1SYk1aLHyvlKRUpZGlcb59EbymfiaMdyNXx3nhOaR3W5vJ75RSP8Dhqktanm+dlitFHI3OLI9Azwz3i9DBe8cc/RcPyvWZwUY3rmIjbovCAbye9nneY5FT/OSq00iCJy1PdrzHSXmmGQ7aeO0h7K+5WGLSaHa2HlfjVoqAktpVHaR9pDCV+nRj7dCgAJbzoBcuLDQb9kXBpDkf8auzoy2/Lnr1vQsJ7/Km2wkpNwJ63gDkoADWEkdvTuuNdDg77qsJLYqaas38xuvdk=
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Register new user"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/auth/register"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Register a new user with email and password (native authentication)
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","required":["email","name","password"],"properties":{"email":{"type":"string"},"name":{"type":"string"},"password":{"type":"string","minLength":8}}}}},"description":"User registration data","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"201":{"description":"User created successfully"},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,72 @@
+---
+id: create-a-new-transfer
+title: "Create a new transfer"
+description: "Create a new transfer between accounts"
+sidebar_label: "Create a new transfer"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV91v4kYQ/1eseWol5yBVK538xhGaWk0JAppUihAa7AH2st717a5JEPL/fpq1EwI2yaWt7ul4wZ4dz8dvPnZmBynZxIjcCa0ggr4hdBRgoOghcAaVXZIJFuQeiFSASaIL5SyE4HBlIbqDJx4LsxByNJiR47fobnck+labe5tjQkF8ASEozAgi+OfsmX7m6YJ514QpGQjB0JdCGEohcqagEGyypgwh2oHb5vy9dUaoFZTlrGIm6z7pdMsciVaOlONHzHMpEmRLOp8tm7NritKLz5S4A6V3gBl7DCE744TyIuY1DnORQghWFyahQ5pHBRPPnKIjD47RORknyHqLKrl77arIFmSgDA9hazh60pI21qZtbVwNa1vgLctjy2D6lB4twHG0SibYXCtbufxL95z/2hKOMfvX4fpmYJNK1xzdCVwlvXr87rC8be0bJiWFMaSSbRO3MUmvyq5F7uvx1KfzRKdtEX3T3xPJIpRwAuV8gRJVQq1ACzvndNq8PF1oLQkVH1el35aInnB8EAKpIuNi7P8x6P8ZDy8hhEnvJh5eTiCE297V1WAKIcTDm8Fk+tdgyC/9cTyaXj8/1EyzEB7PWNrZBg2b4XtYr4rWdJtTf03JfaX0BXWCG6FW9pB4i1KSO6TFakPWZaSO6H0OnG6j1VJmZQhFnr6WCw9PfbK9jMv3dYYTZEOcN0Kt5k+N/dtay9sJilJeL/218KMiflTE96mI2f95BR4yWYeusK+F5qZ3FV/0plVwRj0/3IwGw4uKEF8Or8eDE/BP94omXs8NSpGiqxQ0Tkfoh44mnVR64pN4pbSht0GuL/5fu91mwX3CNBhXI9d/ub4xTQWzohwdNILWCeS3NkNi5cgolMGEzIZMMDBGm+9kUhlCRm6tU4gg1x6JHN0aIujsR+MQrLesGosLI/m4I3WCcq2tiz52P3Y7mIvO5hx4kGULx/thdvCIWS7p5XTTPR7GntPv1B2w52ipiP1hsxAOOt1SN+HvjeJgqU2QocKVUKsgJ2MZvGApFHdE+4EFC8cuwO9COYPJfdAbxXWMMOEYlSEwRJXM8w9dVsiIZuijVe8LrQsKNKaz59C/Y6Opguvo0XVyicI3Zh+rXR3So22HQ8fE3W6Blv42siyZ/KUgs4XobhbCBo3ABbt9x5VWbzV+NRKWD1KIligtvWL/T+N6qP45ONqgWg2+p23bVrVBWTAzlOGu5ulXKs64877gaFTK/oteklDuXuWdvSiH0fWE751FvY5l/tYFgw+8KeADWxOC9i776vK0HUhUqwJXzFvJ5N9XMrIbWw==
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Create a new transfer"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/transfers"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Create a new transfer between accounts
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","required":["amount","destination_account_id","source_account_id","transaction_date"],"properties":{"amount":{"type":"number"},"description":{"type":"string"},"destination_account_id":{"type":"string"},"source_account_id":{"type":"string"},"transaction_date":{"type":"string"}}}}},"description":"Transfer object","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"201":{"description":"Created","content":{"application/json":{"schema":{"type":"object","properties":{"amount":{"type":"number"},"created_at":{"type":"string"},"deleted_at":{"type":"string"},"description":{"type":"string"},"destination_account":{"type":"object","properties":{"created_at":{"type":"string"},"currency":{"description":"Relationships","type":"string"},"currency_code":{"type":"string"},"deleted_at":{"type":"string"},"id":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]},"updated_at":{"type":"string"},"workspace_id":{"type":"string"}}},"destination_account_id":{"type":"string"},"id":{"type":"string"},"recurring_transfer_id":{"type":"string"},"source_account":{"description":"Relationships","allOf":[{"type":"object","properties":{"created_at":{"type":"string"},"currency":{"description":"Relationships","type":"string"},"currency_code":{"type":"string"},"deleted_at":{"type":"string"},"id":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]},"updated_at":{"type":"string"},"workspace_id":{"type":"string"}}}]},"source_account_id":{"type":"string"},"transaction_date":{"type":"string"},"transaction_status":{"type":"string","enum":["VALIDATING","PAID","PENDING","IGNORE"],"x-enum-varnames":["TransactionStatusValidating","TransactionStatusPaid","TransactionStatusPending","TransactionStatusIgnore"]},"updated_at":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

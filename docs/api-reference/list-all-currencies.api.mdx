@@ -1,0 +1,64 @@
+---
+id: list-all-currencies
+title: "List all currencies"
+description: "List all available currencies in the system"
+sidebar_label: "List all currencies"
+hide_title: true
+hide_table_of_contents: true
+api: eJydk8Fu2zAMhl9FIHYU6nTAgMK3DuiGYAUWZNupyIGRmVitLGkUE9Qz/O4Dna5J2mHD5ottkhJ/fT81QEPFsc/iU4Qabn0RgyEY3KMPuA5k3I6ZovNUjI9GWjKlL0IdWBDcFqjv4FgCKwtMJadYqEA9wNvZTF/nXT5/AgsuRaEomsWcg3eo2eq+aMkAxbXUoX5JnwlqQGbswYIX6spJPK3vyQlYyJwysfhDY5caOqkqwj5uwQI9YpeDht4vb2G0ELH7WyHjDx88RrMkDLqm9N06hT+vWr6B8fBYePc7CvMoxBGD+UK8JzY3zIn/A8wzAGwar6UYFmcozjX+0tSRtKmBGrY00UNpoYbqxEsLZVKmHg+w46D5KiSHoU1F6qvZ1azC7Kv9JYwrCz5u0utjXi/mZpPYdBhx6+PWZOKiIs3GR4yOyoWOkpeJ2gcfhdE9mOvF/IkFOmUxWlAphz0vL2ZqQ05FOpyoHFw8zu/ZMc4EDUfA/zruB45Cj1LlgD6qhgnL8ITv5VVQTBodhjUW+sZhHDX8fUfcQ323srBH9tpX/0YLLWFDPPF+oF7pOUdZ/dlj2E3X4OVIKPlnLz/efIVx/Ann+VCp
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List all currencies"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/currencies"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List all available currencies in the system
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"code":{"type":"string","example":"BRL"},"name":{"type":"string","example":"Brazilian Real"},"symbol":{"type":"string","example":"R$"}}}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

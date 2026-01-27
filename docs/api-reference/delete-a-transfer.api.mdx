@@ -1,0 +1,72 @@
+---
+id: delete-a-transfer
+title: "Delete a transfer"
+description: "Delete an existing transfer"
+sidebar_label: "Delete a transfer"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VF2L2zAQ/Ctmn1rQnXOlhUNvKUkhtNBwvdJCyMPG3iS6yJIiyccFo/9e1nbSfNHSPtyT7d21Zjye2QZKCoVXLiprQMKINEXK0GT0okJUZpVFjyYsyYOAiKsAcgb7UoC5AIceK4r8JGfN2Xk/rN8EhwVlkxEIMFgRSPh5c6jftHXFs2vCsoXxtK2VpxJk9DUJCMWaKgTZQNw5fj9Er8wKUhLneI89sxM4Ve4hHMb1PwHMeTg4awIF7r8bDPhyCvr1MwgorIlkInfROa0K5G7+FHikuYSwiycqIgjAslQ8inrqrSMfVQd1TiWlJOD9NfyPWGYPtK0pxFcj8uEakYmJ5A3q7Bv5Z/LZ2HvrX4lSElBRXNsSJJSti0F0/1tCfjBs3qgygYDQEuwcW3vNM7m2Beq1DVHeD+4HOTqVP98BW0CZpb382uF0ki2tzyo0uOKkOPKBuWZLZdAUFG45Mypq5vpJmeix2GTD6aSXBAuWJAlgKt2Zd7cDSAKcDbHCVpzew/tgHsfxhE7zW+W/pbgTL9JLzJ1GZRixFaHpBTtOuACpSs45K8OtpllgoO9ep8TlbU1+B3I2F/CMXuGCv5b3gAp8X4Jcog70B7ZvHvo4vs1O43uVaF9EswNG1DU/gYAN7bqop3kS+13y30TO9tZVJh3ixS47cOLt1M0Mi4JcPOpdpIBddrDvaPxl/DiGlH4BcNzrcw==
+sidebar_class_name: "delete api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete a transfer"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/transfers/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete an existing transfer
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Transfer ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

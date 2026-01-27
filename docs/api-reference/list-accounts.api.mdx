@@ -1,0 +1,72 @@
+---
+id: list-accounts
+title: "List accounts"
+description: "List all accounts for a given workspace"
+sidebar_label: "List accounts"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VGFv0zAQ/SvRfQLJox0Cacq3UsqIGNu0lg1pqqqrc2vNHNuznbAqyn9Hl5TSbtEk+EC/tH33bD/fPb8acgrSKxeVNZDCmQoxQa0TlNKWJobkzvoEk5WqyCQ/rb8PDiWBgIirAOkt/CbCXIBDjwVF8lypn2x983txkn0EAQYLghS+H+3woxZXzF0T5uRBgKeHUnnKIY2+JAFBrqlASGuIG8frQ/TKrKBp5kwOzppAgetvh0P+OtRw8QUESGsimchVdE4riVwd/AhMqZ8fgd7jhpVFKsIebpc/SEYQ4Lx15KPqDpaeMFK+wNgjU4AsvScjNwtpc+plqLwfNioq1IslajRyf6kpiyX5lhMWKKOq9qtLazWh4XLX8569O+BpQQCZsuAhjz9Pxl+y81MQMB1dZ+enUxBwMzo7m8xAQHZ+PZnOvk7O+c/4KrucXex+bElzAY9HvNtRhZ5ltN4Zdd6ZbRyN1yTvu0P30ClWyqzCIXiDWlM8xDJTUYgFj/UAH/PsbR+23WXeCChd/tLEdq5f9E6m+wh412e4D5gnV/RQUoj/4LydwzDPFVNRXx54rUeKgPd9QjITyRvUyZR8RT6ZeG/9f5LUCCgorm0OKazayTmMa0hhsAsPAaHV1QVH6TVXB9pK1GsbYnoyPBkO0KlBdQz81JW5s88vObrM2rwq0OBKmVXiyAeWmNwpw48mvOHkUlGzxE/KRI/yPhldZttOoORONAJYSrfn8Zshm8DZEAtse7JNri4q/1zgQEr9p7F/k6ld7yI9xoHTqNpH2zaj3rbsMG+5NYzV9RIDffO6aRh+KMlvIL2dC6jQK1zydW/Z6dtcbcNZBS7kkN6hDvSC/ldX2xB+nTzJ8F6997Tpy/UKdclkaES95YykJBf3as8cyKPeWed0MoOm+QWfuEtD
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List accounts"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/accounts"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List all accounts for a given workspace
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"created_at":{"type":"string"},"currency_code":{"type":"string"},"id":{"type":"string"},"initial_balance":{"type":"number"},"is_active":{"type":"boolean"},"name":{"type":"string"},"type":{"type":"string","enum":["CHECKING","SAVINGS","WALLET","INVESTMENT","CRIPTO","CRIPTOWALLET"],"x-enum-varnames":["AccountTypeChecking","AccountTypeSavings","AccountTypeWallet","AccountTypeInvestment","AccountTypeCripto","AccountTypeCriptoWallet"]},"updated_at":{"type":"string"},"workspace_id":{"type":"string"}}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

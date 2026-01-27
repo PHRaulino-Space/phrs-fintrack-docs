@@ -1,0 +1,72 @@
+---
+id: native-login
+title: "Native login"
+description: "Login with email and password, returns authentication cookie"
+sidebar_label: "Native login"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VE1v2zAM/SsCz1qdDDsUvqVDBxQb1qBrT0EOjMTaamRJleSkmeH/PtBO0AQJdtiA6mKD4sfj4xM70JRUNCEb76CEH74yTmxNrgU1aKxAp0XAlLY+aiki5Ta6JLDNNblsFHKcUN6vDYGEjFWCcgF8D0sJkV5bSvnG6x2UHSjvMrnMvxiC3YcXL4lrd5BUTQ3yX94FghL86oVUhjGPiaQ594ALJBxQcZ0QfaCYDSWOHj3e06QcjaugP4o5v+QjL7KhImluFm06gZJjSz0bUvAujaU/Tyb8OU1z/x3kv/eOWht2RTs/6fIi/i+X6t+gFg/jJD4QyPQcyJNjYfhofpP+ICS9hIZy7TWUEPxAQMBcQwkFYyksjxgkJIobiizeDtpo+b6wXqGtfcrl9eR6UmAwxWYK/VICQ3x41/btGzbB0pH2DhiOJXekQ+Oe/Tk9s/mdePZRNOiwMq4SgWLiLsWzcegUpSt+YyZzKfhmXI6o1mI2v9uTiYrJ7CVwK2PO6dVkEL5PucGBVocNh//EbDYkDv2fIDl6qf+9EcaRZHrLRbBoHKMZCO72g9hvCwkjlKUEppztXbfCRE/R9j2bX1uKOygXSwkbjAZXTMNi2UuoCTXFYXZr2kEJX0f4nx65OrvbllGcqayXh4iZUhTyX32XR1Ka3/96BAmr/WJrvOaYiFveELiFEkCCH+gclDnYOrDoqhYr9h1z8vkDBXTrZQ==
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Native login"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/auth/login"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Login with email and password, returns authentication cookie
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","required":["email","password"],"properties":{"email":{"type":"string"},"password":{"type":"string"}}}}},"description":"Login credentials","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

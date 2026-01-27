@@ -1,0 +1,72 @@
+---
+id: list-api-keys
+title: "List API Keys"
+description: "List all API keys for the current user in the current workspace"
+sidebar_label: "List API Keys"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVF1rG0EM/CuLnlq6iZ3Sh3BvLv0gpNBQWlowJih7sm/j8+5Gq3PjHvffi86OG8d2KKX3ciBpV6PZ0bSQyTXsZQXFuIW3hEw8aqSCYjzpJhZKyo59Eh8DFPDJZzFY12Z0dWHmtMpmGtlIRcY1zBTENJnY+LAT+xl5nhM6AguCswzFGDD5E70AJhYSMi5IiHMPYrfl94fD5uIdWAi4ICjgx8k2ftLHvdZWhCUxWGC6azxTCYVwQxayq2iBULQgq6Tns7APM+h0RKacYsiUNf96ONTfLobPl2DBxSAURLOYUu0danZwm7Wk3W+BzLhSZEKL/Cgeb27JCVhIHBOx+HVjx4RC5TXKAZgW6D55pnws7cuD4TmtrhPT1N/vDzUqb5ssVJqawkwqI9FMvZh1uXllErJ4rE2FudKHe3p3jVmum3wc8vqpDiSYlnF+/Fx2MVH+Cya3j2ihSeVz7Kkqr49wtFXn4YL1Z+HN8Gyfw28BG6ki+19U/oNEjkiBmCM/A2VBUsUSCphRfxh1XWGwXSkLmXj5sE4N15od1NFhXcUsxfnwfKjVg+UZ6AL4MI0H9HF10W/3AgPOfJiZRJxjwNpMfcDgKJ+qLLzUivGDD8Lo5uoMGybQKROdBYWyvvPsdKiUp5hlgT0nm33ujUU7Xq4H2IHS/iH2fzjQmlShexmkGn3oBaIktRsqd91JKdNY295gpm9cd52G7xpiNc2JhSWyxxulYTzp7IML9VbmsyZKKKZYZ3pmrhdfNpb10jxxvIN457Q65IJLrBsths62m5qRc5TkUW5PmSqBraQ+vv8KXfcbSPsXKw==
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List API Keys"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/api-keys"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List all API keys for the current user in the current workspace
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"created_at":{"type":"string"},"expires_at":{"type":"string"},"id":{"type":"string"},"key_prefix":{"description":"Adjusted length to fit prefix + partial hash","type":"string"},"last_used_at":{"type":"string"},"name":{"type":"string"},"revoked_at":{"type":"string"},"scopes":{"type":"array","items":{"type":"string"}},"updated_at":{"type":"string"},"user_id":{"type":"string"},"workspace_id":{"type":"string"}}}}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

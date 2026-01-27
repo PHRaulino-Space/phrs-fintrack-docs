@@ -6,9 +6,6 @@
 // LICENSE file in the root directory of this source tree.
 
 import {themes as prismThemes} from 'prism-react-renderer';
-import {createRequire} from 'module';
-
-const require = createRequire(import.meta.url);
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -43,22 +40,25 @@ const config = {
       onBrokenMarkdownLinks: 'warn',
     },
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ['@docusaurus/theme-mermaid', 'docusaurus-theme-openapi-docs'],
   plugins: [
-    function webpackPolyfills() {
-      return {
-        name: 'webpack-polyfills',
-        configureWebpack() {
-          return {
-            resolve: {
-              fallback: {
-                stream: require.resolve('stream-browserify'),
-              },
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api',
+        docsPluginId: 'classic',
+        config: {
+          fintrack: {
+            specPath: 'static/openapi.json',
+            outputDir: 'docs/api-reference',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
             },
-          };
+          },
         },
-      };
-    },
+      },
+    ],
   ],
 
   presets: [
@@ -67,7 +67,8 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: './sidebars.js',
+          sidebarPath: './sidebars.ts',
+          docItemComponent: '@theme/ApiItem',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:

@@ -1,0 +1,72 @@
+---
+id: update-staged-transaction
+title: "Update staged transaction"
+description: "Update a staged transaction by ID"
+sidebar_label: "Update staged transaction"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV1Fv2zYQ/ivCPW0AU7vDBhR+U2y1Fdo4guwsKwrDOIsXm41EqiSVxDD034eT1MSO5bTAgD4M1YvF48fj8U738fMOJLnMqtIro2EEV6VETwEGzuOaZOAtaocZzwarbRBPQIDHtYPRZ2ghZ3sQBwsBJVosyJNl0O6Z//mev8aZxoJgBEqCAMWIEv0GBFj6WilLEkbeViTAZRsqEEY78NuSVzhvlV5DXS9aMDl/buSWEZnRnrTnVyzLXGXI+w2+OA5hd+zKrL5Q5kFAaU1J1ityzdrCVK2XDqerYkUWagESfa8DlFLxXpgne674BLXgfPnKHR9BAOmq4Iwm6eU4ms3i6TsQML68SD5G84izlETTSWtNo3DyidP8cMarzu7QcgqbgsyaguyleNbsmFiTkXPtVicwY1OUOXmSpyEJafmij5RQbmFRC9j7JJb8PfWUTXSG08mIp+PLiwgERP8k0XTGb/M0nM7eRikIiKd/R7P5RTSdLydRcjmL54fG63j+fpKG1+FHTmWYTpZJ+Ilnvg2fvDbD8fswfRedh+MPP5rc+bakWGemoL6U8Gz0UJJ2J6eb4Q3ZU/OxviPnC9J+QqVxyn8feK38Rlq8x/wUdoxWJrhl8EuQ74TOkPEG7ZpWmN3CouZHPOv12TGFPDbKYXvXbHCl0a7tvD+GQ/45dHf5AcRPaO3MEnqSS/S9X21/5z8/e89CJXvN5WNzLklblW0KOghsZUxOqBnqGGf08oSnX/Tyi17+r/QioGqEyYm27Ojnzz7aOEcZpK0++C/80X+z90Yi4K++QGLtyWrMgxnZO7JBZK2xPymkWkBBfmMkC6yq4UOWWSMY9Ii4wU7JGphvOM5WxVU2Z/QgNxnmG+P86M3wzXCApRrcvQbWYBxv+qTDogfklt8n2+Eje+6x1SEpHXf2U+N2x+r6lhlV35jjNIdJHNwYGxSoca30OijJOk5ScKM06ozcK3amPAcHb5X2FrPbIEzirhaY+TZEPnzr8/WrYcPVxvkCm6p0srWTy8diGY4uhMcy/5jGbg/r6cEPyhxVcwE0Rdh1pevX3wJGSjLFcI0YtNut0NGVzeuazV8rslsYfV4IuEOrcMVZYJWuHL9LGN1g7uiF6H9Lu6v79+BIzPdG3RlRb4E3zSsegYBb2rbCv+b+3hBKsk0s7cS43fGM+WBv4VGL1OLbijDLqPQvYhd7fZBcMVmvuv8MhZG8xOI9qxO8b2M0ZZvW0a617SBHva5wzdjWJT//Aojim2E=
+sidebar_class_name: "put api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Update staged transaction"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/staged-transactions/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Update a staged transaction by ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Transaction ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","properties":{"amount":{"type":"number"},"data":{"type":"object","additionalProperties":true},"status":{"type":"string","enum":["PROCESSING","COMPLETED","PENDING","READY"],"x-enum-varnames":["StagedTransactionStatusProcessing","StagedTransactionStatusCompleted","StagedTransactionStatusPending","StagedTransactionStatusReady"]},"transaction_date":{"type":"string"},"type":{"type":"string","enum":["INCOME","EXPENSE","TRANSFER","INVESTMENT_DEPOSIT","INVESTMENT_WITHDRAWAL","CARD_PAYMENT","CARD_EXPENSE","CARD_CHARGEBACK"],"x-enum-varnames":["StagedTransactionTypeIncome","StagedTransactionTypeExpense","StagedTransactionTypeTransfer","StagedTransactionTypeInvestmentDeposit","StagedTransactionTypeInvestmentWithdrawal","StagedTransactionTypeCardPayment","StagedTransactionTypeCardExpense","StagedTransactionTypeCardChargeback"]}}}}},"description":"Staged transaction object","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"amount":{"type":"number"},"created_at":{"type":"string"},"data":{"type":"object"},"description":{"type":"string"},"id":{"type":"string"},"processing_enrichment":{"type":"boolean"},"session_id":{"type":"string"},"status":{"type":"string","enum":["PROCESSING","COMPLETED","PENDING","READY"],"x-enum-varnames":["StagedTransactionStatusProcessing","StagedTransactionStatusCompleted","StagedTransactionStatusPending","StagedTransactionStatusReady"]},"transaction_date":{"type":"string"},"type":{"type":"string","enum":["INCOME","EXPENSE","TRANSFER","INVESTMENT_DEPOSIT","INVESTMENT_WITHDRAWAL","CARD_PAYMENT","CARD_EXPENSE","CARD_CHARGEBACK"],"x-enum-varnames":["StagedTransactionTypeIncome","StagedTransactionTypeExpense","StagedTransactionTypeTransfer","StagedTransactionTypeInvestmentDeposit","StagedTransactionTypeInvestmentWithdrawal","StagedTransactionTypeCardPayment","StagedTransactionTypeCardExpense","StagedTransactionTypeCardChargeback"]},"updated_at":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

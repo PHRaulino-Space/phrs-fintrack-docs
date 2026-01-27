@@ -1,0 +1,72 @@
+---
+id: list-staged-transactions-in-session
+title: "List staged transactions in session"
+description: "Get all staged transactions for a specific import session"
+sidebar_label: "List staged transactions in session"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VlFv2zYQ/ivCPW0AU6fDBhR6U201FZrYguUtKwrDOItnm41EMSTlxTD034eT3NSO5XTYgPnFIr878u67033agySXW2W8qjSEcEM+wKIInMc1ycBb1A5zBl2wqmyAgTOUq5XKA1WayvrAkXPsK8Dj2kH4BTrg6gA4mAswaLEkT5YN9i/uzDrDIBmBAI0lQQhKggDFqEG/AQGWHmtlSULobU0CXL6hEiHcg98Z9nDeKr2GppmzsTOVduQY/+X6mv9O75x8AgF5pT1pzygaU6gcGR18dWyyP78CrcUdx+WpdEf71fIr5R4EGFsZsl51F2NZ1d3pBztdl0uy0AjILaEnuUDfk4EAiR7Pz2fgOIkeRyV7t42tciZZrxekrco3JZ0EtqyqglCz6aFqiwsnOY++dueQANJ1ydVPp5NhnGXJ+AYEDCd36W08i7myaTwedbvTOBp95rZ4umKvqy1aLnvbPFnbeLPvfZe1N6bPGYC4ZDOsSlOQJ3nZJCUtXz1jSih3MG8EHLX+QqKnXjq6jctkJOPh5C4GAfGfaTzO+Gk2jcbZh3gKApLxH3E2u4vHs8UoTidZMjvdvE9mH0fT6D66ZSqj6WiRRp8Z+bb8fmq7HH6Mpjfx+2j46Z+SO9sZSnReldRHCaPxkyHtLsLtckX2Ep7oLTnP7TYiUznlf2x4r/xGWvwLi0u2Q7QyxV3bxK+Y/CB0Nhlu0K5piflDW/PayMuvZfcT8GvfPHmPMpjSY03O/4vB8jxAUErFplikJ6OkJxQBv/UFkmhPVmMRZGS3ZIPY2sr+TyE1Akrym0pCCGtqByIP7xAGLyRhsFeyGXQac3WsMcADiOPudKK2BXsPiirHYlM5H767fnc9QKMG27fAk17pVXVOQpQmrVqVqHGt9DowZB2nEKyURp2Te8N6pXzBKXxQ2lvMH4IoTQ5MYc5MNQI4lO7Mt2+u21FaOV9iy9lBqm6V8716qfSROL6Y3M/l+G+K29XA05MfmAJVO8Fb0vYH6s/VWEDYimsf+3MBzDK77fdLdPS7LZqGtx9rsjsIv8wFbNEqXDJzrOTK8bOEcIWFo1fy/Gl6UPCfgxPB783hm+BqltstFjWvQMAD7bqPg4Zf1w2hJNvG0QFRnpPxRy5nrc4989yjN/EMmuZvJ5YiKA==
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List staged transactions in session"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/import-sessions/{id}/staged-transactions"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get all staged transactions for a specific import session
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Session ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"amount":{"type":"number"},"created_at":{"type":"string"},"data":{"type":"object"},"description":{"type":"string"},"id":{"type":"string"},"processing_enrichment":{"type":"boolean"},"session_id":{"type":"string"},"status":{"type":"string","enum":["PROCESSING","COMPLETED","PENDING","READY"],"x-enum-varnames":["StagedTransactionStatusProcessing","StagedTransactionStatusCompleted","StagedTransactionStatusPending","StagedTransactionStatusReady"]},"transaction_date":{"type":"string"},"type":{"type":"string","enum":["INCOME","EXPENSE","TRANSFER","INVESTMENT_DEPOSIT","INVESTMENT_WITHDRAWAL","CARD_PAYMENT","CARD_EXPENSE","CARD_CHARGEBACK"],"x-enum-varnames":["StagedTransactionTypeIncome","StagedTransactionTypeExpense","StagedTransactionTypeTransfer","StagedTransactionTypeInvestmentDeposit","StagedTransactionTypeInvestmentWithdrawal","StagedTransactionTypeCardPayment","StagedTransactionTypeCardExpense","StagedTransactionTypeCardChargeback"]},"updated_at":{"type":"string"}}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

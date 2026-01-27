@@ -1,0 +1,72 @@
+---
+id: delete-a-card
+title: "Delete a card"
+description: "Delete a card and all its related data (Cascade)"
+sidebar_label: "Delete a card"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9lE1rGzEQhv+KmFMCStYpKYS9uY4DhlJC2tJC8GEijW0lsqRIWlOz6L+X2d182abQHHJa7WikefTyzrSgKaloQjbeQQ2XZCmTQKEwaoFOC7RWmJxEJIuZtNCYURxNMCnUdAwSMi4T1LfAJxLMJQSMuKZMkcPtToFfPj6kgIrE7BIkOFwT1PD75Dl+0sUN564INUWQEOmxMZE01Dk2JCGpFa0R6hbyNvD5lKNxSyhF7tab8DtelzL66fqAefVfl885OQXvEiXe/zQ658/bgt+8mHiXyWUoEs5Ho/2UL6jFDT02lDJIUEN23QKGYI1CTqvuE+e2+zj+7p4UH0StDaeivY4+UMymx9rFLqUDOciaxZVvnP4wjM+H9Ji5TNGhFd8pbiiKaYw+fhBSkbCmvPIaatCd+UH2zqih6ixdtUYXkJA6uN7TTbS8X1mv0K58yvXF6GJUYTDV5gzYKMYt/P5Lx9czsfBRrNHh0rilCBQTc4qFcegUpVPuKJMtc14ZlyOqBzG+ng1yoGI5igRG6e88Ox2x04JPeY2dMIPT3/QyyLco7Yu672r6XslMf3IVLBrHCJ0q7aDe00CQUBvNY4Fl4nDb3mGin9GWwuHHhuIW6tu5hA1Gg3f8dB4bJvFaQ71Am+gf+Ec3Qwcfi5duPwg4BNFtgavZhv9AwgNt+8lQ5kU+jZ13Q+yMuIMkfcW9sffMxIOszxkrRSG/2ttrBbbbs4cvp1+nP6ZQyl+qlPsQ
+sidebar_class_name: "delete api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete a card"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/cards/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete a card and all its related data (Cascade)
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Card ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"404":{"description":"Not Found","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,72 @@
+---
+id: close-session-and-trigger-reconciliation
+title: "Close session and trigger reconciliation"
+description: "Close an import session and trigger reconciliation. Updates all VALIDATING transactions to PAID status. Requires admin role. For card context, also updates invoice status to PAID."
+sidebar_label: "Close session and trigger reconciliation"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVEtvEzEQ/ivWnEAy2ZSHhPYWKEURiEa05VLlMLEniVuvvR07EdHK/x3N7vJoU8GtEqd9zOub+Wa+Diwlw67NLgao4b2PiRQG5Zo2claJUnIxKAxWZXabDbFiMjEY5x1K0ERdtRYzJYXeq2+zz/PT2eX8y0eVGUNCIz5J5agWs/mpShnzLk3UV7rbOZYg27igOHqaqLPIyiBbZWLI9D1rhT5FtRvzu7CPztCY42fKCWjIuElQX8MA+sUIOsFSQ4uMDWVicegedHsxdjc/BQ0BG4IanAUNTqwt5i1o4AGqhTrzjjQks6UGoe4gH1qJSJld2EApS3FObQyJkthfTqfyuF/z/BNo6BsMWazYtt6ZfpTVTRKX7rhEXN2QyaABrXXiin7BsSXObij1EEopRcPrx+q/Q9tPn1J+QiCvjoGcRV45ayk8GYw3j81jHjJxQK8uiPfE6gNz5CeCVDQ0lLfRyrbFnpB+6WqoHqxy1TlbKiPXCRpSD3XY6B178a98NOi3MeX67fTttMLWVfsTkJ10YR2P+54t5modWTUYcOPCRrXESVCrtQsYDKX+slz2gvrMhcxobtVsMR+Hg0aGUzQIlCHnyWQKRfetNNiPaTyqQVb+LSag76PsftPwv0rTwLrEVK1HF2RAPWfdyPWxbGmoexUa6F5qEFrFsetWmOiKfSny+25HfID6eqlhj+xwJVSJyLkk7xbqNfpEf5nps7FZ+1zd08JHUY8/MRxACvqdfIGGWzoMulmWRcOW0BL3OAbDzBhq8x8hR+ckS/rrDhbnF5dQyg91qEqK
+sidebar_class_name: "post api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Close session and trigger reconciliation"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/import-sessions/{id}/close"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Close an import session and trigger reconciliation. Updates all VALIDATING transactions to PAID status. Requires admin role. For card context, also updates invoice status to PAID.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Session ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"403":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

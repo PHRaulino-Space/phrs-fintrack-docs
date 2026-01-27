@@ -1,0 +1,630 @@
+[
+  {
+    "type": "doc",
+    "id": "api-reference/fintrack-api"
+  },
+  {
+    "type": "category",
+    "label": "accounts",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-accounts",
+        "label": "List accounts",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-account",
+        "label": "Create a new account",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-account",
+        "label": "Get a single account",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-an-account",
+        "label": "Delete an account",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-an-existing-account",
+        "label": "Update an existing account",
+        "className": "api-method patch"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "api-keys",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-api-keys",
+        "label": "List API Keys",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-api-key",
+        "label": "Create API Key",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/revoke-api-key",
+        "label": "Revoke API Key",
+        "className": "api-method delete"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "auth",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/native-login",
+        "label": "Native login",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/logout",
+        "label": "Logout",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/register-new-user",
+        "label": "Register new user",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/validate-token",
+        "label": "Validate token",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/o-auth-callback",
+        "label": "OAuth callback",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/o-auth-login-initiation",
+        "label": "OAuth login initiation",
+        "className": "api-method get"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "transactions",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/create-card-chargeback",
+        "label": "Create card chargeback",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-card-expense",
+        "label": "Create card expense",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-card-payment",
+        "label": "Create card payment",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-investment-deposit",
+        "label": "Create investment deposit",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-investment-withdrawal",
+        "label": "Create investment withdrawal",
+        "className": "api-method post"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "cards",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-cards",
+        "label": "List cards",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-card",
+        "label": "Create a new card",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-card",
+        "label": "Get a single card",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-a-card",
+        "label": "Delete a card",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-an-existing-card",
+        "label": "Update an existing card",
+        "className": "api-method patch"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "categories",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-categories",
+        "label": "List categories",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-category",
+        "label": "Create a new category",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-category",
+        "label": "Get a single category",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-category",
+        "label": "Delete category",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-category",
+        "label": "Update category",
+        "className": "api-method patch"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "currencies",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-all-currencies",
+        "label": "List all currencies",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-currency",
+        "label": "Get a single currency",
+        "className": "api-method get"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "enrichment",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/enrich-a-batch-of-transactions",
+        "label": "Enrich a batch of transactions",
+        "className": "api-method post"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "expenses",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-expenses",
+        "label": "List expenses",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-expense",
+        "label": "Create a new expense",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-expense",
+        "label": "Get a single expense",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-an-expense",
+        "label": "Update an expense",
+        "className": "api-method put"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-an-expense",
+        "label": "Delete an expense",
+        "className": "api-method delete"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "import-sessions",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-import-sessions",
+        "label": "List import sessions",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-import-session",
+        "label": "Create a new import session",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-import-session-with-enriched-data",
+        "label": "Get import session with enriched data",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-import-session",
+        "label": "Delete import session",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/bind-staged-transaction-to-recurring-pattern",
+        "label": "Bind staged transaction to recurring pattern",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/close-session-and-trigger-reconciliation",
+        "label": "Close session and trigger reconciliation",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/commit-staged-transactions-to-main-tables",
+        "label": "Commit staged transactions to main tables",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/enrich-staged-transactions",
+        "label": "Enrich staged transactions",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/list-staged-transactions-in-session",
+        "label": "List staged transactions in session",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-staged-transactions",
+        "label": "Create staged transactions",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-all-staged-transactions-in-session",
+        "label": "Delete all staged transactions in session",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/upload-csv-file",
+        "label": "Upload CSV file",
+        "className": "api-method post"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "incomes",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-incomes",
+        "label": "List incomes",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-income",
+        "label": "Create a new income",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-income",
+        "label": "Get a single income",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-an-income",
+        "label": "Update an income",
+        "className": "api-method put"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-an-income",
+        "label": "Delete an income",
+        "className": "api-method delete"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "investments",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-investments",
+        "label": "List investments",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-investment",
+        "label": "Create investment",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-investment",
+        "label": "Delete investment",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-investment",
+        "label": "Update investment",
+        "className": "api-method patch"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "recurring",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-recurring-transactions",
+        "label": "List recurring transactions",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-recurring-transaction",
+        "label": "Create recurring transaction",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/list-pending-recurring-transactions",
+        "label": "List pending recurring transactions",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-recurring-transaction-patch",
+        "label": "Update recurring transaction (Patch)",
+        "className": "api-method patch"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-projection-for-a-recurring-item",
+        "label": "Get projection for a recurring item",
+        "className": "api-method get"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "staged-transactions",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/get-staged-transaction",
+        "label": "Get staged transaction",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-staged-transaction",
+        "label": "Update staged transaction",
+        "className": "api-method put"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-staged-transaction",
+        "label": "Delete staged transaction",
+        "className": "api-method delete"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "sub-categories",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-sub-categories",
+        "label": "List sub-categories",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-sub-category",
+        "label": "Create a new sub-category",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-sub-category",
+        "label": "Get a single sub-category",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-sub-category",
+        "label": "Delete sub-category",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-sub-category",
+        "label": "Update sub-category",
+        "className": "api-method patch"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "tags",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-tags",
+        "label": "List tags",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-tag",
+        "label": "Create a new tag",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-tag",
+        "label": "Get a single tag",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-tag",
+        "label": "Delete tag",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-tag",
+        "label": "Update tag",
+        "className": "api-method patch"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "transfers",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-transfers",
+        "label": "List transfers",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-transfer",
+        "label": "Create a new transfer",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-transfer",
+        "label": "Get a single transfer",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-a-transfer",
+        "label": "Update a transfer",
+        "className": "api-method put"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-a-transfer",
+        "label": "Delete a transfer",
+        "className": "api-method delete"
+      }
+    ]
+  },
+  {
+    "type": "category",
+    "label": "workspaces",
+    "items": [
+      {
+        "type": "doc",
+        "id": "api-reference/list-users-workspaces",
+        "label": "List user's workspaces",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/create-a-new-workspace",
+        "label": "Create a new workspace",
+        "className": "api-method post"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/get-a-single-workspace",
+        "label": "Get a single workspace",
+        "className": "api-method get"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/delete-a-workspace",
+        "label": "Delete a workspace",
+        "className": "api-method delete"
+      },
+      {
+        "type": "doc",
+        "id": "api-reference/update-workspace",
+        "label": "Update workspace",
+        "className": "api-method patch"
+      }
+    ]
+  }
+]

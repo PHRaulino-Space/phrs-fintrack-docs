@@ -1,0 +1,72 @@
+---
+id: update-an-income
+title: "Update an income"
+description: "Update an existing income"
+sidebar_label: "Update an income"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVt9v2zYQ/leEe9oAunaHDSj05i5ZIWxIjTTpBhSGcSYvNhuJZEkqjSHofx9OVO3YklOsHfY0vUg6Hu+O/L770YCiIL12UVsDOdw6hZEyNBk96hC12WTaSFsRCIi4CZB/gCQIsBTg0GNFkTwvNCe2/rT+PjiUlBUXIMBgRZDDX5O9fNLJNetuCRV5EODpU609Kcijr0lAkFuqEPIG4s7x/hC9NhtoW3Hqr+jiOnKm1RcHDuP2H5lfJmUK8bVVO9aQ1kQykT/RuVJLZMfTj4G9N0NTdv2RZAQBzltHPmoK3d7K1slKr2fqak0eWgESI22s3620GglJHJ93ZD3U69XXbESPJqBkGyvG+qtKIWKsw1BNAJm6YkK8n/9RXMxviqs3IGAx7wBYXF5dJEHx5urt9SWz5XHCOyYP6Bmejks3B0fvOj/vsdQKY3IwWF1gh+hQTkad2VJsjPUEy5YfMU6ZPVLH9GhZEJw1ISH302zGr2MTb38H8a9RQ0rmxjnovoM50hNGUiuM30SsM1Y9ydrzzyrVhHPe/+flM7wUUHdF9ww4PW9/HuPea1TZdSpS30NCVEqzKpaLIzqORCLgl7FAChPJGyyzd+QfyGeX3lv/H4XUCqgobq3iKl93ScW1Podp36imjVYtCAhdbKlT1b5kjWlpJZZbG2L+avZqNkWnpw8vgYs/x3h9aACXj1i5kp4W8NlJ2h0IeHw5e/EgDQ5LQ/aPr30h/VNuc36aOztEZb4osjvrswoNbriVO/KB7zS70waNpPCCzevI54LftIke5X02XxQ9dCgZulYA31uy+fLFjB06G2KFHYh9qz1MDvuB4aSq7Mnw/JSREI70GKeuRG3YXQdX0wN7mEAE5FpxBjOCvNA0awx068u2ZfGnmvwO8g9LAQ/oNa75oDyn6MDfCvI7LAM9E+kP131H+DF7Ol6MBtkL0eyA/ZU1/4GAe9qlUaTlZO8nnW8O42SqGo0keRxMWvuYeHZKOr8mF5MbNnPQGCTrYcdcSnLxWd3lk4xc3N6AgHU/QlVW8RaPn7nZ4ud0QbY7cZffnayBEs2mxg3rJpP8/A3OUrCw
+sidebar_class_name: "put api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Update an income"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/incomes/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Update an existing income
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Workspace ID","name":"X-Workspace-ID","in":"header","required":true,"schema":{"type":"string"}},{"description":"Income ID","name":"id","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object","properties":{"amount":{"type":"number"},"category_id":{"type":"string"},"description":{"type":"string"},"sub_category_id":{"type":"string"},"transaction_date":{"type":"string"},"transaction_status":{"type":"string","enum":["VALIDATING","PAID","PENDING","IGNORE"],"x-enum-varnames":["TransactionStatusValidating","TransactionStatusPaid","TransactionStatusPending","TransactionStatusIgnore"]}}}}},"description":"Income object","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"account_id":{"type":"string"},"amount":{"type":"number"},"category_id":{"type":"string"},"created_at":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"recurring_income_id":{"type":"string"},"sub_category_id":{"type":"string"},"transaction_date":{"type":"string"},"transaction_status":{"type":"string","enum":["VALIDATING","PAID","PENDING","IGNORE"],"x-enum-varnames":["TransactionStatusValidating","TransactionStatusPaid","TransactionStatusPending","TransactionStatusIgnore"]},"updated_at":{"type":"string"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -8,6 +8,80 @@
     },
     "host": "localhost:8080",
     "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "accounts",
+            "description": "Endpoints de contas"
+        },
+        {
+            "name": "api-keys",
+            "description": "Endpoints de chaves de API"
+        },
+        {
+            "name": "auth",
+            "description": "Endpoints de autenticação"
+        },
+        {
+            "name": "cards",
+            "description": "Endpoints de cartões"
+        },
+        {
+            "name": "categories",
+            "description": "Endpoints de categorias"
+        },
+        {
+            "name": "currencies",
+            "description": "Endpoints de moedas"
+        },
+        {
+            "name": "enrichment",
+            "description": "Endpoints de enrichment"
+        },
+        {
+            "name": "expenses",
+            "description": "Endpoints de despesas"
+        },
+        {
+            "name": "import-sessions",
+            "description": "Endpoints de importação"
+        },
+        {
+            "name": "incomes",
+            "description": "Endpoints de receitas"
+        },
+        {
+            "name": "investments",
+            "description": "Endpoints de investimentos"
+        },
+        {
+            "name": "recurring",
+            "description": "Endpoints de transações recorrentes"
+        },
+        {
+            "name": "staged-transactions",
+            "description": "Endpoints de transações em staging"
+        },
+        {
+            "name": "sub-categories",
+            "description": "Endpoints de subcategorias"
+        },
+        {
+            "name": "tags",
+            "description": "Endpoints de tags"
+        },
+        {
+            "name": "transactions",
+            "description": "Endpoints de transações"
+        },
+        {
+            "name": "transfers",
+            "description": "Endpoints de transferências"
+        },
+        {
+            "name": "workspaces",
+            "description": "Endpoints de workspaces"
+        }
+    ],
     "paths": {
         "/accounts": {
             "get": {

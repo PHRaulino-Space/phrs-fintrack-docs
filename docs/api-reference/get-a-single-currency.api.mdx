@@ -1,0 +1,72 @@
+---
+id: get-a-single-currency
+title: "Get a single currency"
+description: "Get a single currency by its code"
+sidebar_label: "Get a single currency"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VFFr2zAQ/ivi2EMLIk7HBsVvbdeVsMJKuj6VPFzki6NWllRJDs2M/vs4x2mXJnSDwfxiW3en++67766DiqIK2iftLJRwRUmgiNrWhoRqQyCr1mK+FjpFoVxFICFhHaG8h8GsKcJMgseADSUKbOveXHuxvenCVSSOaFSPpDifXktxd/vlGCRYbAhKGDJojvGYliAh0FOrA1VQptCShKiW1CCUHaS155iYgrY15Dxj5+idjRTZ/nE85tcuku/fQIJyNpFNbEXvjVbI1uIhsku3n8LNH0glkOCD8xSS3iTo0e4BkUDP2HjDR+fTa8jb6t51DPhTG41WTAkNx8R1M3fm/ajpB8j9I+HToWLPsRJTemoppn+pGqtKsyuam5363zagB/L5EJCJTRQsGnFLYUVBXIbgwn+ClCU0lJaughJq6rvIyiqheBVw0XEvM0iIPcCNhttg2K0wTqFZupjK0/HpuECvi9UJsN60Xbj9as9uJmLhgmjQYq1tLTyFyFjFQlu0iuKIx0involftU0B1aM4u5kMlKBiSrIEhrK582Q0ZlV4F1ODPTnDyBycWJC7kLpXpv9uxDc0JnpOhTeoLefu6egG9nbGX0LZB84kME1s7bo5RroLJmc+fmoprKG8n0lYYdA459J5TejI3xWUCzSR3oF9NB0WwbH44zY5CH84RMvsrNC0/AcSHmm93Tx5liUsCSsKPbqN6Uwp8um3oD2pshReNHZ1+QNy/gUTb8/W
+sidebar_class_name: "get api-method"
+info_path: docs/api-reference/fintrack-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a single currency"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/currencies/{code}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a single currency by its code
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Currency Code (e.g., BRL, USD)","name":"code","in":"path","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"code":{"type":"string","example":"BRL"},"name":{"type":"string","example":"Brazilian Real"},"symbol":{"type":"string","example":"R$"}}}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
