@@ -94,7 +94,6 @@ const sidebars: SidebarsConfig = {
         'development/code-style',
         'development/git-workflow',
         'development/testing-strategy',
-        'development/test-scenarios',
         'development/debugging',
       ],
     },
