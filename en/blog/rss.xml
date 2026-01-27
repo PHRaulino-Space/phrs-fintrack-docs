@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>FinTrack Blog</title>
-        <link>https://phraulino-space.github.io/fintrack-docs/en/blog</link>
+        <link>https://phraulino-space.github.io/phrs-fintrack-docs/en/blog</link>
         <description>FinTrack Blog</description>
         <lastBuildDate>Tue, 20 Jan 2026 20:04:19 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,9 +10,12 @@
         <language>en</language>
         <item>
             <title><![CDATA[Welcome to the Blog]]></title>
-            <link>https://phraulino-space.github.io/fintrack-docs/en/blog/welcome</link>
-            <guid>https://phraulino-space.github.io/fintrack-docs/en/blog/welcome</guid>
+            <link>https://phraulino-space.github.io/phrs-fintrack-docs/en/blog/welcome</link>
+            <guid>https://phraulino-space.github.io/phrs-fintrack-docs/en/blog/welcome</guid>
             <pubDate>Tue, 20 Jan 2026 20:04:19 GMT</pubDate>
+            <description><![CDATA[Este espaço reúne novidades sobre o FinTrack, melhorias na plataforma e dicas de uso.]]></description>
+            <content:encoded><![CDATA[<p>Este espaço reúne novidades sobre o FinTrack, melhorias na plataforma e dicas de uso.</p>
+<p>Em breve teremos mais conteúdos detalhados sobre releases, integrações e melhores práticas.</p>]]></content:encoded>
         </item>
     </channel>
 </rss>
