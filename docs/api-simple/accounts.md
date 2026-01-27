@@ -1,7 +1,7 @@
 ---
 title: Accounts
 ---
-## DELETE `/accounts/{id}`
+## DELETE `/accounts/{account_id}`
 
 **Resumo:** Delete an account
 
@@ -16,7 +16,7 @@ Delete an account and all its related data (Cascade)
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Account ID |
+| account_id | path | string | sim | Account ID |
 
 ### Respostas
 
@@ -51,7 +51,7 @@ List all accounts for a given workspace
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## GET `/accounts/{id}`
+## GET `/accounts/{account_id}`
 
 **Resumo:** Get a single account
 
@@ -66,7 +66,7 @@ Get a single account by its ID
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Account ID |
+| account_id | path | string | sim | Account ID |
 
 ### Respostas
 
@@ -76,7 +76,7 @@ Get a single account by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## PATCH `/accounts/{id}`
+## PATCH `/accounts/{account_id}`
 
 **Resumo:** Update an existing account
 
@@ -91,7 +91,7 @@ Update an existing account by its ID
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Account ID |
+| account_id | path | string | sim | Account ID |
 | account | body | v1.AccountUpdateRequest | sim | Account object for update |
 
 ### Respostas
