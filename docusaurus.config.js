@@ -7,6 +7,9 @@
 
 import {themes as prismThemes} from 'prism-react-renderer';
 
+const isFastDocs = process.env.DOCS_I18N_FAST === '1';
+const skipApiDocs = process.env.DOCS_SKIP_API === '1';
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'FinTrack',
@@ -31,7 +34,7 @@ const config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'pt-BR',
-    locales: ['pt-BR', 'en'],
+    locales: isFastDocs ? ['pt-BR'] : ['pt-BR', 'en'],
   },
 
   markdown: {
@@ -40,26 +43,8 @@ const config = {
       onBrokenMarkdownLinks: 'warn',
     },
   },
-  themes: ['@docusaurus/theme-mermaid', 'docusaurus-theme-openapi-docs'],
-  plugins: [
-    [
-      'docusaurus-plugin-openapi-docs',
-      {
-        id: 'api',
-        docsPluginId: 'classic',
-        config: {
-          fintrack: {
-            specPath: 'static/openapi.json',
-            outputDir: 'docs/api-reference',
-            sidebarOptions: {
-              groupPathsBy: 'tag',
-              categoryLinkSource: 'tag',
-            },
-          },
-        },
-      },
-    ],
-  ],
+  themes: ['@docusaurus/theme-mermaid'],
+  plugins: [],
 
   presets: [
     [
@@ -68,7 +53,10 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.ts',
-          docItemComponent: '@theme/ApiItem',
+          exclude: [
+            ...(skipApiDocs ? ['api-simple/**'] : []),
+            'api-reference/**',
+          ],
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
