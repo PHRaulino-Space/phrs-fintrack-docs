@@ -422,4 +422,4 @@ interface StagedTransaction {
 | Obter Transação | `GET /staged-transactions/:id` | Detalhes da transação |
 | Atualizar Transação | `PUT /staged-transactions/:id` | Atualiza transação |
 
-Para detalhes técnicos dos endpoints, consulte a [API Reference](/docs/api-reference/import-sessions).
+Para detalhes técnicos dos endpoints, consulte a api doc
