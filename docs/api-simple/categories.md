@@ -1,7 +1,7 @@
 ---
 title: Categories
 ---
-## DELETE `/categories/{id}`
+## DELETE `/categories/{category_id}`
 
 **Resumo:** Delete category
 
@@ -16,7 +16,7 @@ Delete a category and its subcategories (cascade)
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Category ID |
+| category_id | path | string | sim | Category ID |
 
 ### Respostas
 
@@ -51,7 +51,7 @@ List all categories for a given workspace
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## GET `/categories/{id}`
+## GET `/categories/{category_id}`
 
 **Resumo:** Get a single category
 
@@ -66,7 +66,7 @@ Get a single category by its ID
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Category ID |
+| category_id | path | string | sim | Category ID |
 
 ### Respostas
 
@@ -76,7 +76,7 @@ Get a single category by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## PATCH `/categories/{id}`
+## PATCH `/categories/{category_id}`
 
 **Resumo:** Update category
 
@@ -91,7 +91,7 @@ Update a category
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Category ID |
+| category_id | path | string | sim | Category ID |
 | category | body | v1.updateCategoryRequest | sim | Category update object |
 
 ### Respostas
