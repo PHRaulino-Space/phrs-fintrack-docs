@@ -344,6 +344,7 @@ Sem propriedades.
 | card_id | string | não |  |
 | context_value | number | não |  |
 | created_at | string | não |  |
+| current_total | number | não |  |
 | description | string | não |  |
 | id | string | não |  |
 | initial_balance | number | não |  |

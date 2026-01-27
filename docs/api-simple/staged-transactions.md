@@ -106,6 +106,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | amount | number | não |  |
 | data | object | não |  |
+| description | string | não |  |
 | status | entity.StagedTransactionStatus | não |  |
 | transaction_date | string | não |  |
 | type | entity.StagedTransactionType | não |  |
