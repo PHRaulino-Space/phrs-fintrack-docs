@@ -1,0 +1,75 @@
+---
+title: OpenAPI
+description: Documentação automática da API via Swagger UI e Redoc.
+---
+
+import React from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import 'swagger-ui-react/swagger-ui.css';
+
+export const OpenApiReference = () => {
+  const openApiUrl = useBaseUrl('/openapi.json');
+
+  return (
+    <div className="api-docs">
+      <Tabs
+        groupId="api-view"
+        defaultValue="swagger"
+        values={[
+          {label: 'Swagger UI', value: 'swagger'},
+          {label: 'Redoc', value: 'redoc'},
+        ]}
+      >
+        <TabItem value="swagger">
+          <div className="api-docs__swagger">
+            <BrowserOnly fallback={<div>Carregando Swagger...</div>}>
+              {() => {
+                const SwaggerUI = require('swagger-ui-react').default;
+                return (
+                  <SwaggerUI
+                    url={openApiUrl}
+                    docExpansion="list"
+                    deepLinking
+                    displayOperationId
+                  />
+                );
+              }}
+            </BrowserOnly>
+          </div>
+        </TabItem>
+        <TabItem value="redoc">
+          <div className="api-docs__redoc">
+            <BrowserOnly fallback={<div>Carregando Redoc...</div>}>
+              {() => {
+                const {RedocStandalone} = require('redoc');
+                return (
+                  <RedocStandalone
+                    specUrl={openApiUrl}
+                    options={{
+                      scrollYOffset: 80,
+                      theme: {
+                        colors: {
+                          primary: {
+                            main: '#2e8555',
+                          },
+                        },
+                        typography: {
+                          fontFamily: 'inherit',
+                        },
+                      },
+                    }}
+                  />
+                );
+              }}
+            </BrowserOnly>
+          </div>
+        </TabItem>
+      </Tabs>
+    </div>
+  );
+};
+
+<OpenApiReference />

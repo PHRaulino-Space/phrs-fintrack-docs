@@ -46,6 +46,7 @@ const sidebars = {
       type: 'category',
       label: 'API Reference',
       items: [
+        'api-reference/openapi',
         'api-reference/authentication',
         'api-reference/api-keys',
         'api-reference/notifications',

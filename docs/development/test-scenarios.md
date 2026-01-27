@@ -437,7 +437,7 @@ Esta página documenta os cenários de teste end-to-end do FinTrack, organizados
 
 | Passo | Ação | Resultado Esperado |
 |-------|------|-------------------|
-| 1 | GET `/import-sessions/{id}` | Retorna stats: {ready: N, total: M} |
+| 1 | GET `/import-sessions/{id}` | Retorna stats: `{ready: N, total: M}` |
 | 2 | Todas transações READY + context_value == target_value | status: "ok" |
 | 3 | Alguma transação PENDING | status: "pending" |
 | 4 | context_value != target_value | status: "pending" |

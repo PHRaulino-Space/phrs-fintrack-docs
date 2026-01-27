@@ -6,6 +6,9 @@
 // LICENSE file in the root directory of this source tree.
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import {createRequire} from 'module';
+
+const require = createRequire(import.meta.url);
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -25,7 +28,6 @@ const config = {
   projectName: 'fintrack-docs', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -37,8 +39,27 @@ const config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
   },
   themes: ['@docusaurus/theme-mermaid'],
+  plugins: [
+    function webpackPolyfills() {
+      return {
+        name: 'webpack-polyfills',
+        configureWebpack() {
+          return {
+            resolve: {
+              fallback: {
+                stream: require.resolve('stream-browserify'),
+              },
+            },
+          };
+        },
+      };
+    },
+  ],
 
   presets: [
     [
