@@ -12,6 +12,7 @@ title: Recurring
 | account_id | query | string | não | Account ID |
 | card_id | query | string | não | Card ID |
 | type | query | string | não | Type (income, expense...) |
+| is_active | query | boolean | não | Return only active recurrings |
 
 ### Respostas
 

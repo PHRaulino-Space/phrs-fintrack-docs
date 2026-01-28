@@ -146,9 +146,9 @@ Create a new import session.
 
 ## POST `/import-sessions/{id}/bind`
 
-**Resumo:** Bind staged transaction to recurring pattern
+**Resumo:** Bind staged transactions to recurring patterns
 
-Bind a staged transaction to a recurring transaction pattern. Automatically copies category, subcategory, tags, and description from the recurring pattern.
+Bind staged transactions to recurring transaction patterns in batch. Automatically copies category, subcategory, tags, and description from each recurring pattern.
 
 **Consumes:** application/json
 
@@ -159,7 +159,7 @@ Bind a staged transaction to a recurring transaction pattern. Automatically copi
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | id | path | string | sim | Session ID |
-| request | body | v1.bindRecurringRequest | sim | Bind request |
+| request | body | array&lt;v1.bindRecurringRequest&gt; | sim | Bind requests |
 
 ### Respostas
 

@@ -2978,7 +2978,7 @@
         },
         "/import-sessions/{id}/bind": {
             "post": {
-                "description": "Bind a staged transaction to a recurring transaction pattern. Automatically copies category, subcategory, tags, and description from the recurring pattern.",
+                "description": "Bind staged transactions to recurring transaction patterns in batch. Automatically copies category, subcategory, tags, and description from each recurring pattern.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2988,7 +2988,7 @@
                 "tags": [
                     "import-sessions"
                 ],
-                "summary": "Bind staged transaction to recurring pattern",
+                "summary": "Bind staged transactions to recurring patterns",
                 "parameters": [
                     {
                         "type": "string",
@@ -2998,12 +2998,15 @@
                         "required": true
                     },
                     {
-                        "description": "Bind request",
+                        "description": "Bind requests",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.bindRecurringRequest"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.bindRecurringRequest"
+                            }
                         }
                     }
                 ],
@@ -4008,6 +4011,12 @@
                         "type": "string",
                         "description": "Type (income, expense...)",
                         "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Return only active recurrings",
+                        "name": "is_active",
                         "in": "query"
                     }
                 ],
