@@ -276,6 +276,7 @@ Sem propriedades.
 | recurring_expenses | array&lt;entity.RecurringExpense&gt; | não |  |
 | recurring_incomes | array&lt;entity.RecurringIncome&gt; | não |  |
 | sub_categories | array&lt;entity.SubCategory&gt; | não | Relationships |
+| sub_category_count | integer | não |  |
 | type | entity.CategoryType | não |  |
 | updated_at | string | não |  |
 | workspace_id | string | não |  |

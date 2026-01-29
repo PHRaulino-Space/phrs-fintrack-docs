@@ -5775,6 +5775,9 @@
                         "$ref": "#/definitions/entity.SubCategory"
                     }
                 },
+                "sub_category_count": {
+                    "type": "integer"
+                },
                 "type": {
                     "$ref": "#/definitions/entity.CategoryType"
                 },
