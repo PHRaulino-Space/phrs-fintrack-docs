@@ -2,7 +2,7 @@
 
 **Versão do Documento:** 1.0
 **Data de Elaboração:** 03 de Fevereiro de 2026
-**Autor:** Pedro Henrique Raulino (Desenvolvedor e Proprietário)
+**Autor:** Paulo Henrique Raulino (Desenvolvedor e Proprietário)
 **Classificação:** Confidencial — Uso Interno para Avaliação de Compliance
 
 ---
