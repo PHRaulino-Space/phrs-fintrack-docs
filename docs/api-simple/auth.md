@@ -1,11 +1,61 @@
 ---
 title: Auth
 ---
+## DELETE `/auth/passkeys/{passkey_id}`
+
+**Resumo:** Delete passkey
+
+Remove a registered passkey
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| passkey_id | path | string | sim | Passkey ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
+## DELETE `/auth/providers/{provider}`
+
+**Resumo:** Unlink provider
+
+Remove a connected OAuth provider from the user account
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | Provider (github, google) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
 ## GET `/auth/{provider}/callback`
 
 **Resumo:** OAuth callback
 
-Handle OAuth callback from provider and set authentication cookie
+Handle OAuth callback from provider and set authentication cookie or link provider
 
 **Consumes:** application/json
 
@@ -26,6 +76,30 @@ Handle OAuth callback from provider and set authentication cookie
 | 302 | Redirect to frontend with auth cookie set |  |
 | 400 | Bad Request | object |
 | 401 | Unauthorized | object |
+
+## GET `/auth/{provider}/link`
+
+**Resumo:** OAuth link initiation
+
+Initiate OAuth link flow with the specified provider
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | OAuth provider (github) |
+| redirect_to | query | string | não | Path to redirect after linking |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 307 | Redirect to OAuth provider |  |
+| 400 | Bad Request | object |
 
 ## GET `/auth/{provider}/login`
 
@@ -356,7 +430,7 @@ Begin passkey login and return WebAuthn options
 
 **Resumo:** Passkey registration
 
-Finish passkey registration using WebAuthn response
+Finish passkey registration using WebAuthn response (optionally include passkey name)
 
 **Consumes:** application/json
 
@@ -364,7 +438,9 @@ Finish passkey registration using WebAuthn response
 
 ### Parâmetros
 
-Sem parâmetros.
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.passkeyRegisterRequest | não | Optional passkey metadata |
 
 ### Respostas
 
@@ -511,7 +587,13 @@ Reset password using a valid reset token
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| email | string | sim |  |
+| email | string | não |  |
+
+#### v1.passkeyRegisterRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| name | string | não |  |
 
 #### v1.refreshRequest
 

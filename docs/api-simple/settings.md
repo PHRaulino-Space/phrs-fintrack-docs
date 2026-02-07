@@ -25,6 +25,13 @@ Sem parâmetros.
 
 ### Schemas
 
+#### v1.connectedProviderResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| email | string | não |  |
+| name | string | não |  |
+
 #### v1.securitySettingsPasskeyResponse
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -38,10 +45,10 @@ Sem parâmetros.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| connected_providers | array&lt;v1.connectedProviderResponse&gt; | não |  |
 | mfa_enabled | boolean | não |  |
 | mfa_method | string | não |  |
 | mfa_verified_at | string | não |  |
 | passkey_enabled | boolean | não |  |
 | passkeys | array&lt;v1.securitySettingsPasskeyResponse&gt; | não |  |
-| recovery_codes | array&lt;string&gt; | não |  |
 | recovery_codes_generated_at | string | não |  |
