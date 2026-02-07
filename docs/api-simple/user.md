@@ -75,6 +75,28 @@ Sem parâmetros.
 | 403 | Forbidden | object |
 | 500 | Internal Server Error | object |
 
+## POST `/user/email/cancel`
+
+**Resumo:** Cancel pending email change
+
+Cancel a pending email change for the authenticated user
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.UserResponse |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
 ## POST `/user/password`
 
 **Resumo:** Update password
