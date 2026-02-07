@@ -1364,7 +1364,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Finish passkey registration using WebAuthn response",
+                "description": "Finish passkey registration using WebAuthn response (optionally include passkey name)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1375,6 +1375,16 @@
                     "auth"
                 ],
                 "summary": "Passkey registration",
+                "parameters": [
+                    {
+                        "description": "Optional passkey metadata",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/v1.passkeyRegisterRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1443,6 +1453,140 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/passkeys/{passkey_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove a registered passkey",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Delete passkey",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Passkey ID",
+                        "name": "passkey_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/providers/{provider}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove a connected OAuth provider from the user account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Unlink provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Provider (github, google)",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1620,7 +1764,7 @@
         },
         "/auth/{provider}/callback": {
             "get": {
-                "description": "Handle OAuth callback from provider and set authentication cookie",
+                "description": "Handle OAuth callback from provider and set authentication cookie or link provider",
                 "consumes": [
                     "application/json"
                 ],
@@ -1669,6 +1813,55 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/{provider}/link": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Initiate OAuth link flow with the specified provider",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "OAuth link initiation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "OAuth provider (github)",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Path to redirect after linking",
+                        "name": "redirect_to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "307": {
+                        "description": "Redirect to OAuth provider"
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -8257,6 +8450,17 @@
                 }
             }
         },
+        "v1.connectedProviderResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.createApiKeyRequest": {
             "type": "object",
             "required": [
@@ -8827,11 +9031,16 @@
         },
         "v1.passkeyLoginChallengeRequest": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.passkeyRegisterRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }
@@ -8900,6 +9109,12 @@
         "v1.securitySettingsResponse": {
             "type": "object",
             "properties": {
+                "connected_providers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.connectedProviderResponse"
+                    }
+                },
                 "mfa_enabled": {
                     "type": "boolean"
                 },
@@ -8916,12 +9131,6 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/v1.securitySettingsPasskeyResponse"
-                    }
-                },
-                "recovery_codes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
                     }
                 },
                 "recovery_codes_generated_at": {
