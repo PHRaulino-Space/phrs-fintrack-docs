@@ -27,6 +27,53 @@ Confirm account deletion using the provided token
 | 403 | Forbidden | object |
 | 500 | Internal Server Error | object |
 
+## GET `/user/preferences`
+
+**Resumo:** Get user preferences
+
+Get preferences for the authenticated user
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.preferencesResponse |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
+## PATCH `/user/preferences`
+
+**Resumo:** Update user preferences
+
+Update preferences for the authenticated user
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.preferencesRequest | sim | Preferences payload |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.preferencesResponse |
+| 400 | Bad Request | object |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
 ## PATCH `/user/profile`
 
 **Resumo:** Update user profile
@@ -130,6 +177,18 @@ Update the user password using the current password
 | --- | --- | --- | --- |
 | expires_at | string | não |  |
 | token | string | não |  |
+
+#### v1.preferencesRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| settings | object | sim |  |
+
+#### v1.preferencesResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| settings | object | não |  |
 
 #### v1.updatePasswordRequest
 
