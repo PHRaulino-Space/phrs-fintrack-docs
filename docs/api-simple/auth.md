@@ -541,7 +541,98 @@ Reset password using a valid reset token
 | 200 | OK | object |
 | 400 | Bad Request | object |
 
+## POST `/auth/verify-email/confirm`
+
+**Resumo:** Confirm email verification
+
+Confirm email verification using a valid token
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.emailVerificationConfirmRequest | sim | Email verification token |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## POST `/auth/verify-email/request`
+
+**Resumo:** Request email verification
+
+Request an email verification token
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.emailVerificationRequest | sim | Email verification request |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.emailVerificationResponse |
+| 202 | Accepted | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## POST `/auth/verify-email/resend`
+
+**Resumo:** Resend email verification
+
+Resend email verification token for the authenticated user
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.emailVerificationResponse |
+| 202 | Accepted | object |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
 ### Schemas
+
+#### v1.emailVerificationConfirmRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| token | string | sim |  |
+
+#### v1.emailVerificationRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| email | string | sim |  |
+
+#### v1.emailVerificationResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| expires_at | string | não |  |
+| token | string | não |  |
 
 #### v1.forgotPasswordRequest
 
@@ -621,9 +712,11 @@ Reset password using a valid reset token
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | email | string | não |  |
+| email_verified | boolean | não |  |
 | has_password | boolean | não |  |
 | id | string | não |  |
 | name | string | não |  |
+| pending_email | string | não |  |
 
 #### v1.ValidateResponse
 
