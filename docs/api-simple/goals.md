@@ -1,37 +1,11 @@
 ---
-title: Investments
+title: Goals
 ---
-## DELETE `/investments/{id}`
+## DELETE `/goals/{goal_id}`
 
-**Resumo:** Delete investment
+**Resumo:** Delete goal
 
-Delete an investment and its related data
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Investment ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## DELETE `/investments/{id}/value-history/{history_id}`
-
-**Resumo:** Delete investment value history
-
-Delete a value history entry for an investment
+Delete a goal
 
 **Consumes:** application/json
 
@@ -42,8 +16,7 @@ Delete a value history entry for an investment
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Investment ID |
-| history_id | path | string | sim | History ID |
+| goal_id | path | string | sim | Goal ID |
 
 ### Respostas
 
@@ -54,11 +27,11 @@ Delete a value history entry for an investment
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## GET `/investments`
+## DELETE `/goals/{goal_id}/deposits/{deposit_id}`
 
-**Resumo:** List investments
+**Resumo:** Delete goal deposit
 
-List all investments for the workspace (filtered by accounts in the workspace)
+Delete a deposit from a manual goal
 
 **Consumes:** application/json
 
@@ -69,20 +42,23 @@ List all investments for the workspace (filtered by accounts in the workspace)
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+| deposit_id | path | string | sim | Deposit ID |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.Investment&gt; |
+| 204 | No Content | object |
 | 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## GET `/investments/{id}/value-history`
+## DELETE `/goals/{goal_id}/investments/{investment_id}`
 
-**Resumo:** List investment value history
+**Resumo:** Remove investment from goal
 
-List value history for an investment
+Remove an investment from an invest goal
 
 **Consumes:** application/json
 
@@ -93,22 +69,23 @@ List value history for an investment
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
 | investment_id | path | string | sim | Investment ID |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.InvestmentValueHistory&gt; |
+| 204 | No Content | object |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## PATCH `/investments/{id}`
+## GET `/goals`
 
-**Resumo:** Update investment
+**Resumo:** List goals
 
-Update an existing investment
+List all goals for a given workspace
 
 **Consumes:** application/json
 
@@ -119,23 +96,46 @@ Update an existing investment
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Investment ID |
-| investment | body | v1.updateInvestmentRequest | sim | Investment object for update |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Investment |
+| 200 | OK | array&lt;entity.Goal&gt; |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## GET `/goals/{goal_id}`
+
+**Resumo:** Get a single goal
+
+Get a single goal by its ID
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.Goal |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## POST `/investments`
+## GET `/goals/{goal_id}/deposits`
 
-**Resumo:** Create investment
+**Resumo:** List goal deposits
 
-Create a new investment
+List deposits for a manual goal
 
 **Consumes:** application/json
 
@@ -146,21 +146,72 @@ Create a new investment
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| investment | body | v1.createInvestmentRequest | sim | Investment object |
+| goal_id | path | string | sim | Goal ID |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 201 | Created | entity.Investment |
+| 200 | OK | array&lt;entity.GoalDeposit&gt; |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## PATCH `/goals/{goal_id}`
+
+**Resumo:** Update goal
+
+Update a goal
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+| goal | body | v1.updateGoalRequest | sim | Goal update object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.Goal |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## POST `/goals`
+
+**Resumo:** Create a new goal
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal | body | v1.createGoalRequest | sim | Goal object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.Goal |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## POST `/investments/{id}/value-history`
+## POST `/goals/{goal_id}/complete`
 
-**Resumo:** Create investment value history
+**Resumo:** Complete goal
 
-Create a value history entry for an investment
+Mark a goal as completed
 
 **Consumes:** application/json
 
@@ -171,14 +222,93 @@ Create a value history entry for an investment
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Investment ID |
-| history | body | v1.createInvestmentValueHistoryRequest | sim | Investment value history object |
+| goal_id | path | string | sim | Goal ID |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 201 | Created | entity.InvestmentValueHistory |
+| 200 | OK | entity.Goal |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## POST `/goals/{goal_id}/deposits`
+
+**Resumo:** Create goal deposit
+
+Create a deposit for a manual goal
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+| deposit | body | v1.createGoalDepositRequest | sim | Goal deposit object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.GoalDeposit |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## POST `/goals/{goal_id}/investments`
+
+**Resumo:** Add investment to goal
+
+Add an investment to an invest goal
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+| investment | body | v1.addGoalInvestmentRequest | sim | Investment link object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content | object |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## POST `/goals/{goal_id}/reopen`
+
+**Resumo:** Reopen goal
+
+Mark a goal as not completed
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.Goal |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -338,6 +468,56 @@ Sem propriedades.
 | expense_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.Goal
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| category | string | não |  |
+| color | string | não |  |
+| completed_at | string | não |  |
+| created_at | string | não |  |
+| current_value | number | não |  |
+| deposits | array&lt;entity.GoalDeposit&gt; | não | Relationships |
+| due_date | string | não |  |
+| id | string | não |  |
+| investments | array&lt;entity.GoalInvestment&gt; | não |  |
+| is_completed | boolean | não |  |
+| name | string | não |  |
+| priority | entity.GoalPriority | não |  |
+| target_value | number | não |  |
+| type | entity.GoalType | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
+#### entity.GoalDeposit
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| created_at | string | não |  |
+| goal | object | não | Relationships |
+| goal_id | string | não |  |
+| id | string | não |  |
+| transaction_date | string | não |  |
+| updated_at | string | não |  |
+
+#### entity.GoalInvestment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| goal | entity.Goal | não |  |
+| goal_id | string | não |  |
+| investment | entity.Investment | não |  |
+| investment_id | string | não |  |
+
+#### entity.GoalPriority
+
+Sem propriedades.
+
+#### entity.GoalType
+
+Sem propriedades.
 
 #### entity.ImportSession
 
@@ -653,33 +833,41 @@ Sem propriedades.
 
 Sem propriedades.
 
-#### v1.createInvestmentRequest
+#### v1.addGoalInvestmentRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| account_id | string | sim |  |
-| asset_name | string | sim |  |
-| index_type | entity.IndexType | não |  |
-| index_value | string | não |  |
-| liquidity | entity.LiquidityType | sim |  |
-| type | entity.InvestmentType | sim |  |
-| validity | string | não | Date YYYY-MM-DD |
+| investment_id | string | sim |  |
 
-#### v1.createInvestmentValueHistoryRequest
+#### v1.createGoalDepositRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| updated_at_date | string | sim |  |
-| value | number | sim |  |
+| amount | number | sim |  |
+| transaction_date | string | sim |  |
 
-#### v1.updateInvestmentRequest
+#### v1.createGoalRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| asset_name | string | não |  |
-| index_type | entity.IndexType | não |  |
-| index_value | string | não |  |
-| is_rescued | boolean | não |  |
-| liquidity | entity.LiquidityType | não |  |
-| type | entity.InvestmentType | não |  |
-| validity | string | não |  |
+| category | string | sim |  |
+| color | string | sim |  |
+| due_date | string | sim |  |
+| investment_ids | array&lt;string&gt; | não |  |
+| name | string | sim |  |
+| priority | entity.GoalPriority | não |  |
+| target_value | number | sim |  |
+| type | entity.GoalType | sim |  |
+
+#### v1.updateGoalRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| category | string | não |  |
+| color | string | não |  |
+| due_date | string | não |  |
+| investment_ids | array&lt;string&gt; | não |  |
+| name | string | não |  |
+| priority | entity.GoalPriority | não |  |
+| target_value | number | não |  |
+| type | entity.GoalType | não |  |

@@ -122,7 +122,7 @@ Create a new investment deposit
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| investment_id | path | string | sim | Investment ID |
+| id | path | string | sim | Investment ID |
 | deposit | body | v1.createInvestmentDepositRequest | sim | Investment Deposit object |
 
 ### Respostas
@@ -386,6 +386,7 @@ Sem propriedades.
 | type | entity.InvestmentType | não |  |
 | updated_at | string | não |  |
 | validity | string | não |  |
+| value_history | array&lt;entity.InvestmentValueHistory&gt; | não |  |
 
 #### entity.InvestmentDeposit
 
@@ -417,6 +418,18 @@ Sem propriedades.
 #### entity.InvestmentType
 
 Sem propriedades.
+
+#### entity.InvestmentValueHistory
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| created_at | string | não |  |
+| id | string | não |  |
+| investment | object | não | Relationships |
+| investment_id | string | não |  |
+| updated_at | string | não |  |
+| updated_at_value | string | não |  |
+| value | number | não |  |
 
 #### entity.InvestmentWithdrawal
 
