@@ -3775,6 +3775,56 @@
                 }
             }
         },
+        "/dashboard/summary/metas": {
+            "get": {
+                "description": "Returns summary metrics for goals",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Goals dashboard summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.goalsSummaryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/enrichment/transactions": {
             "post": {
                 "description": "Enrich a batch of transactions with category information",
@@ -11129,6 +11179,26 @@
             "properties": {
                 "email": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.goalsSummaryResponse": {
+            "type": "object",
+            "properties": {
+                "active_count": {
+                    "type": "integer"
+                },
+                "completed_count": {
+                    "type": "integer"
+                },
+                "progress_pct": {
+                    "type": "number"
+                },
+                "remaining": {
+                    "type": "number"
+                },
+                "total_accumulated": {
+                    "type": "number"
                 }
             }
         },
