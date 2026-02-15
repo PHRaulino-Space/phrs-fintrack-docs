@@ -7533,6 +7533,69 @@
                 }
             }
         },
+        "/notifications/read-all": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mark all notifications as read for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Mark all notifications as read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by workspace ID",
+                        "name": "workspace_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.markAllReadResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/notifications/{id}": {
             "delete": {
                 "security": [
@@ -13230,6 +13293,14 @@
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.markAllReadResponse": {
+            "type": "object",
+            "properties": {
+                "updated": {
+                    "type": "integer"
                 }
             }
         },
