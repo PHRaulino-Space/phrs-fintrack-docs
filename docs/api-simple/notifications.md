@@ -79,7 +79,38 @@ Mark a notification as read
 | 401 | Unauthorized | object |
 | 500 | Internal Server Error | object |
 
+## POST `/notifications/read-all`
+
+**Resumo:** Mark all notifications as read
+
+Mark all notifications as read for the authenticated user
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| workspace_id | query | string | não | Filter by workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.markAllReadResponse |
+| 400 | Bad Request | object |
+| 401 | Unauthorized | object |
+| 500 | Internal Server Error | object |
+
 ### Schemas
+
+#### v1.markAllReadResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| updated | integer | não |  |
 
 #### v1.notificationListResponse
 
