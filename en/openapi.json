@@ -2221,6 +2221,459 @@
                 }
             }
         },
+        "/budgets": {
+            "get": {
+                "description": "List all budgets for a given workspace and month/year",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "List budgets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month (1-12)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Budget"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new budget for a category (expense only)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Create a new budget",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Budget object",
+                        "name": "budget",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.createBudgetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Budget"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/budgets/duplicate": {
+            "post": {
+                "description": "Duplicate budgets from a source month/year to a target month/year, keeping existing target budgets",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Duplicate budgets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Duplicate budgets payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.duplicateBudgetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.BudgetDuplicateResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/budgets/summary": {
+            "get": {
+                "description": "Get budgets summary for a given workspace and month/year",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Get budgets summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month (1-12)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.BudgetSummary"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/budgets/{budget_id}": {
+            "get": {
+                "description": "Get a single budget by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Get a single budget",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Budget ID",
+                        "name": "budget_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Budget"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a budget",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Delete a budget",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Budget ID",
+                        "name": "budget_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update an existing budget",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Update a budget",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Budget ID",
+                        "name": "budget_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Budget update object",
+                        "name": "budget",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateBudgetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Budget"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/card-chargebacks": {
             "post": {
                 "description": "Create a new card chargeback transaction",
@@ -4097,7 +4550,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.Goal"
+                                "$ref": "#/definitions/v1.goalListResponse"
                             }
                         }
                     },
@@ -5746,7 +6199,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.Investment"
+                                "$ref": "#/definitions/v1.investmentListResponse"
                             }
                         }
                     },
@@ -5828,7 +6281,188 @@
                 }
             }
         },
+        "/investments/performance": {
+            "get": {
+                "description": "List performance for each investment in the workspace",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "List investments performance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.investmentPerformanceResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/portfolio": {
+            "get": {
+                "description": "Get portfolio summary and distributions for the workspace",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "Get investments portfolio summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.investmentPortfolioResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/investments/{id}": {
+            "get": {
+                "description": "Get an investment and its summary for a given year and month",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "Get investment details with summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month (1-12)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.investmentDetailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete an investment and its related data",
                 "consumes": [
@@ -5964,6 +6598,222 @@
                 }
             }
         },
+        "/investments/{id}/deposits": {
+            "post": {
+                "description": "Create a new investment deposit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Create investment deposit",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Investment Deposit object",
+                        "name": "deposit",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.createInvestmentDepositRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InvestmentDeposit"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/{id}/deposits/{deposit_id}": {
+            "delete": {
+                "description": "Delete an investment deposit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "Delete investment deposit",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Deposit ID",
+                        "name": "deposit_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update an investment deposit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "Update investment deposit",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Deposit ID",
+                        "name": "deposit_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Investment Deposit update object",
+                        "name": "deposit",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateInvestmentDepositRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InvestmentDeposit"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/investments/{id}/value-history": {
             "get": {
                 "description": "List value history for an investment",
@@ -5999,7 +6849,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.InvestmentValueHistory"
+                                "$ref": "#/definitions/v1.investmentValueHistoryResponse"
                             }
                         }
                     },
@@ -6073,7 +6923,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entity.InvestmentValueHistory"
+                            "$ref": "#/definitions/v1.investmentValueHistoryResponse"
                         }
                     },
                     "400": {
@@ -6182,73 +7032,7 @@
                 }
             }
         },
-        "/investments/{investment_id}/deposits": {
-            "post": {
-                "description": "Create a new investment deposit",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "transactions"
-                ],
-                "summary": "Create investment deposit",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Investment ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Investment Deposit object",
-                        "name": "deposit",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.createInvestmentDepositRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entity.InvestmentDeposit"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/investments/{investment_id}/withdrawals": {
+        "/investments/{id}/withdrawals": {
             "post": {
                 "description": "Create a new investment withdrawal",
                 "consumes": [
@@ -6272,7 +7056,7 @@
                     {
                         "type": "string",
                         "description": "Investment ID",
-                        "name": "investment_id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -6295,6 +7079,156 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/{id}/withdrawals/{withdrawal_id}": {
+            "delete": {
+                "description": "Delete an investment withdrawal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "Delete investment withdrawal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Withdrawal ID",
+                        "name": "withdrawal_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update an investment withdrawal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "investments"
+                ],
+                "summary": "Update investment withdrawal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Withdrawal ID",
+                        "name": "withdrawal_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Investment Withdrawal update object",
+                        "name": "withdrawal",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateInvestmentWithdrawalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InvestmentWithdrawal"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -8514,6 +9448,73 @@
                 }
             }
         },
+        "entity.Budget": {
+            "type": "object",
+            "properties": {
+                "alert_threshold": {
+                    "type": "number"
+                },
+                "budget_health": {
+                    "$ref": "#/definitions/entity.BudgetHealth"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "description": "Computed fields",
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "month": {
+                    "type": "integer"
+                },
+                "percentage_used": {
+                    "type": "number"
+                },
+                "planned_amount": {
+                    "type": "number"
+                },
+                "remaining_amount": {
+                    "type": "number"
+                },
+                "spent_amount": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.BudgetHealth": {
+            "type": "string",
+            "enum": [
+                "healthy",
+                "warning",
+                "over_budget"
+            ],
+            "x-enum-varnames": [
+                "BudgetHealthHealthy",
+                "BudgetHealthWarning",
+                "BudgetHealthOverBudget"
+            ]
+        },
         "entity.Card": {
             "type": "object",
             "properties": {
@@ -9015,7 +10016,7 @@
             "type": "string",
             "enum": [
                 "MANUAL",
-                "INVEST"
+                "INVESTMENT"
             ],
             "x-enum-varnames": [
                 "GoalTypeManual",
@@ -9308,16 +10309,28 @@
         "entity.InvestmentType": {
             "type": "string",
             "enum": [
-                "RENDA_FIXA",
-                "RENDA_VARIAVEL",
+                "CDB",
+                "LCI",
+                "LCA",
                 "TESOURO_DIRETO",
-                "FUNDO_INVESTIMENTO"
+                "FUNDO",
+                "ACAO",
+                "FII",
+                "CRYPTO",
+                "POUPANCA",
+                "OUTRO"
             ],
             "x-enum-varnames": [
-                "InvestmentTypeRendaFixa",
-                "InvestmentTypeRendaVariavel",
+                "InvestmentTypeCDB",
+                "InvestmentTypeLCI",
+                "InvestmentTypeLCA",
                 "InvestmentTypeTesouroDireto",
-                "InvestmentTypeFundoInvestimento"
+                "InvestmentTypeFundo",
+                "InvestmentTypeAcao",
+                "InvestmentTypeFII",
+                "InvestmentTypeCrypto",
+                "InvestmentTypePoupanca",
+                "InvestmentTypeOutro"
             ]
         },
         "entity.InvestmentValueHistory": {
@@ -10077,6 +11090,12 @@
                         "$ref": "#/definitions/entity.Account"
                     }
                 },
+                "budgets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Budget"
+                    }
+                },
                 "categories": {
                     "type": "array",
                     "items": {
@@ -10203,6 +11222,40 @@
                 "rawKey": {
                     "description": "Mostrar apenas uma vez!",
                     "type": "string"
+                }
+            }
+        },
+        "usecase.BudgetDuplicateResult": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "integer"
+                },
+                "skipped": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.BudgetSummary": {
+            "type": "object",
+            "properties": {
+                "budget_health": {
+                    "$ref": "#/definitions/entity.BudgetHealth"
+                },
+                "categories_on_track": {
+                    "type": "integer"
+                },
+                "categories_over_budget": {
+                    "type": "integer"
+                },
+                "total_planned": {
+                    "type": "number"
+                },
+                "total_remaining": {
+                    "type": "number"
+                },
+                "total_spent": {
+                    "type": "number"
                 }
             }
         },
@@ -10599,6 +11652,44 @@
                 }
             }
         },
+        "v1.createBudgetRequest": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "color",
+                "month",
+                "planned_amount",
+                "year"
+            ],
+            "properties": {
+                "alert_threshold": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "month": {
+                    "type": "integer",
+                    "maximum": 12,
+                    "minimum": 1
+                },
+                "planned_amount": {
+                    "type": "number"
+                },
+                "year": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
         "v1.createCardChargebackRequest": {
             "type": "object",
             "required": [
@@ -10964,6 +12055,9 @@
                 "description": {
                     "type": "string"
                 },
+                "rescued": {
+                    "type": "boolean"
+                },
                 "transaction_date": {
                     "type": "string"
                 }
@@ -11138,6 +12232,35 @@
                 }
             }
         },
+        "v1.duplicateBudgetRequest": {
+            "type": "object",
+            "required": [
+                "source_month",
+                "source_year",
+                "target_month",
+                "target_year"
+            ],
+            "properties": {
+                "source_month": {
+                    "type": "integer",
+                    "maximum": 12,
+                    "minimum": 1
+                },
+                "source_year": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "target_month": {
+                    "type": "integer",
+                    "maximum": 12,
+                    "minimum": 1
+                },
+                "target_year": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
         "v1.emailVerificationConfirmRequest": {
             "type": "object",
             "required": [
@@ -11178,6 +12301,59 @@
             ],
             "properties": {
                 "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.goalListResponse": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_value": {
+                    "type": "number"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "investments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.investmentListResponse"
+                    }
+                },
+                "is_completed": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "priority": {
+                    "$ref": "#/definitions/entity.GoalPriority"
+                },
+                "target_value": {
+                    "type": "number"
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.GoalType"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
                     "type": "string"
                 }
             }
@@ -11237,6 +12413,245 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.investmentAccountSummary": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.investmentDetailResponse": {
+            "type": "object",
+            "properties": {
+                "investment": {
+                    "$ref": "#/definitions/v1.investmentListResponse"
+                },
+                "summary": {
+                    "$ref": "#/definitions/v1.investmentSummaryResponse"
+                }
+            }
+        },
+        "v1.investmentListResponse": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/v1.investmentAccountSummary"
+                },
+                "account_id": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_value": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "index_type": {
+                    "$ref": "#/definitions/entity.IndexType"
+                },
+                "index_value": {
+                    "type": "string"
+                },
+                "is_rescued": {
+                    "type": "boolean"
+                },
+                "liquidity": {
+                    "$ref": "#/definitions/entity.LiquidityType"
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.InvestmentType"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "validity": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.investmentPerformanceResponse": {
+            "type": "object",
+            "properties": {
+                "asset_name": {
+                    "type": "string"
+                },
+                "current_value": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "index_type": {
+                    "$ref": "#/definitions/entity.IndexType"
+                },
+                "index_value": {
+                    "type": "string"
+                },
+                "initial_value": {
+                    "type": "number"
+                },
+                "liquidity": {
+                    "$ref": "#/definitions/entity.LiquidityType"
+                },
+                "profit_loss": {
+                    "type": "number"
+                },
+                "profit_loss_percentage": {
+                    "type": "number"
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.InvestmentType"
+                },
+                "validity": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.investmentPortfolioDistributionResponse": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "percentage": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.InvestmentType"
+                }
+            }
+        },
+        "v1.investmentPortfolioLiquidityResponse": {
+            "type": "object",
+            "properties": {
+                "liquidity": {
+                    "$ref": "#/definitions/entity.LiquidityType"
+                },
+                "percentage": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "v1.investmentPortfolioPerformanceHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                },
+                "variation": {
+                    "type": "number"
+                }
+            }
+        },
+        "v1.investmentPortfolioResponse": {
+            "type": "object",
+            "properties": {
+                "active_investments": {
+                    "type": "integer"
+                },
+                "avg_yield_rate": {
+                    "type": "number"
+                },
+                "distribution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.investmentPortfolioDistributionResponse"
+                    }
+                },
+                "estimated_monthly_yield": {
+                    "type": "number"
+                },
+                "liquidity_distribution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.investmentPortfolioLiquidityResponse"
+                    }
+                },
+                "performance_history": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.investmentPortfolioPerformanceHistoryResponse"
+                    }
+                },
+                "rescued_investments": {
+                    "type": "integer"
+                },
+                "total_assets": {
+                    "type": "integer"
+                },
+                "total_invested": {
+                    "type": "number"
+                }
+            }
+        },
+        "v1.investmentSummaryResponse": {
+            "type": "object",
+            "properties": {
+                "accumulated_return": {
+                    "type": "number"
+                },
+                "current_value": {
+                    "type": "number"
+                },
+                "monthly_return": {
+                    "type": "number"
+                },
+                "net_balance": {
+                    "type": "number"
+                },
+                "portfolio_percentage": {
+                    "type": "number"
+                },
+                "return_rate": {
+                    "type": "number"
+                }
+            }
+        },
+        "v1.investmentValueHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "investment_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_at_value": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
                 }
             }
         },
@@ -11487,6 +12902,37 @@
                 }
             }
         },
+        "v1.updateBudgetRequest": {
+            "type": "object",
+            "properties": {
+                "alert_threshold": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "month": {
+                    "type": "integer",
+                    "maximum": 12,
+                    "minimum": 1
+                },
+                "planned_amount": {
+                    "type": "number"
+                },
+                "year": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
         "v1.updateCardRequest": {
             "type": "object",
             "properties": {
@@ -11605,6 +13051,23 @@
                 }
             }
         },
+        "v1.updateInvestmentDepositRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.updateInvestmentRequest": {
             "type": "object",
             "properties": {
@@ -11627,6 +13090,23 @@
                     "$ref": "#/definitions/entity.InvestmentType"
                 },
                 "validity": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.updateInvestmentWithdrawalRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "transaction_date": {
                     "type": "string"
                 }
             }
