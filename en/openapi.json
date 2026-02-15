@@ -4228,6 +4228,134 @@
                 }
             }
         },
+        "/dashboard/cards-summary": {
+            "get": {
+                "description": "Returns cards summary data for dashboard",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Dashboard cards summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month (1-12)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.CardsSummary"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboard/financial-summary": {
+            "get": {
+                "description": "Returns financial summary data for dashboard",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Dashboard financial summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month (1-12)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.FinancialSummary"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/dashboard/summary/metas": {
             "get": {
                 "description": "Returns summary metrics for goals",
@@ -11259,6 +11387,133 @@
                 }
             }
         },
+        "usecase.BudgetSummaryItem": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "type": "number"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "planned": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.CardCategoryExpense": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "percentage": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.CardOverviewSummary": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "number"
+                },
+                "closingDate": {
+                    "type": "integer"
+                },
+                "dueDate": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "limit": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "used": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.CardsSummary": {
+            "type": "object",
+            "properties": {
+                "cardsOverview": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.CardOverviewSummary"
+                    }
+                },
+                "expensesByCategory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.CardCategoryExpense"
+                    }
+                },
+                "invoiceHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.InvoiceHistoryItem"
+                    }
+                },
+                "month": {
+                    "type": "integer"
+                },
+                "openInvoiceValue": {
+                    "type": "number"
+                },
+                "recurringExpenses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.RecurringCardExpenseSummary"
+                    }
+                },
+                "totalAvailable": {
+                    "type": "number"
+                },
+                "totalLimit": {
+                    "type": "number"
+                },
+                "totalUsed": {
+                    "type": "number"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.CategoryComparison": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "expense": {
+                    "type": "number"
+                },
+                "income": {
+                    "type": "number"
+                }
+            }
+        },
         "usecase.EnrichedTransaction": {
             "type": "object",
             "properties": {
@@ -11290,6 +11545,103 @@
                 },
                 "type": {
                     "$ref": "#/definitions/entity.CategoryType"
+                }
+            }
+        },
+        "usecase.ExpenseByCategory": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.FinancialSummary": {
+            "type": "object",
+            "properties": {
+                "budgets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetSummaryItem"
+                    }
+                },
+                "cardExpenses": {
+                    "type": "number"
+                },
+                "categoryComparison": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.CategoryComparison"
+                    }
+                },
+                "currentBalance": {
+                    "type": "number"
+                },
+                "expensesByCategory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.ExpenseByCategory"
+                    }
+                },
+                "goalsContribution": {
+                    "type": "number"
+                },
+                "incomeByCategory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.IncomeByCategory"
+                    }
+                },
+                "investedThisMonth": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "integer"
+                },
+                "monthlyTrend": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.MonthlyTrend"
+                    }
+                },
+                "monthlyVariation": {
+                    "type": "number"
+                },
+                "pendingBills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PendingBill"
+                    }
+                },
+                "plannedExpenses": {
+                    "type": "number"
+                },
+                "savingsRate": {
+                    "type": "number"
+                },
+                "totalExpenses": {
+                    "type": "number"
+                },
+                "totalIncome": {
+                    "type": "number"
+                },
+                "totalInvested": {
+                    "type": "number"
+                },
+                "unplannedExpenses": {
+                    "type": "number"
+                },
+                "unusedAmount": {
+                    "type": "number"
+                },
+                "year": {
+                    "type": "integer"
                 }
             }
         },
@@ -11353,6 +11705,106 @@
                     "type": "string"
                 },
                 "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.IncomeByCategory": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.InvoiceHistoryItem": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "cardName": {
+                    "type": "string"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.MonthlyTrend": {
+            "type": "object",
+            "properties": {
+                "expenses": {
+                    "type": "number"
+                },
+                "income": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "net": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.PendingBill": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.RecurringCardExpenseSummary": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "cardName": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "nextDate": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
