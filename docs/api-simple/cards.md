@@ -156,6 +156,33 @@ Returns a single invoice identified by billing_month for the provided card
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## GET `/cards/{id}/invoices/{billing_month}/transactions`
+
+**Resumo:** List invoice transactions
+
+List all card transactions for a given invoice (billing month)
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;v1.invoiceTransactionResponse&gt; |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## PATCH `/cards/{id}`
 
 **Resumo:** Update an existing card
@@ -655,6 +682,21 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | billing_month | string | sim |  |
 | status | object | não |  |
+
+#### v1.invoiceTransactionResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| amount | number | não |  |
+| category_id | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| is_final_payment | boolean | não |  |
+| sub_category_id | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| type | string | não |  |
 
 #### v1.updateCardRequest
 
