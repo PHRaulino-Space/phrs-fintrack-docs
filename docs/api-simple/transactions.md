@@ -32,6 +32,37 @@ List all transactions for the workspace with optional filters
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## GET `/transactions/summary`
+
+**Resumo:** Transactions summary
+
+Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is always for the account_id and ignores type filters.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw |
+| account_id | query | string | não | Account ID |
+| card_id | query | string | não | Card ID (not supported yet) |
+| investment_id | query | string | não | Investment ID |
+| date_from | query | string | não | Start Date (YYYY-MM-DD) |
+| date_to | query | string | não | End Date (YYYY-MM-DD) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.transactionSummaryResponse |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## POST `/card-chargebacks`
 
 **Resumo:** Create card chargeback
@@ -697,3 +728,12 @@ Sem propriedades.
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | type | string | não |  |
+
+#### v1.transactionSummaryResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| balance | number | não |  |
+| current_balance | number | não |  |
+| total_in | number | não |  |
+| total_out | number | não |  |
