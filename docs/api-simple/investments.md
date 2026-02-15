@@ -27,6 +27,33 @@ Delete an investment and its related data
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## DELETE `/investments/{id}/deposits/{deposit_id}`
+
+**Resumo:** Delete investment deposit
+
+Delete an investment deposit
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Investment ID |
+| deposit_id | path | string | sim | Deposit ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## DELETE `/investments/{id}/value-history/{history_id}`
 
 **Resumo:** Delete investment value history
@@ -54,6 +81,33 @@ Delete a value history entry for an investment
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## DELETE `/investments/{id}/withdrawals/{withdrawal_id}`
+
+**Resumo:** Delete investment withdrawal
+
+Delete an investment withdrawal
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Investment ID |
+| withdrawal_id | path | string | sim | Withdrawal ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## GET `/investments`
 
 **Resumo:** List investments
@@ -74,8 +128,36 @@ List all investments for the workspace (filtered by accounts in the workspace)
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.Investment&gt; |
+| 200 | OK | array&lt;v1.investmentListResponse&gt; |
 | 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## GET `/investments/{id}`
+
+**Resumo:** Get investment details with summary
+
+Get an investment and its summary for a given year and month
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Investment ID |
+| year | query | integer | sim | Year |
+| month | query | integer | sim | Month (1-12) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.investmentDetailResponse |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ## GET `/investments/{id}/value-history`
@@ -99,9 +181,57 @@ List value history for an investment
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.InvestmentValueHistory&gt; |
+| 200 | OK | array&lt;v1.investmentValueHistoryResponse&gt; |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## GET `/investments/performance`
+
+**Resumo:** List investments performance
+
+List performance for each investment in the workspace
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;v1.investmentPerformanceResponse&gt; |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## GET `/investments/portfolio`
+
+**Resumo:** Get investments portfolio summary
+
+Get portfolio summary and distributions for the workspace
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.investmentPortfolioResponse |
+| 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
 ## PATCH `/investments/{id}`
@@ -127,6 +257,62 @@ Update an existing investment
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | entity.Investment |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## PATCH `/investments/{id}/deposits/{deposit_id}`
+
+**Resumo:** Update investment deposit
+
+Update an investment deposit
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Investment ID |
+| deposit_id | path | string | sim | Deposit ID |
+| deposit | body | v1.updateInvestmentDepositRequest | sim | Investment Deposit update object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.InvestmentDeposit |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## PATCH `/investments/{id}/withdrawals/{withdrawal_id}`
+
+**Resumo:** Update investment withdrawal
+
+Update an investment withdrawal
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Investment ID |
+| withdrawal_id | path | string | sim | Withdrawal ID |
+| withdrawal | body | v1.updateInvestmentWithdrawalRequest | sim | Investment Withdrawal update object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.InvestmentWithdrawal |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -178,7 +364,7 @@ Create a value history entry for an investment
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 201 | Created | entity.InvestmentValueHistory |
+| 201 | Created | v1.investmentValueHistoryResponse |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -672,6 +858,125 @@ Sem propriedades.
 | updated_at_date | string | sim |  |
 | value | number | sim |  |
 
+#### v1.investmentAccountSummary
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | não |  |
+| name | string | não |  |
+
+#### v1.investmentDetailResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| investment | v1.investmentListResponse | não |  |
+| summary | v1.investmentSummaryResponse | não |  |
+
+#### v1.investmentListResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account | v1.investmentAccountSummary | não |  |
+| account_id | string | não |  |
+| asset_name | string | não |  |
+| created_at | string | não |  |
+| current_value | number | não |  |
+| id | string | não |  |
+| index_type | entity.IndexType | não |  |
+| index_value | string | não |  |
+| is_rescued | boolean | não |  |
+| liquidity | entity.LiquidityType | não |  |
+| type | entity.InvestmentType | não |  |
+| updated_at | string | não |  |
+| validity | string | não |  |
+
+#### v1.investmentPerformanceResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| asset_name | string | não |  |
+| current_value | number | não |  |
+| id | string | não |  |
+| index_type | entity.IndexType | não |  |
+| index_value | string | não |  |
+| initial_value | number | não |  |
+| liquidity | entity.LiquidityType | não |  |
+| profit_loss | number | não |  |
+| profit_loss_percentage | number | não |  |
+| type | entity.InvestmentType | não |  |
+| validity | string | não |  |
+
+#### v1.investmentPortfolioDistributionResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| color | string | não |  |
+| count | integer | não |  |
+| percentage | number | não |  |
+| total | number | não |  |
+| type | entity.InvestmentType | não |  |
+
+#### v1.investmentPortfolioLiquidityResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| liquidity | entity.LiquidityType | não |  |
+| percentage | number | não |  |
+| total | number | não |  |
+
+#### v1.investmentPortfolioPerformanceHistoryResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| month | string | não |  |
+| value | number | não |  |
+| variation | number | não |  |
+
+#### v1.investmentPortfolioResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| active_investments | integer | não |  |
+| avg_yield_rate | number | não |  |
+| distribution | array&lt;v1.investmentPortfolioDistributionResponse&gt; | não |  |
+| estimated_monthly_yield | number | não |  |
+| liquidity_distribution | array&lt;v1.investmentPortfolioLiquidityResponse&gt; | não |  |
+| performance_history | array&lt;v1.investmentPortfolioPerformanceHistoryResponse&gt; | não |  |
+| rescued_investments | integer | não |  |
+| total_assets | integer | não |  |
+| total_invested | number | não |  |
+
+#### v1.investmentSummaryResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| accumulated_return | number | não |  |
+| current_value | number | não |  |
+| monthly_return | number | não |  |
+| net_balance | number | não |  |
+| portfolio_percentage | number | não |  |
+| return_rate | number | não |  |
+
+#### v1.investmentValueHistoryResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| created_at | string | não |  |
+| id | string | não |  |
+| investment_id | string | não |  |
+| updated_at | string | não |  |
+| updated_at_value | string | não |  |
+| value | number | não |  |
+
+#### v1.updateInvestmentDepositRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| amount | number | não |  |
+| description | string | não |  |
+| transaction_date | string | não |  |
+
 #### v1.updateInvestmentRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -683,3 +988,12 @@ Sem propriedades.
 | liquidity | entity.LiquidityType | não |  |
 | type | entity.InvestmentType | não |  |
 | validity | string | não |  |
+
+#### v1.updateInvestmentWithdrawalRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| amount | number | não |  |
+| description | string | não |  |
+| transaction_date | string | não |  |

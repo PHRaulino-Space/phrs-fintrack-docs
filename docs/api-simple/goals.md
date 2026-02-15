@@ -101,7 +101,7 @@ List all goals for a given workspace
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.Goal&gt; |
+| 200 | OK | array&lt;v1.goalListResponse&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -858,6 +858,51 @@ Sem propriedades.
 | priority | entity.GoalPriority | não |  |
 | target_value | number | sim |  |
 | type | entity.GoalType | sim |  |
+
+#### v1.goalListResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| category | string | não |  |
+| color | string | não |  |
+| completed_at | string | não |  |
+| created_at | string | não |  |
+| current_value | number | não |  |
+| due_date | string | não |  |
+| id | string | não |  |
+| investments | array&lt;v1.investmentListResponse&gt; | não |  |
+| is_completed | boolean | não |  |
+| name | string | não |  |
+| priority | entity.GoalPriority | não |  |
+| target_value | number | não |  |
+| type | entity.GoalType | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
+#### v1.investmentAccountSummary
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | não |  |
+| name | string | não |  |
+
+#### v1.investmentListResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account | v1.investmentAccountSummary | não |  |
+| account_id | string | não |  |
+| asset_name | string | não |  |
+| created_at | string | não |  |
+| current_value | number | não |  |
+| id | string | não |  |
+| index_type | entity.IndexType | não |  |
+| index_value | string | não |  |
+| is_rescued | boolean | não |  |
+| liquidity | entity.LiquidityType | não |  |
+| type | entity.InvestmentType | não |  |
+| updated_at | string | não |  |
+| validity | string | não |  |
 
 #### v1.updateGoalRequest
 

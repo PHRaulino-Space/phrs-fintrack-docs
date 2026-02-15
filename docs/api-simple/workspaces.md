@@ -145,6 +145,31 @@ Create a new workspace. The authenticated user will be added as admin.
 
 Sem propriedades.
 
+#### entity.Budget
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| alert_threshold | number | não |  |
+| budget_health | entity.BudgetHealth | não |  |
+| category_id | string | não |  |
+| category_name | string | não | Computed fields |
+| color | string | não |  |
+| created_at | string | não |  |
+| id | string | não |  |
+| is_active | boolean | não |  |
+| month | integer | não |  |
+| percentage_used | number | não |  |
+| planned_amount | number | não |  |
+| remaining_amount | number | não |  |
+| spent_amount | number | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+| year | integer | não |  |
+
+#### entity.BudgetHealth
+
+Sem propriedades.
+
 #### entity.Card
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -507,6 +532,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | accounts | array&lt;entity.Account&gt; | não |  |
+| budgets | array&lt;entity.Budget&gt; | não |  |
 | categories | array&lt;entity.Category&gt; | não |  |
 | created_at | string | não |  |
 | default_currency_code | string | não |  |

@@ -107,7 +107,7 @@ Create a new card payment transaction
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## POST `/investments/{investment_id}/deposits`
+## POST `/investments/{id}/deposits`
 
 **Resumo:** Create investment deposit
 
@@ -133,7 +133,7 @@ Create a new investment deposit
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## POST `/investments/{investment_id}/withdrawals`
+## POST `/investments/{id}/withdrawals`
 
 **Resumo:** Create investment withdrawal
 
@@ -148,7 +148,7 @@ Create a new investment withdrawal
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| investment_id | path | string | sim | Investment ID |
+| id | path | string | sim | Investment ID |
 | withdrawal | body | v1.createInvestmentWithdrawalRequest | sim | Investment Withdrawal object |
 
 ### Respostas
@@ -678,6 +678,7 @@ Sem propriedades.
 | account_id | string | sim |  |
 | amount | number | sim |  |
 | description | string | não |  |
+| rescued | boolean | não |  |
 | transaction_date | string | sim |  |
 
 #### v1.transactionResponse
