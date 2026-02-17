@@ -1,42 +1,11 @@
 ---
-title: Transactions
+title: Invoices
 ---
-## GET `/transactions`
+## GET `/invoices`
 
-**Resumo:** List transactions
+**Resumo:** List invoices
 
-List all transactions for the workspace with optional filters
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
-| account_id | query | string | não | Account ID |
-| card_id | query | string | não | Card ID (not supported yet) |
-| investment_id | query | string | não | Investment ID |
-| date_from | query | string | não | Start Date (YYYY-MM-DD) |
-| date_to | query | string | não | End Date (YYYY-MM-DD) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;v1.transactionResponse&gt; |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/transactions/summary`
-
-**Resumo:** Transactions summary
-
-Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is always for the account_id and ignores type filters.
+Returns all invoices for the current workspace, regardless of card. Supports filtering by status and billing month.
 
 **Consumes:** application/json
 
@@ -47,146 +16,14 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
-| account_id | query | string | não | Account ID |
-| card_id | query | string | não | Card ID (not supported yet) |
-| investment_id | query | string | não | Investment ID |
-| date_from | query | string | não | Start Date (YYYY-MM-DD) |
-| date_to | query | string | não | End Date (YYYY-MM-DD) |
+| status | query | string | não | Invoice status (OPEN\|PAID\|OVERDUE) |
+| billing_month | query | string | não | Billing month (YYYY-MM) |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | v1.transactionSummaryResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## POST `/card-chargebacks`
-
-**Resumo:** Create card chargeback
-
-Create a new card chargeback transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| chargeback | body | v1.createCardChargebackRequest | sim | Card Chargeback object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.CardChargeback |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/card-expenses`
-
-**Resumo:** Create card expense
-
-Create a new card expense transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| expense | body | v1.createCardExpenseRequest | sim | Card Expense object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.CardExpense |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/card-payments`
-
-**Resumo:** Create card payment
-
-Create a new card payment transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| payment | body | v1.createCardPaymentRequest | sim | Card Payment object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.CardPayment |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/investments/{id}/deposits`
-
-**Resumo:** Create investment deposit
-
-Create a new investment deposit
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Investment ID |
-| deposit | body | v1.createInvestmentDepositRequest | sim | Investment Deposit object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.InvestmentDeposit |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/investments/{id}/withdrawals`
-
-**Resumo:** Create investment withdrawal
-
-Create a new investment withdrawal
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Investment ID |
-| withdrawal | body | v1.createInvestmentWithdrawalRequest | sim | Investment Withdrawal object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.InvestmentWithdrawal |
+| 200 | OK | array&lt;entity.Invoice&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -393,93 +230,6 @@ Sem propriedades.
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
 
-#### entity.IndexType
-
-Sem propriedades.
-
-#### entity.Investment
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account | object | não | Relationships |
-| account_id | string | não |  |
-| asset_name | string | não |  |
-| created_at | string | não |  |
-| current_value | number | não |  |
-| id | string | não |  |
-| index_type | entity.IndexType | não |  |
-| index_value | string | não |  |
-| investment_deposits | array&lt;entity.InvestmentDeposit&gt; | não |  |
-| investment_withdrawals | array&lt;entity.InvestmentWithdrawal&gt; | não |  |
-| is_rescued | boolean | não |  |
-| liquidity | entity.LiquidityType | não |  |
-| tags | array&lt;entity.InvestmentTag&gt; | não |  |
-| type | entity.InvestmentType | não |  |
-| updated_at | string | não |  |
-| validity | string | não |  |
-| value_history | array&lt;entity.InvestmentValueHistory&gt; | não |  |
-
-#### entity.InvestmentDeposit
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account | entity.Account | não |  |
-| account_id | string | não |  |
-| amount | number | não |  |
-| created_at | string | não |  |
-| deleted_at | string | não |  |
-| description | string | não |  |
-| id | string | não |  |
-| investment | object | não | Relationships |
-| investment_id | string | não |  |
-| recurring_transaction_id | string | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
-| updated_at | string | não |  |
-
-#### entity.InvestmentTag
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| investment | entity.Investment | não |  |
-| investment_id | string | não |  |
-| tag | entity.Tag | não |  |
-| tag_id | string | não |  |
-
-#### entity.InvestmentType
-
-Sem propriedades.
-
-#### entity.InvestmentValueHistory
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| created_at | string | não |  |
-| id | string | não |  |
-| investment | object | não | Relationships |
-| investment_id | string | não |  |
-| updated_at | string | não |  |
-| updated_at_value | string | não |  |
-| value | number | não |  |
-
-#### entity.InvestmentWithdrawal
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account | entity.Account | não |  |
-| account_id | string | não |  |
-| amount | number | não |  |
-| created_at | string | não |  |
-| deleted_at | string | não |  |
-| description | string | não |  |
-| id | string | não |  |
-| investment | object | não | Relationships |
-| investment_id | string | não |  |
-| recurring_transaction_id | string | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
-| updated_at | string | não |  |
-
 #### entity.Invoice
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -495,10 +245,6 @@ Sem propriedades.
 | updated_at | string | não |  |
 
 #### entity.InvoiceStatus
-
-Sem propriedades.
-
-#### entity.LiquidityType
 
 Sem propriedades.
 
@@ -666,84 +412,3 @@ Sem propriedades.
 #### entity.TransactionStatus
 
 Sem propriedades.
-
-#### v1.createCardChargebackRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| amount | number | sim |  |
-| billing_month | string | sim |  |
-| card_id | string | sim |  |
-| description | string | sim |  |
-| transaction_date | string | sim |  |
-
-#### v1.createCardExpenseRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| amount | number | sim |  |
-| billing_month | string | sim |  |
-| card_id | string | sim |  |
-| category_id | string | sim |  |
-| description | string | sim |  |
-| sub_category_id | string | não |  |
-| transaction_date | string | sim |  |
-
-#### v1.createCardPaymentRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account_id | string | sim |  |
-| amount | number | sim |  |
-| billing_month | string | sim |  |
-| card_id | string | sim |  |
-| is_final_payment | boolean | não |  |
-| transaction_date | string | sim |  |
-
-#### v1.createInvestmentDepositRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account_id | string | sim |  |
-| amount | number | sim |  |
-| description | string | não |  |
-| transaction_date | string | sim |  |
-
-#### v1.createInvestmentWithdrawalRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account_id | string | sim |  |
-| amount | number | sim |  |
-| description | string | não |  |
-| rescued | boolean | não |  |
-| transaction_date | string | sim |  |
-
-#### v1.transactionResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account_id | string | não |  |
-| amount | number | não |  |
-| card_id | string | não |  |
-| category_id | string | não |  |
-| description | string | não |  |
-| destination_account_id | string | não |  |
-| id | string | não |  |
-| investment_id | string | não |  |
-| recurring_transaction_id | string | não |  |
-| running_balance | number | não |  |
-| source_account_id | string | não |  |
-| sub_category_id | string | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
-| type | string | não |  |
-
-#### v1.transactionSummaryResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| balance | number | não |  |
-| current_balance | number | não |  |
-| total_in | number | não |  |
-| total_out | number | não |  |

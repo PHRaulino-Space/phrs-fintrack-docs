@@ -367,6 +367,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
 | tags | array&lt;entity.RecurringCardTransactionTag&gt; | não |  |
+| type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
 
 #### entity.RecurringCardTransactionTag
@@ -398,6 +399,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
 | tags | array&lt;entity.RecurringExpenseTag&gt; | não |  |
+| type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
 
 #### entity.RecurringExpenseTag
@@ -429,6 +431,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
 | tags | array&lt;entity.RecurringIncomeTag&gt; | não |  |
+| type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
 
 #### entity.RecurringIncomeTag
@@ -439,6 +442,10 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.RecurringType
+
+Sem propriedades.
 
 #### entity.StagedTransaction
 

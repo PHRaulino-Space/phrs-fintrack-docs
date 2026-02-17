@@ -151,7 +151,7 @@ Returns a single invoice identified by billing_month for the provided card
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Invoice |
+| 200 | OK | v1.invoiceResponse |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -160,7 +160,7 @@ Returns a single invoice identified by billing_month for the provided card
 
 **Resumo:** List invoice transactions
 
-List all card transactions for a given invoice (billing month)
+List card expenses and chargebacks for a given invoice (billing month)
 
 **Consumes:** application/json
 
@@ -528,6 +528,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
 | tags | array&lt;entity.RecurringCardTransactionTag&gt; | não |  |
+| type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
 
 #### entity.RecurringCardTransactionTag
@@ -559,6 +560,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
 | tags | array&lt;entity.RecurringExpenseTag&gt; | não |  |
+| type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
 
 #### entity.RecurringExpenseTag
@@ -590,6 +592,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
 | tags | array&lt;entity.RecurringIncomeTag&gt; | não |  |
+| type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
 
 #### entity.RecurringIncomeTag
@@ -600,6 +603,10 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.RecurringType
+
+Sem propriedades.
 
 #### entity.StagedTransaction
 
@@ -682,6 +689,22 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | billing_month | string | sim |  |
 | status | object | não |  |
+
+#### v1.invoiceResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| billing_month | string | não | YYYY-MM |
+| card | object | não | Relationships |
+| card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
+| card_expenses | array&lt;entity.CardExpense&gt; | não |  |
+| card_id | string | não |  |
+| card_payments | array&lt;entity.CardPayment&gt; | não |  |
+| created_at | string | não |  |
+| paid_amount | number | não |  |
+| status | entity.InvoiceStatus | não |  |
+| total_amount | number | não |  |
+| updated_at | string | não |  |
 
 #### v1.invoiceTransactionResponse
 
