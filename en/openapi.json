@@ -3325,7 +3325,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Invoice"
+                            "$ref": "#/definitions/v1.invoiceResponse"
                         }
                     },
                     "400": {
@@ -3508,7 +3508,7 @@
         },
         "/cards/{id}/invoices/{billing_month}/transactions": {
             "get": {
-                "description": "List all card transactions for a given invoice (billing month)",
+                "description": "List card expenses and chargebacks for a given invoice (billing month)",
                 "consumes": [
                     "application/json"
                 ],
@@ -7452,6 +7452,71 @@
                 }
             }
         },
+        "/invoices": {
+            "get": {
+                "description": "Returns all invoices for the current workspace, regardless of card. Supports filtering by status and billing month.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "List invoices",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Invoice status (OPEN|PAID|OVERDUE)",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month (YYYY-MM)",
+                        "name": "billing_month",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Invoice"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/notifications": {
             "get": {
                 "security": [
@@ -8441,7 +8506,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw",
+                        "description": "Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment",
                         "name": "type",
                         "in": "query"
                     },
@@ -8539,7 +8604,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw",
+                        "description": "Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment",
                         "name": "type",
                         "in": "query"
                     },
@@ -10968,6 +11033,9 @@
                         "$ref": "#/definitions/entity.RecurringCardTransactionTag"
                     }
                 },
+                "type": {
+                    "$ref": "#/definitions/entity.RecurringType"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -11052,6 +11120,9 @@
                         "$ref": "#/definitions/entity.RecurringExpenseTag"
                     }
                 },
+                "type": {
+                    "$ref": "#/definitions/entity.RecurringType"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -11135,6 +11206,9 @@
                     "items": {
                         "$ref": "#/definitions/entity.RecurringIncomeTag"
                     }
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.RecurringType"
                 },
                 "updated_at": {
                     "type": "string"
@@ -13341,6 +13415,59 @@
                 }
             }
         },
+        "v1.invoiceResponse": {
+            "type": "object",
+            "properties": {
+                "billing_month": {
+                    "description": "YYYY-MM",
+                    "type": "string"
+                },
+                "card": {
+                    "description": "Relationships",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Card"
+                        }
+                    ]
+                },
+                "card_chargebacks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CardChargeback"
+                    }
+                },
+                "card_expenses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CardExpense"
+                    }
+                },
+                "card_id": {
+                    "type": "string"
+                },
+                "card_payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CardPayment"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "paid_amount": {
+                    "type": "number"
+                },
+                "status": {
+                    "$ref": "#/definitions/entity.InvoiceStatus"
+                },
+                "total_amount": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.invoiceTransactionResponse": {
             "type": "object",
             "properties": {
@@ -13599,6 +13726,9 @@
                 "amount": {
                     "type": "number"
                 },
+                "card_id": {
+                    "type": "string"
+                },
                 "category_id": {
                     "type": "string"
                 },
@@ -13613,6 +13743,12 @@
                 },
                 "investment_id": {
                     "type": "string"
+                },
+                "recurring_transaction_id": {
+                    "type": "string"
+                },
+                "running_balance": {
+                    "type": "number"
                 },
                 "source_account_id": {
                     "type": "string"
