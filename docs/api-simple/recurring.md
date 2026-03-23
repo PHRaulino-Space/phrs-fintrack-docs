@@ -49,8 +49,8 @@ Identify empty slots for recurring transactions up to end of month
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| account_id | query | string | não | Account ID |
-| card_id | query | string | não | Card ID |
+| account_id | query | string | não | Account ID (opcional; se omitir, busca todas as contas/cartões) |
+| card_id | query | string | não | Card ID (opcional; se omitir, busca todas as contas/cartões) |
 
 ### Respostas
 
@@ -346,6 +346,7 @@ Sem propriedades.
 | date | string | não |  |
 | status | object | não | PAID, IGNORE, PENDING |
 | transaction_id | string | não |  |
+| type | entity.RecurringType | não |  |
 
 #### entity.RecurringCardTransaction
 

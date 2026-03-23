@@ -724,17 +724,24 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | account_id | string | não |  |
+| account_name | string | não |  |
 | amount | number | não |  |
 | card_id | string | não |  |
+| card_name | string | não |  |
 | category_id | string | não |  |
+| category_name | string | não |  |
 | description | string | não |  |
 | destination_account_id | string | não |  |
+| destination_account_name | string | não |  |
 | id | string | não |  |
 | investment_id | string | não |  |
+| investment_name | string | não |  |
 | recurring_transaction_id | string | não |  |
 | running_balance | number | não |  |
 | source_account_id | string | não |  |
+| source_account_name | string | não |  |
 | sub_category_id | string | não |  |
+| sub_category_name | string | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | type | string | não |  |

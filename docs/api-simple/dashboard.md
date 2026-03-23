@@ -159,6 +159,7 @@ Returns summary metrics for goals
 | monthlyVariation | number | não |  |
 | pendingBills | array&lt;usecase.PendingBill&gt; | não |  |
 | plannedExpenses | number | não |  |
+| recurringPayments | number | não |  |
 | savingsRate | number | não |  |
 | totalExpenses | number | não |  |
 | totalIncome | number | não |  |

@@ -106,7 +106,7 @@ Get a single income by its ID
 
 **Resumo:** Update an income
 
-Update an existing income
+Update an existing income (you can set/unset recurring_transaction_id)
 
 **Consumes:** application/json
 
@@ -118,7 +118,7 @@ Update an existing income
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Income ID |
-| income | body | v1.updateIncomeRequest | sim | Income object |
+| income | body | v1.updateIncomeRequest | sim | Income object (recurring_transaction_id optional; null clears) |
 
 ### Respostas
 
@@ -150,13 +150,16 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | account_id | string | não |  |
+| account_name | string | não |  |
 | amount | number | não |  |
 | category_id | string | não |  |
+| category_name | string | não |  |
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
+| sub_category_name | string | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
@@ -168,6 +171,7 @@ Sem propriedades.
 | amount | number | não |  |
 | category_id | string | não |  |
 | description | string | não |  |
+| recurring_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |

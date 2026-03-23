@@ -74,7 +74,7 @@ Get a single expense by its ID
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Expense |
+| 200 | OK | v1.expenseResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -106,7 +106,7 @@ Get a single expense by its ID
 
 **Resumo:** Update an expense
 
-Update an existing expense
+Update an existing expense (you can set/unset recurring_transaction_id)
 
 **Consumes:** application/json
 
@@ -118,13 +118,13 @@ Update an existing expense
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Expense ID |
-| expense | body | v1.updateExpenseRequest | sim | Expense object |
+| expense | body | v1.updateExpenseRequest | sim | Expense object (recurring_transaction_id optional; null clears) |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Expense |
+| 200 | OK | v1.expenseResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -525,6 +525,25 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | transaction_date | string | sim |  |
 
+#### v1.expenseResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| account_name | string | não |  |
+| amount | number | não |  |
+| category_id | string | não |  |
+| category_name | string | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| recurring_expense_id | string | não |  |
+| sub_category_id | string | não |  |
+| sub_category_name | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
+
 #### v1.updateExpenseRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -532,6 +551,7 @@ Sem propriedades.
 | amount | number | não |  |
 | category_id | string | não |  |
 | description | string | não |  |
+| recurring_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |

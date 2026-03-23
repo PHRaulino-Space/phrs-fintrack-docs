@@ -72,7 +72,7 @@ Get a single transfer by its ID
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Transfer |
+| 200 | OK | v1.transferResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -105,7 +105,7 @@ Create a new transfer between accounts
 
 **Resumo:** Update a transfer
 
-Update an existing transfer
+Update an existing transfer (you can set/unset recurring_transaction_id)
 
 **Consumes:** application/json
 
@@ -117,13 +117,13 @@ Update an existing transfer
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Transfer ID |
-| transfer | body | v1.updateTransferRequest | sim | Transfer object |
+| transfer | body | v1.updateTransferRequest | sim | Transfer object (recurring_transaction_id optional; null clears) |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Transfer |
+| 200 | OK | v1.transferResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -181,6 +181,23 @@ Sem propriedades.
 | source_account_id | string | sim |  |
 | transaction_date | string | sim |  |
 
+#### v1.transferResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| destination_account_id | string | não |  |
+| destination_account_name | string | não |  |
+| id | string | não |  |
+| recurring_transfer_id | string | não |  |
+| source_account_id | string | não |  |
+| source_account_name | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
+
 #### v1.updateTransferRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -188,6 +205,7 @@ Sem propriedades.
 | amount | number | não |  |
 | description | string | não |  |
 | destination_account_id | string | não |  |
+| recurring_transaction_id | string | não |  |
 | source_account_id | string | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
