@@ -4580,7 +4580,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Expense"
+                            "$ref": "#/definitions/v1.expenseResponse"
                         }
                     },
                     "400": {
@@ -4604,7 +4604,7 @@
                 }
             },
             "put": {
-                "description": "Update an existing expense",
+                "description": "Update an existing expense (you can set/unset recurring_transaction_id)",
                 "consumes": [
                     "application/json"
                 ],
@@ -4631,7 +4631,7 @@
                         "required": true
                     },
                     {
-                        "description": "Expense object",
+                        "description": "Expense object (recurring_transaction_id optional; null clears)",
                         "name": "expense",
                         "in": "body",
                         "required": true,
@@ -4644,7 +4644,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Expense"
+                            "$ref": "#/definitions/v1.expenseResponse"
                         }
                     },
                     "400": {
@@ -6253,7 +6253,7 @@
                 }
             },
             "put": {
-                "description": "Update an existing income",
+                "description": "Update an existing income (you can set/unset recurring_transaction_id)",
                 "consumes": [
                     "application/json"
                 ],
@@ -6280,7 +6280,7 @@
                         "required": true
                     },
                     {
-                        "description": "Income object",
+                        "description": "Income object (recurring_transaction_id optional; null clears)",
                         "name": "income",
                         "in": "body",
                         "required": true,
@@ -7889,13 +7889,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Account ID",
+                        "description": "Account ID (opcional; se omitir, busca todas as contas/cartões)",
                         "name": "account_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Card ID",
+                        "description": "Card ID (opcional; se omitir, busca todas as contas/cartões)",
                         "name": "card_id",
                         "in": "query"
                     }
@@ -8826,7 +8826,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Transfer"
+                            "$ref": "#/definitions/v1.transferResponse"
                         }
                     },
                     "400": {
@@ -8850,7 +8850,7 @@
                 }
             },
             "put": {
-                "description": "Update an existing transfer",
+                "description": "Update an existing transfer (you can set/unset recurring_transaction_id)",
                 "consumes": [
                     "application/json"
                 ],
@@ -8877,7 +8877,7 @@
                         "required": true
                     },
                     {
-                        "description": "Transfer object",
+                        "description": "Transfer object (recurring_transaction_id optional; null clears)",
                         "name": "transfer",
                         "in": "body",
                         "required": true,
@@ -8890,7 +8890,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Transfer"
+                            "$ref": "#/definitions/v1.transferResponse"
                         }
                     },
                     "400": {
@@ -10968,6 +10968,9 @@
                 },
                 "transaction_id": {
                     "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.RecurringType"
                 }
             }
         },
@@ -11928,6 +11931,9 @@
                     }
                 },
                 "plannedExpenses": {
+                    "type": "number"
+                },
+                "recurringPayments": {
                     "type": "number"
                 },
                 "savingsRate": {
@@ -13054,6 +13060,53 @@
                 }
             }
         },
+        "v1.expenseResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "account_name": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recurring_expense_id": {
+                    "type": "string"
+                },
+                "sub_category_id": {
+                    "type": "string"
+                },
+                "sub_category_name": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.forgotPasswordRequest": {
             "type": "object",
             "required": [
@@ -13144,10 +13197,16 @@
                 "account_id": {
                     "type": "string"
                 },
+                "account_name": {
+                    "type": "string"
+                },
                 "amount": {
                     "type": "number"
                 },
                 "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
                     "type": "string"
                 },
                 "created_at": {
@@ -13163,6 +13222,9 @@
                     "type": "string"
                 },
                 "sub_category_id": {
+                    "type": "string"
+                },
+                "sub_category_name": {
                     "type": "string"
                 },
                 "transaction_date": {
@@ -13723,13 +13785,22 @@
                 "account_id": {
                     "type": "string"
                 },
+                "account_name": {
+                    "type": "string"
+                },
                 "amount": {
                     "type": "number"
                 },
                 "card_id": {
                     "type": "string"
                 },
+                "card_name": {
+                    "type": "string"
+                },
                 "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
                     "type": "string"
                 },
                 "description": {
@@ -13738,10 +13809,16 @@
                 "destination_account_id": {
                     "type": "string"
                 },
+                "destination_account_name": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
                 "investment_id": {
+                    "type": "string"
+                },
+                "investment_name": {
                     "type": "string"
                 },
                 "recurring_transaction_id": {
@@ -13753,7 +13830,13 @@
                 "source_account_id": {
                     "type": "string"
                 },
+                "source_account_name": {
+                    "type": "string"
+                },
                 "sub_category_id": {
+                    "type": "string"
+                },
+                "sub_category_name": {
                     "type": "string"
                 },
                 "transaction_date": {
@@ -13781,6 +13864,47 @@
                 },
                 "total_out": {
                     "type": "number"
+                }
+            }
+        },
+        "v1.transferResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "destination_account_id": {
+                    "type": "string"
+                },
+                "destination_account_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recurring_transfer_id": {
+                    "type": "string"
+                },
+                "source_account_id": {
+                    "type": "string"
+                },
+                "source_account_name": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -13867,6 +13991,9 @@
                 "description": {
                     "type": "string"
                 },
+                "recurring_transaction_id": {
+                    "type": "string"
+                },
                 "sub_category_id": {
                     "type": "string"
                 },
@@ -13920,6 +14047,9 @@
                     "type": "string"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "recurring_transaction_id": {
                     "type": "string"
                 },
                 "sub_category_id": {
@@ -14147,6 +14277,9 @@
                     "type": "string"
                 },
                 "destination_account_id": {
+                    "type": "string"
+                },
+                "recurring_transaction_id": {
                     "type": "string"
                 },
                 "source_account_id": {
