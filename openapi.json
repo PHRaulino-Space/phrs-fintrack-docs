@@ -7826,6 +7826,12 @@
                         "description": "Return only active recurrings",
                         "name": "is_active",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reference month YYYY-MM (defaults to current month)",
+                        "name": "month",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -11066,6 +11072,9 @@
                 "frequency": {
                     "$ref": "#/definitions/entity.TransactionFrequency"
                 },
+                "has_transaction_in_month": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -11159,6 +11168,9 @@
                 "frequency": {
                     "$ref": "#/definitions/entity.TransactionFrequency"
                 },
+                "has_transaction_in_month": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -11245,6 +11257,9 @@
                 },
                 "frequency": {
                     "$ref": "#/definitions/entity.TransactionFrequency"
+                },
+                "has_transaction_in_month": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "string"
