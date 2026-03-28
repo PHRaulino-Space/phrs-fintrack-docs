@@ -58,6 +58,27 @@ Identify empty slots for recurring transactions up to end of month
 | --- | --- | --- |
 | 200 | OK | array&lt;entity.PendingSlot&gt; |
 
+## GET `/recurring/summary`
+
+**Resumo:** Recurring summary
+
+Return projected, paid, and pending amounts for the requested month
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| month | query | string | sim | Month in format YYYY-MM |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.RecurringSummary |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
 ## PATCH `/recurring/{id}`
 
 **Resumo:** Update recurring transaction (Patch)
@@ -364,6 +385,8 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
+| payment_status | string | não |  |
+| pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
@@ -396,6 +419,8 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
+| payment_status | string | não |  |
+| pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
@@ -428,6 +453,8 @@ Sem propriedades.
 | id | string | não |  |
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
+| payment_status | string | não |  |
+| pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
@@ -443,6 +470,14 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.RecurringSummary
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| paid_current_month | number | não |  |
+| pending_until_month_end | number | não |  |
+| projected_current_month | number | não |  |
 
 #### entity.RecurringType
 

@@ -697,6 +697,8 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
+| payment_status | string | não |  |
+| pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
@@ -729,6 +731,8 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
+| payment_status | string | não |  |
+| pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
@@ -761,6 +765,8 @@ Sem propriedades.
 | id | string | não |  |
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
+| payment_status | string | não |  |
+| pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |

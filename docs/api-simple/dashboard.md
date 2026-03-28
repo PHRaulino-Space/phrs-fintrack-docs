@@ -157,7 +157,6 @@ Returns summary metrics for goals
 | month | integer | não |  |
 | monthlyTrend | array&lt;usecase.MonthlyTrend&gt; | não |  |
 | monthlyVariation | number | não |  |
-| pendingBills | array&lt;usecase.PendingBill&gt; | não |  |
 | plannedExpenses | number | não |  |
 | recurringPayments | number | não |  |
 | savingsRate | number | não |  |
@@ -193,18 +192,6 @@ Returns summary metrics for goals
 | income | number | não |  |
 | month | string | não |  |
 | net | number | não |  |
-
-#### usecase.PendingBill
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| amount | number | não |  |
-| category | string | não |  |
-| description | string | não |  |
-| dueDate | string | não |  |
-| id | string | não |  |
-| status | string | não |  |
-| type | string | não |  |
 
 #### usecase.RecurringCardExpenseSummary
 

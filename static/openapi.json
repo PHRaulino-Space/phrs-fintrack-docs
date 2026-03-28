@@ -7913,6 +7913,57 @@
                 }
             }
         },
+        "/recurring/summary": {
+            "get": {
+                "description": "Return projected, paid, and pending amounts for the requested month",
+                "tags": [
+                    "recurring"
+                ],
+                "summary": "Recurring summary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Month in format YYYY-MM",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.RecurringSummary"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/recurring/{id}": {
             "patch": {
                 "description": "Update recurring transaction fields",
@@ -11021,6 +11072,12 @@
                 "is_active": {
                     "type": "boolean"
                 },
+                "payment_status": {
+                    "type": "string"
+                },
+                "pending_amount": {
+                    "type": "number"
+                },
                 "start_date": {
                     "type": "string"
                 },
@@ -11107,6 +11164,12 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "payment_status": {
+                    "type": "string"
+                },
+                "pending_amount": {
+                    "type": "number"
                 },
                 "start_date": {
                     "type": "string"
@@ -11195,6 +11258,12 @@
                 "is_active": {
                     "type": "boolean"
                 },
+                "payment_status": {
+                    "type": "string"
+                },
+                "pending_amount": {
+                    "type": "number"
+                },
                 "start_date": {
                     "type": "string"
                 },
@@ -11232,6 +11301,20 @@
                 },
                 "tag_id": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.RecurringSummary": {
+            "type": "object",
+            "properties": {
+                "paid_current_month": {
+                    "type": "number"
+                },
+                "pending_until_month_end": {
+                    "type": "number"
+                },
+                "projected_current_month": {
+                    "type": "number"
                 }
             }
         },
@@ -11924,12 +12007,6 @@
                 "monthlyVariation": {
                     "type": "number"
                 },
-                "pendingBills": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/usecase.PendingBill"
-                    }
-                },
                 "plannedExpenses": {
                     "type": "number"
                 },
@@ -12068,32 +12145,6 @@
                 },
                 "net": {
                     "type": "number"
-                }
-            }
-        },
-        "usecase.PendingBill": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "category": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "dueDate": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
                 }
             }
         },
