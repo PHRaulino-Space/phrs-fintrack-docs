@@ -383,6 +383,7 @@ Sem propriedades.
 | description | string | não |  |
 | end_date | string | não |  |
 | frequency | entity.TransactionFrequency | não |  |
+| has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
@@ -417,6 +418,7 @@ Sem propriedades.
 | end_date | string | não |  |
 | expenses | array&lt;entity.Expense&gt; | não |  |
 | frequency | entity.TransactionFrequency | não |  |
+| has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
@@ -450,6 +452,7 @@ Sem propriedades.
 | description | string | não |  |
 | end_date | string | não |  |
 | frequency | entity.TransactionFrequency | não |  |
+| has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
