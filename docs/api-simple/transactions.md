@@ -695,6 +695,7 @@ Sem propriedades.
 | card_id | string | sim |  |
 | category_id | string | sim |  |
 | description | string | sim |  |
+| installments | integer | não |  |
 | sub_category_id | string | não |  |
 | transaction_date | string | sim |  |
 
