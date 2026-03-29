@@ -12575,6 +12575,9 @@
                 "description": {
                     "type": "string"
                 },
+                "installments": {
+                    "type": "integer"
+                },
                 "sub_category_id": {
                     "type": "string"
                 },
