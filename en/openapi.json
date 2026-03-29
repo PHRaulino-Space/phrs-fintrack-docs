@@ -5744,7 +5744,7 @@
         },
         "/import-sessions/{id}/bind": {
             "post": {
-                "description": "Bind staged transactions to recurring transaction patterns in batch. Automatically copies category, subcategory, tags, and description from each recurring pattern.",
+                "description": "Bind staged transactions to recurring transaction patterns in batch. Automatically copies category, subcategory, tags, and recurring references from each recurring pattern.",
                 "consumes": [
                     "application/json"
                 ],
@@ -5940,6 +5940,126 @@
                         "type": "string",
                         "description": "Session ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/recurring-bindings/{binding_id}": {
+            "delete": {
+                "description": "Delete a pending recurring transaction binding without binding the staged transaction.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Delete a recurring transaction binding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Recurring Transaction Binding ID",
+                        "name": "binding_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/recurring-bindings/{binding_id}/confirm": {
+            "post": {
+                "description": "Confirm a pending recurring transaction binding and apply the recurring link to the staged transaction.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Confirm a recurring transaction binding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Recurring Transaction Binding ID",
+                        "name": "binding_id",
                         "in": "path",
                         "required": true
                     }
@@ -10529,6 +10649,12 @@
                 "id": {
                     "type": "string"
                 },
+                "recurring_transaction_bindings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.RecurringTransactionBinding"
+                    }
+                },
                 "staged_transactions": {
                     "description": "Relationships",
                     "type": "array",
@@ -11333,6 +11459,72 @@
                 }
             }
         },
+        "entity.RecurringTransactionBinding": {
+            "type": "object",
+            "properties": {
+                "confirmed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recurring_amount": {
+                    "type": "number"
+                },
+                "recurring_description": {
+                    "type": "string"
+                },
+                "recurring_transaction_id": {
+                    "type": "string"
+                },
+                "recurring_type": {
+                    "$ref": "#/definitions/entity.RecurringType"
+                },
+                "session_id": {
+                    "type": "string"
+                },
+                "source": {
+                    "$ref": "#/definitions/entity.RecurringTransactionBindingSource"
+                },
+                "staged_transaction_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/entity.RecurringTransactionBindingStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RecurringTransactionBindingSource": {
+            "type": "string",
+            "enum": [
+                "AI",
+                "MANUAL"
+            ],
+            "x-enum-varnames": [
+                "RecurringTransactionBindingSourceAI",
+                "RecurringTransactionBindingSourceManual"
+            ]
+        },
+        "entity.RecurringTransactionBindingStatus": {
+            "type": "string",
+            "enum": [
+                "PENDING",
+                "CONFIRMED"
+            ],
+            "x-enum-varnames": [
+                "RecurringTransactionBindingStatusPending",
+                "RecurringTransactionBindingStatusConfirmed"
+            ]
+        },
         "entity.RecurringType": {
             "type": "string",
             "enum": [
@@ -12081,6 +12273,12 @@
                 },
                 "initial_balance": {
                     "type": "number"
+                },
+                "recurring_transaction_bindings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.RecurringTransactionBinding"
+                    }
                 },
                 "staged_transactions": {
                     "description": "Relationships",
