@@ -25,6 +25,31 @@ Delete an import session and all its staged transactions
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## DELETE `/import-sessions/{id}/recurring-bindings/{binding_id}`
+
+**Resumo:** Delete a recurring transaction binding
+
+Delete a pending recurring transaction binding without binding the staged transaction.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| binding_id | path | string | sim | Recurring Transaction Binding ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
 ## DELETE `/import-sessions/{id}/staged-transactions`
 
 **Resumo:** Delete all staged transactions in session
@@ -148,7 +173,7 @@ Create a new import session.
 
 **Resumo:** Bind staged transactions to recurring patterns
 
-Bind staged transactions to recurring transaction patterns in batch. Automatically copies category, subcategory, tags, and description from each recurring pattern.
+Bind staged transactions to recurring transaction patterns in batch. Automatically copies category, subcategory, tags, and recurring references from each recurring pattern.
 
 **Consumes:** application/json
 
@@ -242,6 +267,31 @@ Trigger enrichment for all PENDING staged transactions in a session.
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## POST `/import-sessions/{id}/recurring-bindings/{binding_id}/confirm`
+
+**Resumo:** Confirm a recurring transaction binding
+
+Confirm a pending recurring transaction binding and apply the recurring link to the staged transaction.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| binding_id | path | string | sim | Recurring Transaction Binding ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
 ## POST `/import-sessions/{id}/staged-transactions`
 
 **Resumo:** Create staged transactions
@@ -304,12 +354,43 @@ Upload a CSV file to import transactions into the session. The file is parsed an
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
 | target_value | number | não |  |
 | type | string | não |  |
 | user_id | string | não |  |
 | workspace_id | string | não |  |
+
+#### entity.RecurringTransactionBinding
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| confirmed_at | string | não |  |
+| created_at | string | não |  |
+| id | string | não |  |
+| recurring_amount | number | não |  |
+| recurring_description | string | não |  |
+| recurring_transaction_id | string | não |  |
+| recurring_type | entity.RecurringType | não |  |
+| session_id | string | não |  |
+| source | entity.RecurringTransactionBindingSource | não |  |
+| staged_transaction_id | string | não |  |
+| status | entity.RecurringTransactionBindingStatus | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
+#### entity.RecurringTransactionBindingSource
+
+Sem propriedades.
+
+#### entity.RecurringTransactionBindingStatus
+
+Sem propriedades.
+
+#### entity.RecurringType
+
+Sem propriedades.
 
 #### entity.StagedTransaction
 
@@ -348,6 +429,7 @@ Sem propriedades.
 | description | string | não |  |
 | id | string | não |  |
 | initial_balance | number | não |  |
+| recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | usecase.SessionStats | não |  |
 | status | string | não |  |

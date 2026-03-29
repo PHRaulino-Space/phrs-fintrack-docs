@@ -291,6 +291,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
 | target_value | number | não |  |
@@ -482,6 +483,32 @@ Sem propriedades.
 | paid_current_month | number | não |  |
 | pending_until_month_end | number | não |  |
 | projected_current_month | number | não |  |
+
+#### entity.RecurringTransactionBinding
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| confirmed_at | string | não |  |
+| created_at | string | não |  |
+| id | string | não |  |
+| recurring_amount | number | não |  |
+| recurring_description | string | não |  |
+| recurring_transaction_id | string | não |  |
+| recurring_type | entity.RecurringType | não |  |
+| session_id | string | não |  |
+| source | entity.RecurringTransactionBindingSource | não |  |
+| staged_transaction_id | string | não |  |
+| status | entity.RecurringTransactionBindingStatus | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
+#### entity.RecurringTransactionBindingSource
+
+Sem propriedades.
+
+#### entity.RecurringTransactionBindingStatus
+
+Sem propriedades.
 
 #### entity.RecurringType
 
