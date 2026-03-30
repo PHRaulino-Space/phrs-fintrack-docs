@@ -160,7 +160,7 @@ Returns a single invoice identified by billing_month for the provided card
 
 **Resumo:** List invoice transactions
 
-List card expenses and chargebacks for a given invoice (billing month)
+List card expenses, chargebacks and payments for a given invoice (billing month)
 
 **Consumes:** application/json
 
@@ -730,12 +730,11 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| billing_month | string | não | YYYY-MM |
-| card | object | não | Relationships |
+| billing_month | string | não |  |
+| card | entity.Card | não |  |
 | card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
 | card_expenses | array&lt;entity.CardExpense&gt; | não |  |
 | card_id | string | não |  |
-| card_payments | array&lt;entity.CardPayment&gt; | não |  |
 | created_at | string | não |  |
 | paid_amount | number | não |  |
 | status | entity.InvoiceStatus | não |  |
@@ -755,7 +754,7 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
-| type | string | não |  |
+| type | entity.StagedTransactionType | não |  |
 
 #### v1.updateCardRequest
 

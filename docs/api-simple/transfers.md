@@ -178,8 +178,10 @@ Sem propriedades.
 | amount | number | sim |  |
 | description | string | não |  |
 | destination_account_id | string | sim |  |
+| recurring_transfer_id | string | não |  |
 | source_account_id | string | sim |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.transferResponse
 

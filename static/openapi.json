@@ -2792,65 +2792,6 @@
                 }
             }
         },
-        "/card-payments": {
-            "post": {
-                "description": "Create a new card payment transaction",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "transactions"
-                ],
-                "summary": "Create card payment",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Card Payment object",
-                        "name": "payment",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.createCardPaymentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entity.CardPayment"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/cards": {
             "get": {
                 "description": "List all cards for a given workspace",
@@ -3506,9 +3447,255 @@
                 }
             }
         },
+        "/cards/{id}/invoices/{billing_month}/card_payments": {
+            "post": {
+                "description": "Create a new card payment transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Create card payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month (YYYY-MM)",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Card Payment object",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.createCardPaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CardPayment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}": {
+            "put": {
+                "description": "Update an existing card payment transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Update card payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month (YYYY-MM)",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Payment ID",
+                        "name": "payment_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Card Payment object",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateCardPaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CardPayment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing card payment transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Delete card payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month (YYYY-MM)",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Payment ID",
+                        "name": "payment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/cards/{id}/invoices/{billing_month}/transactions": {
             "get": {
-                "description": "List card expenses and chargebacks for a given invoice (billing month)",
+                "description": "List card expenses, chargebacks and payments for a given invoice (billing month)",
                 "consumes": [
                     "application/json"
                 ],
@@ -11602,6 +11789,7 @@
                 "INVESTMENT_DEPOSIT",
                 "INVESTMENT_WITHDRAWAL",
                 "CARD_PAYMENT",
+                "CARD_PAYMENT_ADVANCE",
                 "CARD_EXPENSE",
                 "CARD_CHARGEBACK"
             ],
@@ -11612,6 +11800,7 @@
                 "StagedTransactionTypeInvestmentDeposit",
                 "StagedTransactionTypeInvestmentWithdrawal",
                 "StagedTransactionTypeCardPayment",
+                "StagedTransactionTypeCardPaymentAdvance",
                 "StagedTransactionTypeCardExpense",
                 "StagedTransactionTypeCardChargeback"
             ]
@@ -12744,6 +12933,9 @@
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -12776,11 +12968,17 @@
                 "installments": {
                     "type": "integer"
                 },
+                "recurring_card_transaction_id": {
+                    "type": "string"
+                },
                 "sub_category_id": {
                     "type": "string"
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -12789,8 +12987,6 @@
             "required": [
                 "account_id",
                 "amount",
-                "billing_month",
-                "card_id",
                 "transaction_date"
             ],
             "properties": {
@@ -12800,17 +12996,14 @@
                 "amount": {
                     "type": "number"
                 },
-                "billing_month": {
-                    "type": "string"
-                },
-                "card_id": {
-                    "type": "string"
-                },
                 "is_final_payment": {
                     "type": "boolean"
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -12897,6 +13090,9 @@
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -12998,6 +13194,9 @@
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -13020,6 +13219,9 @@
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -13093,6 +13295,9 @@
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -13197,11 +13402,17 @@
                 "destination_account_id": {
                     "type": "string"
                 },
+                "recurring_transfer_id": {
+                    "type": "string"
+                },
                 "source_account_id": {
                     "type": "string"
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },
@@ -13748,16 +13959,10 @@
             "type": "object",
             "properties": {
                 "billing_month": {
-                    "description": "YYYY-MM",
                     "type": "string"
                 },
                 "card": {
-                    "description": "Relationships",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/entity.Card"
-                        }
-                    ]
+                    "$ref": "#/definitions/entity.Card"
                 },
                 "card_chargebacks": {
                     "type": "array",
@@ -13773,12 +13978,6 @@
                 },
                 "card_id": {
                     "type": "string"
-                },
-                "card_payments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.CardPayment"
-                    }
                 },
                 "created_at": {
                     "type": "string"
@@ -13828,7 +14027,7 @@
                     "$ref": "#/definitions/entity.TransactionStatus"
                 },
                 "type": {
-                    "type": "string"
+                    "$ref": "#/definitions/entity.StagedTransactionType"
                 }
             }
         },
@@ -14203,6 +14402,26 @@
                 "year": {
                     "type": "integer",
                     "minimum": 1
+                }
+            }
+        },
+        "v1.updateCardPaymentRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "is_final_payment": {
+                    "type": "boolean"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
                 }
             }
         },

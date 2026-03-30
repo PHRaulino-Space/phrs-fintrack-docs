@@ -144,6 +144,7 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.incomeResponse
 

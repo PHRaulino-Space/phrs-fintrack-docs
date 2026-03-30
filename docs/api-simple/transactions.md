@@ -1,6 +1,34 @@
 ---
 title: Transactions
 ---
+## DELETE `/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}`
+
+**Resumo:** Delete card payment
+
+Delete an existing card payment transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| payment_id | path | string | sim | Card Payment ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## GET `/transactions`
 
 **Resumo:** List transactions
@@ -113,7 +141,7 @@ Create a new card expense transaction
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## POST `/card-payments`
+## POST `/cards/{id}/invoices/{billing_month}/card_payments`
 
 **Resumo:** Create card payment
 
@@ -128,6 +156,8 @@ Create a new card payment transaction
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
 | payment | body | v1.createCardPaymentRequest | sim | Card Payment object |
 
 ### Respostas
@@ -136,6 +166,7 @@ Create a new card payment transaction
 | --- | --- | --- |
 | 201 | Created | entity.CardPayment |
 | 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ## POST `/investments/{id}/deposits`
@@ -188,6 +219,35 @@ Create a new investment withdrawal
 | --- | --- | --- |
 | 201 | Created | entity.InvestmentWithdrawal |
 | 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## PUT `/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}`
+
+**Resumo:** Update card payment
+
+Update an existing card payment transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| payment_id | path | string | sim | Card Payment ID |
+| payment | body | v1.updateCardPaymentRequest | sim | Card Payment object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.CardPayment |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ### Schemas
@@ -712,6 +772,7 @@ Sem propriedades.
 | card_id | string | sim |  |
 | description | string | sim |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.createCardExpenseRequest
 
@@ -723,8 +784,10 @@ Sem propriedades.
 | category_id | string | sim |  |
 | description | string | sim |  |
 | installments | integer | não |  |
+| recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.createCardPaymentRequest
 
@@ -732,10 +795,9 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | account_id | string | sim |  |
 | amount | number | sim |  |
-| billing_month | string | sim |  |
-| card_id | string | sim |  |
 | is_final_payment | boolean | não |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.createInvestmentDepositRequest
 
@@ -745,6 +807,7 @@ Sem propriedades.
 | amount | number | sim |  |
 | description | string | não |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.createInvestmentWithdrawalRequest
 
@@ -755,6 +818,7 @@ Sem propriedades.
 | description | string | não |  |
 | rescued | boolean | não |  |
 | transaction_date | string | sim |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.transactionResponse
 
@@ -791,3 +855,13 @@ Sem propriedades.
 | current_balance | number | não |  |
 | total_in | number | não |  |
 | total_out | number | não |  |
+
+#### v1.updateCardPaymentRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| amount | number | não |  |
+| is_final_payment | boolean | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
