@@ -5883,6 +5883,63 @@
                     }
                 }
             },
+            "put": {
+                "description": "Update editable fields of an import session (description, billing_month, target_value, account_id, card_id)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Update import session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Fields to update",
+                        "name": "session",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateImportSessionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ImportSession"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete an import session and all its staged transactions",
                 "consumes": [
@@ -14520,6 +14577,26 @@
                 },
                 "type": {
                     "$ref": "#/definitions/entity.GoalType"
+                }
+            }
+        },
+        "v1.updateImportSessionRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "billing_month": {
+                    "type": "string"
+                },
+                "card_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "target_value": {
+                    "type": "number"
                 }
             }
         },
