@@ -342,6 +342,31 @@ Upload a CSV file to import transactions into the session. The file is parsed an
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## PUT `/import-sessions/{id}`
+
+**Resumo:** Update import session
+
+Update editable fields of an import session (description, billing_month, target_value, account_id, card_id)
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| session | body | v1.updateImportSessionRequest | sim | Fields to update |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ImportSession |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
 ### Schemas
 
 #### entity.ImportSession
@@ -472,3 +497,13 @@ Sem propriedades.
 | line_number | integer | não |  |
 | transaction_date | string | sim |  |
 | type | entity.StagedTransactionType | sim |  |
+
+#### v1.updateImportSessionRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| billing_month | string | não |  |
+| card_id | string | não |  |
+| description | string | não |  |
+| target_value | number | não |  |
