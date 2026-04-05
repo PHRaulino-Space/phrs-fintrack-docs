@@ -8908,7 +8908,7 @@
         },
         "/recurring/{id}/projection": {
             "get": {
-                "description": "Get timeline of slots with status",
+                "description": "Get timeline of slots with status. All resolved (paid/ignored) slots are always returned. The period filters only pending projected slots.",
                 "tags": [
                     "recurring"
                 ],
@@ -8920,6 +8920,12 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limit month for pending projections YYYY-MM (defaults to current month)",
+                        "name": "month",
+                        "in": "query"
                     }
                 ],
                 "responses": {
