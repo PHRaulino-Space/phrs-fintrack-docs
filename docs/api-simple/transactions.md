@@ -1,6 +1,62 @@
 ---
 title: Transactions
 ---
+## DELETE `/cards/{id}/invoices/{billing_month}/card_chargebacks/{chargeback_id}`
+
+**Resumo:** Delete card chargeback
+
+Delete an existing card chargeback transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| chargeback_id | path | string | sim | Card Chargeback ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## DELETE `/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}`
+
+**Resumo:** Delete card expense
+
+Delete an existing card expense transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| expense_id | path | string | sim | Card Expense ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## DELETE `/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}`
 
 **Resumo:** Delete card payment
@@ -87,6 +143,35 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | v1.transactionSummaryResponse |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## PATCH `/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}/recurring`
+
+**Resumo:** Link card expense to recurring
+
+Links an existing card expense to a recurring card transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| expense_id | path | string | sim | Card Expense ID |
+| body | body | object | sim | Recurring Card Transaction ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -219,6 +304,64 @@ Create a new investment withdrawal
 | --- | --- | --- |
 | 201 | Created | entity.InvestmentWithdrawal |
 | 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## PUT `/cards/{id}/invoices/{billing_month}/card_chargebacks/{chargeback_id}`
+
+**Resumo:** Update card chargeback
+
+Update an existing card chargeback transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| chargeback_id | path | string | sim | Card Chargeback ID |
+| chargeback | body | v1.updateCardChargebackRequest | sim | Card Chargeback object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.CardChargeback |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## PUT `/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}`
+
+**Resumo:** Update card expense
+
+Update an existing card expense transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| expense_id | path | string | sim | Card Expense ID |
+| expense | body | v1.updateCardExpenseRequest | sim | Card Expense object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.CardExpense |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ## PUT `/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}`
@@ -783,6 +926,7 @@ Sem propriedades.
 | card_id | string | sim |  |
 | category_id | string | sim |  |
 | description | string | sim |  |
+| installment_amount_type | v1.installmentAmountType | não |  |
 | installments | integer | não |  |
 | recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
@@ -820,6 +964,10 @@ Sem propriedades.
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
+#### v1.installmentAmountType
+
+Sem propriedades.
+
 #### v1.transactionResponse
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -855,6 +1003,26 @@ Sem propriedades.
 | current_balance | number | não |  |
 | total_in | number | não |  |
 | total_out | number | não |  |
+
+#### v1.updateCardChargebackRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| description | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+
+#### v1.updateCardExpenseRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| category_id | string | não |  |
+| description | string | não |  |
+| sub_category_id | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.updateCardPaymentRequest
 

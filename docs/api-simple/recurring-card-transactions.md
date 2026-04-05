@@ -1,13 +1,11 @@
 ---
-title: Cards
+title: Recurring Card Transactions
 ---
-## DELETE `/cards/{id}`
+## GET `/recurring-card-transactions`
 
-**Resumo:** Delete a card
+**Resumo:** List recurring card transactions
 
-Delete a card and all its related data (Cascade)
-
-**Consumes:** application/json
+List recurring card transactions by card ID with optional is_active filter
 
 **Produces:** application/json
 
@@ -16,100 +14,22 @@ Delete a card and all its related data (Cascade)
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
+| card_id | query | string | sim | Card ID |
+| is_active | query | boolean | não | Filter by active status |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## DELETE `/cards/{id}/invoices/{billing_month}`
-
-**Resumo:** Delete an invoice
-
-Removes the invoice identified by billing_month for the given card
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards`
-
-**Resumo:** List cards
-
-List all cards for a given workspace
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;entity.Card&gt; |
+| 200 | OK | array&lt;entity.RecurringCardTransaction&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## GET `/cards/{id}`
+## GET `/recurring-card-transactions/{id}`
 
-**Resumo:** Get a single card
+**Resumo:** Get a recurring card transaction
 
-Get a single card by its ID
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| id | path | string | sim | Card ID |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.Card |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards/{id}/invoices`
-
-**Resumo:** List invoices for a card
-
-Returns all invoices associated with the specified card within the current workspace
-
-**Consumes:** application/json
+Get a recurring card transaction by its ID
 
 **Produces:** application/json
 
@@ -118,168 +38,13 @@ Returns all invoices associated with the specified card within the current works
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
+| id | path | string | sim | Recurring Card Transaction ID |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.Invoice&gt; |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards/{id}/invoices/{billing_month}`
-
-**Resumo:** Get a specific invoice
-
-Returns a single invoice identified by billing_month for the provided card
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | v1.invoiceResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards/{id}/invoices/{billing_month}/transactions`
-
-**Resumo:** List invoice transactions
-
-List card expenses, chargebacks and payments for a given invoice (billing month)
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;v1.invoiceTransactionResponse&gt; |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## PATCH `/cards/{id}`
-
-**Resumo:** Update an existing card
-
-Update an existing card by its ID
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| card | body | v1.updateCardRequest | sim | Card object for update |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.Card |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## POST `/cards`
-
-**Resumo:** Create a new card
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| card | body | v1.createCardRequest | sim | Card object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.Card |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/cards/{id}/invoices`
-
-**Resumo:** Create an invoice for a card
-
-Create a new invoice for the specified card and billing month
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| invoice | body | v1.createInvoiceRequest | sim | Invoice object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.Invoice |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/cards/{id}/invoices/{billing_month}/recalculate-status`
-
-**Resumo:** Recalculate invoice status
-
-Recalculates and updates the invoice status based on business rules: PAID if a final payment exists, OVERDUE if past due date, OPEN otherwise. Also creates next month's invoice if the closing date has passed.
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.Invoice |
+| 200 | OK | entity.RecurringCardTransaction |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -705,62 +470,3 @@ Sem propriedades.
 #### entity.TransactionStatus
 
 Sem propriedades.
-
-#### v1.createCardRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| closing_date | integer | sim |  |
-| credit_limit | number | sim |  |
-| due_date | integer | sim |  |
-| is_active | boolean | não |  |
-| name | string | sim |  |
-
-#### v1.createInvoiceRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| billing_month | string | sim |  |
-
-#### v1.invoiceResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| billing_month | string | não |  |
-| card | entity.Card | não |  |
-| card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
-| card_expenses | array&lt;entity.CardExpense&gt; | não |  |
-| card_id | string | não |  |
-| created_at | string | não |  |
-| paid_amount | number | não |  |
-| status | entity.InvoiceStatus | não |  |
-| total_amount | number | não |  |
-| updated_at | string | não |  |
-
-#### v1.invoiceTransactionResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account_id | string | não |  |
-| amount | number | não |  |
-| category_id | string | não |  |
-| description | string | não |  |
-| id | string | não |  |
-| installment_number | integer | não |  |
-| is_final_payment | boolean | não |  |
-| recurring_card_transaction_id | string | não |  |
-| sub_category_id | string | não |  |
-| total_installments | integer | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
-| type | entity.StagedTransactionType | não |  |
-
-#### v1.updateCardRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| closing_date | integer | não |  |
-| credit_limit | number | não |  |
-| due_date | integer | não |  |
-| is_active | boolean | não |  |
-| name | string | não |  |
