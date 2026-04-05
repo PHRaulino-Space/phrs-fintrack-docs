@@ -25,13 +25,14 @@ title: Recurring
 
 **Resumo:** Get projection for a recurring item
 
-Get timeline of slots with status
+Get timeline of slots with status. All resolved (paid/ignored) slots are always returned. The period filters only pending projected slots.
 
 ### Parâmetros
 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | id | path | string | sim | Recurring ID |
+| month | query | string | não | Limit month for pending projections YYYY-MM (defaults to current month) |
 
 ### Respostas
 
