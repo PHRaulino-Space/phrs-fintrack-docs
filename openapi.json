@@ -2792,6 +2792,197 @@
                 }
             }
         },
+        "/card-expenses/{expense_id}": {
+            "get": {
+                "description": "Get a card expense by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Get card expense",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Expense ID",
+                        "name": "expense_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CardExpense"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing card expense transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Update card expense",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Expense ID",
+                        "name": "expense_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Card Expense object",
+                        "name": "expense",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateCardExpenseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CardExpense"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing card expense transaction",
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Delete card expense",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Expense ID",
+                        "name": "expense_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/cards": {
             "get": {
                 "description": "List all cards for a given workspace",
@@ -3495,256 +3686,6 @@
                         "name": "chargeback_id",
                         "in": "path",
                         "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}": {
-            "put": {
-                "description": "Update an existing card expense transaction",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "transactions"
-                ],
-                "summary": "Update card expense",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Card ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Billing month (YYYY-MM)",
-                        "name": "billing_month",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Card Expense ID",
-                        "name": "expense_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Card Expense object",
-                        "name": "expense",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updateCardExpenseRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.CardExpense"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete an existing card expense transaction",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "transactions"
-                ],
-                "summary": "Delete card expense",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Card ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Billing month (YYYY-MM)",
-                        "name": "billing_month",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Card Expense ID",
-                        "name": "expense_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}/recurring": {
-            "patch": {
-                "description": "Links an existing card expense to a recurring card transaction",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "transactions"
-                ],
-                "summary": "Link card expense to recurring",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Card ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Billing month (YYYY-MM)",
-                        "name": "billing_month",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Card Expense ID",
-                        "name": "expense_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Recurring Card Transaction ID",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
                     }
                 ],
                 "responses": {
@@ -11879,14 +11820,23 @@
         "entity.PendingSlot": {
             "type": "object",
             "properties": {
+                "account_id": {
+                    "type": "string"
+                },
                 "amount": {
                     "type": "number"
+                },
+                "card_id": {
+                    "type": "string"
                 },
                 "category_id": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
+                },
+                "include_in_summary": {
+                    "type": "boolean"
                 },
                 "recurring_id": {
                     "type": "string"
@@ -11984,6 +11934,9 @@
                 "id": {
                     "type": "string"
                 },
+                "include_in_summary": {
+                    "type": "boolean"
+                },
                 "is_active": {
                     "type": "boolean"
                 },
@@ -12080,6 +12033,9 @@
                 "id": {
                     "type": "string"
                 },
+                "include_in_summary": {
+                    "type": "boolean"
+                },
                 "is_active": {
                     "type": "boolean"
                 },
@@ -12169,6 +12125,9 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "include_in_summary": {
+                    "type": "boolean"
                 },
                 "incomes": {
                     "type": "array",
@@ -12534,13 +12493,15 @@
                 "VALIDATING",
                 "PAID",
                 "PENDING",
-                "IGNORE"
+                "IGNORE",
+                "PROJECTED"
             ],
             "x-enum-varnames": [
                 "TransactionStatusValidating",
                 "TransactionStatusPaid",
                 "TransactionStatusPending",
-                "TransactionStatusIgnore"
+                "TransactionStatusIgnore",
+                "TransactionStatusProjected"
             ]
         },
         "entity.Transfer": {
@@ -13196,6 +13157,9 @@
                 "frequency": {
                     "description": "\"MONTHLY\", etc.",
                     "type": "string"
+                },
+                "include_in_summary": {
+                    "type": "boolean"
                 },
                 "is_active": {
                     "type": "boolean"
@@ -15027,27 +14991,7 @@
             }
         },
         "v1.updateCardExpenseRequest": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "sub_category_id": {
-                    "type": "string"
-                },
-                "transaction_date": {
-                    "type": "string"
-                },
-                "transaction_status": {
-                    "$ref": "#/definitions/entity.TransactionStatus"
-                }
-            }
+            "type": "object"
         },
         "v1.updateCardPaymentRequest": {
             "type": "object",
@@ -15330,6 +15274,9 @@
                 },
                 "frequency": {
                     "type": "string"
+                },
+                "include_in_summary": {
+                    "type": "boolean"
                 },
                 "is_active": {
                     "type": "boolean"
