@@ -1,6 +1,28 @@
 ---
 title: Transactions
 ---
+## DELETE `/card-expenses/{expense_id}`
+
+**Resumo:** Delete card expense
+
+Delete an existing card expense transaction
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| expense_id | path | string | sim | Card Expense ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## DELETE `/cards/{id}/invoices/{billing_month}/card_chargebacks/{chargeback_id}`
 
 **Resumo:** Delete card chargeback
@@ -19,34 +41,6 @@ Delete an existing card chargeback transaction
 | id | path | string | sim | Card ID |
 | billing_month | path | string | sim | Billing month (YYYY-MM) |
 | chargeback_id | path | string | sim | Card Chargeback ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## DELETE `/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}`
-
-**Resumo:** Delete card expense
-
-Delete an existing card expense transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-| expense_id | path | string | sim | Card Expense ID |
 
 ### Respostas
 
@@ -81,6 +75,30 @@ Delete an existing card payment transaction
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+## GET `/card-expenses/{expense_id}`
+
+**Resumo:** Get card expense
+
+Get a card expense by ID
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| expense_id | path | string | sim | Card Expense ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.CardExpense |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -143,35 +161,6 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | v1.transactionSummaryResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## PATCH `/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}/recurring`
-
-**Resumo:** Link card expense to recurring
-
-Links an existing card expense to a recurring card transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-| expense_id | path | string | sim | Card Expense ID |
-| body | body | object | sim | Recurring Card Transaction ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content |  |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -306,6 +295,33 @@ Create a new investment withdrawal
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## PUT `/card-expenses/{expense_id}`
+
+**Resumo:** Update card expense
+
+Update an existing card expense transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| expense_id | path | string | sim | Card Expense ID |
+| expense | body | v1.updateCardExpenseRequest | sim | Card Expense object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.CardExpense |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## PUT `/cards/{id}/invoices/{billing_month}/card_chargebacks/{chargeback_id}`
 
 **Resumo:** Update card chargeback
@@ -331,35 +347,6 @@ Update an existing card chargeback transaction
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | entity.CardChargeback |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## PUT `/cards/{id}/invoices/{billing_month}/card_expenses/{expense_id}`
-
-**Resumo:** Update card expense
-
-Update an existing card expense transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-| expense_id | path | string | sim | Card Expense ID |
-| expense | body | v1.updateCardExpenseRequest | sim | Card Expense object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.CardExpense |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -722,6 +709,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
 | pending_amount | number | não |  |
@@ -757,6 +745,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
 | pending_amount | number | não |  |
@@ -791,6 +780,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
@@ -1015,14 +1005,7 @@ Sem propriedades.
 
 #### v1.updateCardExpenseRequest
 
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| amount | number | não |  |
-| category_id | string | não |  |
-| description | string | não |  |
-| sub_category_id | string | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
+Sem propriedades.
 
 #### v1.updateCardPaymentRequest
 

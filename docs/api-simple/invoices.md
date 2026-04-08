@@ -265,6 +265,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
 | pending_amount | number | não |  |
@@ -300,6 +301,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
 | pending_amount | number | não |  |
@@ -334,6 +336,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |

@@ -352,9 +352,12 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| account_id | string | não |  |
 | amount | number | não |  |
+| card_id | string | não |  |
 | category_id | string | não |  |
 | description | string | não |  |
+| include_in_summary | boolean | não |  |
 | recurring_id | string | não |  |
 | recurring_status | string | não | Active/Inactive |
 | reference_date | string | não |  |
@@ -388,6 +391,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
 | pending_amount | number | não |  |
@@ -423,6 +427,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
 | pending_amount | number | não |  |
@@ -457,6 +462,7 @@ Sem propriedades.
 | frequency | entity.TransactionFrequency | não |  |
 | has_transaction_in_month | boolean | não |  |
 | id | string | não |  |
+| include_in_summary | boolean | não |  |
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
@@ -592,6 +598,7 @@ Sem propriedades.
 | destination_account_id | string | não |  |
 | end_date | string | não |  |
 | frequency | string | não | "MONTHLY", etc. |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | source_account_id | string | não |  |
 | start_date | string | não |  |
@@ -611,6 +618,7 @@ Sem propriedades.
 | destination_account_id | string | não |  |
 | end_date | string | não |  |
 | frequency | string | não |  |
+| include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | source_account_id | string | não |  |
 | start_date | string | não |  |
