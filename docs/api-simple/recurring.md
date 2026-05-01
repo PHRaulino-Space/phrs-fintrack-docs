@@ -1,6 +1,27 @@
 ---
 title: Recurring
 ---
+## DELETE `/recurring/{id}/ignore`
+
+**Resumo:** Unignore a recurring slot
+
+Removes the ignore mark from a specific slot date, making it pending again
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Recurring ID |
+| input | body | v1.slotIgnoreRequest | sim | Slot date |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
 ## GET `/recurring`
 
 **Resumo:** List recurring transactions
@@ -119,6 +140,50 @@ Create a new recurring transaction
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | input | body | usecase.RecurringInput | sim | Input |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | object |
+
+## POST `/recurring/{id}/ignore`
+
+**Resumo:** Ignore a recurring slot
+
+Marks a specific slot date as ignored — it will no longer appear as pending and won't affect the balance
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Recurring ID |
+| input | body | v1.slotIgnoreRequest | sim | Slot date |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
+## POST `/recurring/{id}/pay`
+
+**Resumo:** Pay a recurring transaction
+
+Registers a payment for a recurring transaction, creating the corresponding income, expense, transfer or card expense
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Recurring ID |
+| input | body | v1.payRecurringRequest | sim | Payment data |
 
 ### Respostas
 
@@ -605,6 +670,19 @@ Sem propriedades.
 | sub_category_id | string | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | type | entity.RecurringType | não |  |
+
+#### v1.payRecurringRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | sim |  |
+| date | string | sim |  |
+
+#### v1.slotIgnoreRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| date | string | sim |  |
 
 #### v1.updateRecurringRequest
 

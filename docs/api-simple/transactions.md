@@ -1,6 +1,32 @@
 ---
 title: Transactions
 ---
+## DELETE `/card-chargebacks/{chargeback_id}`
+
+**Resumo:** Delete card chargeback
+
+Delete an existing card chargeback transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| chargeback_id | path | string | sim | Card Chargeback ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## DELETE `/card-expenses/{expense_id}`
 
 **Resumo:** Delete card expense
@@ -23,35 +49,7 @@ Delete an existing card expense transaction
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## DELETE `/cards/{id}/invoices/{billing_month}/card_chargebacks/{chargeback_id}`
-
-**Resumo:** Delete card chargeback
-
-Delete an existing card chargeback transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-| chargeback_id | path | string | sim | Card Chargeback ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## DELETE `/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}`
+## DELETE `/card-payments/{payment_id}`
 
 **Resumo:** Delete card payment
 
@@ -66,8 +64,6 @@ Delete an existing card payment transaction
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
 | payment_id | path | string | sim | Card Payment ID |
 
 ### Respostas
@@ -295,6 +291,33 @@ Create a new investment withdrawal
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## PUT `/card-chargebacks/{chargeback_id}`
+
+**Resumo:** Update card chargeback
+
+Update an existing card chargeback transaction
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| chargeback_id | path | string | sim | Card Chargeback ID |
+| chargeback | body | v1.updateCardChargebackRequest | sim | Card Chargeback object |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.CardChargeback |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## PUT `/card-expenses/{expense_id}`
 
 **Resumo:** Update card expense
@@ -322,36 +345,7 @@ Update an existing card expense transaction
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## PUT `/cards/{id}/invoices/{billing_month}/card_chargebacks/{chargeback_id}`
-
-**Resumo:** Update card chargeback
-
-Update an existing card chargeback transaction
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-| chargeback_id | path | string | sim | Card Chargeback ID |
-| chargeback | body | v1.updateCardChargebackRequest | sim | Card Chargeback object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.CardChargeback |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## PUT `/cards/{id}/invoices/{billing_month}/card_payments/{payment_id}`
+## PUT `/card-payments/{payment_id}`
 
 **Resumo:** Update card payment
 
@@ -366,8 +360,6 @@ Update an existing card payment transaction
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
 | payment_id | path | string | sim | Card Payment ID |
 | payment | body | v1.updateCardPaymentRequest | sim | Card Payment object |
 
