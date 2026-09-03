@@ -1,6 +1,27 @@
 ---
 title: Recurring
 ---
+## DELETE `/recurring/{id}`
+
+**Resumo:** Delete recurring transaction
+
+Delete a recurring transaction by ID
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
 ## DELETE `/recurring/{id}/ignore`
 
 **Resumo:** Unignore a recurring slot
@@ -41,6 +62,29 @@ Removes the ignore mark from a specific slot date, making it pending again
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | array&lt;object&gt; |
+
+## GET `/recurring/{id}`
+
+**Resumo:** Get recurring transaction
+
+Get a recurring transaction by ID
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
 
 ## GET `/recurring/{id}/projection`
 
@@ -125,6 +169,29 @@ Update recurring transaction fields
 | --- | --- | --- |
 | 200 | OK | object |
 
+## PATCH `/recurring/{id}/deactivate`
+
+**Resumo:** Deactivate recurring transaction
+
+Mark a recurring transaction as inactive
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
 ## POST `/recurring`
 
 **Resumo:** Create recurring transaction
@@ -190,6 +257,32 @@ Registers a payment for a recurring transaction, creating the corresponding inco
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 201 | Created | object |
+
+## PUT `/recurring/{id}`
+
+**Resumo:** Replace recurring transaction
+
+Replace a recurring transaction using the complete recurring input
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+| input | body | usecase.RecurringInput | sim | Recurring input |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
 
 ### Schemas
 
@@ -357,13 +450,20 @@ Sem propriedades.
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| is_active | boolean | não |  |
+| kind | entity.ImportSessionKind | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
 | target_value | number | não |  |
 | type | string | não |  |
+| updated_at | string | não |  |
 | user_id | string | não |  |
 | workspace_id | string | não |  |
+
+#### entity.ImportSessionKind
+
+Sem propriedades.
 
 #### entity.Income
 
@@ -676,6 +776,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | amount | number | sim |  |
+| billing_month | string | não | optional, for card transactions (YYYY-MM) |
 | date | string | sim |  |
 
 #### v1.slotIgnoreRequest

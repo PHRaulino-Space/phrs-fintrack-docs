@@ -538,13 +538,20 @@ Sem propriedades.
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| is_active | boolean | não |  |
+| kind | entity.ImportSessionKind | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
 | target_value | number | não |  |
 | type | string | não |  |
+| updated_at | string | não |  |
 | user_id | string | não |  |
 | workspace_id | string | não |  |
+
+#### entity.ImportSessionKind
+
+Sem propriedades.
 
 #### entity.Income
 
@@ -997,7 +1004,15 @@ Sem propriedades.
 
 #### v1.updateCardExpenseRequest
 
-Sem propriedades.
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| category_id | string | não |  |
+| description | string | não |  |
+| recurring_card_transaction_id | string | não |  |
+| sub_category_id | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
 
 #### v1.updateCardPaymentRequest
 
