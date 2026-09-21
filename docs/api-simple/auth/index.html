@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Auth | FinTrack</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://phraulino-space.github.io/phrs-fintrack-docs/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://phraulino-space.github.io/phrs-fintrack-docs/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://phraulino-space.github.io/phrs-fintrack-docs/docs/api-simple/auth"><meta data-rh="true" property="og:locale" content="pt_BR"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="pt-BR"><meta data-rh="true" name="docsearch:language" content="pt-BR"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Auth | FinTrack"><meta data-rh="true" name="description" content="DELETE /auth/passkeys/"><meta data-rh="true" property="og:description" content="DELETE /auth/passkeys/"><link data-rh="true" rel="icon" href="/phrs-fintrack-docs/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://phraulino-space.github.io/phrs-fintrack-docs/docs/api-simple/auth"><link data-rh="true" rel="alternate" href="https://phraulino-space.github.io/phrs-fintrack-docs/docs/api-simple/auth" hreflang="pt-BR"><link data-rh="true" rel="alternate" href="https://phraulino-space.github.io/phrs-fintrack-docs/en/docs/api-simple/auth" hreflang="en"><link data-rh="true" rel="alternate" href="https://phraulino-space.github.io/phrs-fintrack-docs/docs/api-simple/auth" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Auth","item":"https://phraulino-space.github.io/phrs-fintrack-docs/docs/api-simple/auth"}]}</script><link rel="alternate" type="application/rss+xml" href="/phrs-fintrack-docs/blog/rss.xml" title="FinTrack RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/phrs-fintrack-docs/blog/atom.xml" title="FinTrack Atom Feed"><link rel="stylesheet" href="/phrs-fintrack-docs/assets/css/styles.ad167255.css">
-<script src="/phrs-fintrack-docs/assets/js/runtime~main.85c7b951.js" defer="defer"></script>
+<script src="/phrs-fintrack-docs/assets/js/runtime~main.edb121ab.js" defer="defer"></script>
 <script src="/phrs-fintrack-docs/assets/js/main.24629c40.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -32,7 +32,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="get-authprovidercallback">GET <code>/auth/{provider}/callback</code><a href="#get-authprovidercallback" class="hash-link" aria-label="Link direto para get-authprovidercallback" title="Link direto para get-authprovidercallback" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> OAuth callback</p>
-<p>Handle OAuth callback from provider and set authentication cookie or link provider</p>
+<p>Handle OAuth callback from provider and set authentication cookie or link provider. Linking requires verified MFA when enabled.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-2">Parâmetros<a href="#parâmetros-2" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -41,13 +41,13 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>302</td><td>Redirect to frontend with auth cookie set</td><td></td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="get-authproviderlink">GET <code>/auth/{provider}/link</code><a href="#get-authproviderlink" class="hash-link" aria-label="Link direto para get-authproviderlink" title="Link direto para get-authproviderlink" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> OAuth link initiation</p>
-<p>Initiate OAuth link flow with the specified provider</p>
+<p>Initiate OAuth link flow with the specified provider. Requires verified MFA when enabled.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-3">Parâmetros<a href="#parâmetros-3" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
 <table><thead><tr><th>Nome</th><th>Em</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr></thead><tbody><tr><td>provider</td><td>path</td><td>string</td><td>sim</td><td>OAuth provider (github)</td></tr><tr><td>redirect_to</td><td>query</td><td>string</td><td>não</td><td>Path to redirect after linking</td></tr></tbody></table>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="respostas-3">Respostas<a href="#respostas-3" class="hash-link" aria-label="Link direto para Respostas" title="Link direto para Respostas" translate="no">​</a></h3>
-<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>307</td><td>Redirect to OAuth provider</td><td></td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr></tbody></table>
+<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>307</td><td>Redirect to OAuth provider</td><td></td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="get-authproviderlogin">GET <code>/auth/{provider}/login</code><a href="#get-authproviderlogin" class="hash-link" aria-label="Link direto para get-authproviderlogin" title="Link direto para get-authproviderlogin" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> OAuth login initiation</p>
 <p>Initiate OAuth login flow with the specified provider (e.g., github)</p>
@@ -59,7 +59,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>307</td><td>Redirect to OAuth provider</td><td></td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="get-authvalidate">GET <code>/auth/validate</code><a href="#get-authvalidate" class="hash-link" aria-label="Link direto para get-authvalidate" title="Link direto para get-authvalidate" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Validate token</p>
-<p>Validate authentication token and return user information with workspaces</p>
+<p>Validate authentication token and return user information with workspaces. Requires verified MFA when enabled.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-5">Parâmetros<a href="#parâmetros-5" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -68,7 +68,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>v1.ValidateResponse</td></tr><tr><td>401</td><td>Unauthorized</td><td></td></tr><tr><td>500</td><td>Internal Server Error</td><td></td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authforgot-password">POST <code>/auth/forgot-password</code><a href="#post-authforgot-password" class="hash-link" aria-label="Link direto para post-authforgot-password" title="Link direto para post-authforgot-password" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Request password reset</p>
-<p>Request a password reset email</p>
+<p>Queue a password reset request for asynchronous processing. Links are valid for 15 minutes. Always returns the same accepted response for valid requests without waiting for account lookup or email delivery.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-6">Parâmetros<a href="#parâmetros-6" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -77,13 +77,13 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>202</td><td>Accepted</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authlogin">POST <code>/auth/login</code><a href="#post-authlogin" class="hash-link" aria-label="Link direto para post-authlogin" title="Link direto para post-authlogin" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Native login</p>
-<p>Login with email and password, returns authentication cookie</p>
+<p>Login with email and password. Returns 200 with mfa_required=true and access/CSRF cookies when MFA is enabled; no refresh cookie is issued until MFA verification. Otherwise returns a full cookie session. Unverified email returns 403.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-7">Parâmetros<a href="#parâmetros-7" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
 <table><thead><tr><th>Nome</th><th>Em</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr></thead><tbody><tr><td>request</td><td>body</td><td>v1.loginRequest</td><td>sim</td><td>Login credentials</td></tr></tbody></table>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="respostas-7">Respostas<a href="#respostas-7" class="hash-link" aria-label="Link direto para Respostas" title="Link direto para Respostas" translate="no">​</a></h3>
-<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr></tbody></table>
+<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr><tr><td>403</td><td>Email not verified</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authlogout">POST <code>/auth/logout</code><a href="#post-authlogout" class="hash-link" aria-label="Link direto para post-authlogout" title="Link direto para post-authlogout" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Logout</p>
 <p>Clear authentication cookie and logout user</p>
@@ -95,7 +95,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>Logout successful</td><td></td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authmfaconfirm">POST <code>/auth/mfa/confirm</code><a href="#post-authmfaconfirm" class="hash-link" aria-label="Link direto para post-authmfaconfirm" title="Link direto para post-authmfaconfirm" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Confirm MFA</p>
-<p>Confirm MFA enrollment and return recovery codes</p>
+<p>Confirm MFA enrollment and return recovery codes. Requires verified MFA if MFA is already enabled.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-9">Parâmetros<a href="#parâmetros-9" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -131,7 +131,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>v1.mfaRecoveryCodesResponse</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authmfarecovery-verify">POST <code>/auth/mfa/recovery-verify</code><a href="#post-authmfarecovery-verify" class="hash-link" aria-label="Link direto para post-authmfarecovery-verify" title="Link direto para post-authmfarecovery-verify" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Verify MFA recovery code</p>
-<p>Verify a recovery code and issue MFA-verified tokens</p>
+<p>Verify a recovery code and issue MFA-verified tokens. Accepts an authenticated intermediate token before MFA verification.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-13">Parâmetros<a href="#parâmetros-13" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -140,7 +140,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authmfasetup">POST <code>/auth/mfa/setup</code><a href="#post-authmfasetup" class="hash-link" aria-label="Link direto para post-authmfasetup" title="Link direto para post-authmfasetup" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Setup MFA</p>
-<p>Initialize MFA enrollment and return secret/QR</p>
+<p>Initialize MFA enrollment and return secret/QR. Requires verified MFA if MFA is already enabled.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-14">Parâmetros<a href="#parâmetros-14" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -149,7 +149,7 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>v1.mfaSetupResponse</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authmfaverify">POST <code>/auth/mfa/verify</code><a href="#post-authmfaverify" class="hash-link" aria-label="Link direto para post-authmfaverify" title="Link direto para post-authmfaverify" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Verify MFA</p>
-<p>Verify MFA code and issue MFA-verified tokens</p>
+<p>Verify MFA code and issue MFA-verified tokens. Accepts an authenticated intermediate token before MFA verification.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-15">Parâmetros<a href="#parâmetros-15" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
@@ -209,7 +209,7 @@
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-21">Parâmetros<a href="#parâmetros-21" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
 <table><thead><tr><th>Nome</th><th>Em</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr></thead><tbody><tr><td>request</td><td>body</td><td>v1.registerRequest</td><td>sim</td><td>User registration data</td></tr></tbody></table>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="respostas-21">Respostas<a href="#respostas-21" class="hash-link" aria-label="Link direto para Respostas" title="Link direto para Respostas" translate="no">​</a></h3>
-<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>201</td><td>User created successfully</td><td></td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr></tbody></table>
+<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>201</td><td>User created successfully</td><td></td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authreset-password">POST <code>/auth/reset-password</code><a href="#post-authreset-password" class="hash-link" aria-label="Link direto para post-authreset-password" title="Link direto para post-authreset-password" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Reset password</p>
 <p>Reset password using a valid reset token</p>
@@ -230,22 +230,22 @@
 <table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authverify-emailrequest">POST <code>/auth/verify-email/request</code><a href="#post-authverify-emailrequest" class="hash-link" aria-label="Link direto para post-authverify-emailrequest" title="Link direto para post-authverify-emailrequest" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Request email verification</p>
-<p>Request an email verification token</p>
+<p>Send email verification. Token responses require explicit development email delivery.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-24">Parâmetros<a href="#parâmetros-24" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
 <table><thead><tr><th>Nome</th><th>Em</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr></thead><tbody><tr><td>request</td><td>body</td><td>v1.emailVerificationRequest</td><td>sim</td><td>Email verification request</td></tr></tbody></table>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="respostas-24">Respostas<a href="#respostas-24" class="hash-link" aria-label="Link direto para Respostas" title="Link direto para Respostas" translate="no">​</a></h3>
-<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>v1.emailVerificationResponse</td></tr><tr><td>202</td><td>Accepted</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
+<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>Explicit development delivery only</td><td>v1.emailVerificationResponse</td></tr><tr><td>202</td><td>Accepted</td><td>object</td></tr><tr><td>400</td><td>Bad Request</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="post-authverify-emailresend">POST <code>/auth/verify-email/resend</code><a href="#post-authverify-emailresend" class="hash-link" aria-label="Link direto para post-authverify-emailresend" title="Link direto para post-authverify-emailresend" translate="no">​</a></h2>
 <p><strong>Resumo:</strong> Resend email verification</p>
-<p>Resend email verification token for the authenticated user</p>
+<p>Resend email verification for the authenticated user. Token responses require explicit development email delivery.</p>
 <p><strong>Consumes:</strong> application/json</p>
 <p><strong>Produces:</strong> application/json</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parâmetros-25">Parâmetros<a href="#parâmetros-25" class="hash-link" aria-label="Link direto para Parâmetros" title="Link direto para Parâmetros" translate="no">​</a></h3>
 <p>Sem parâmetros.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="respostas-25">Respostas<a href="#respostas-25" class="hash-link" aria-label="Link direto para Respostas" title="Link direto para Respostas" translate="no">​</a></h3>
-<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>v1.emailVerificationResponse</td></tr><tr><td>202</td><td>Accepted</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
+<table><thead><tr><th>Status</th><th>Descrição</th><th>Schema</th></tr></thead><tbody><tr><td>200</td><td>Explicit development delivery only</td><td>v1.emailVerificationResponse</td></tr><tr><td>202</td><td>Accepted</td><td>object</td></tr><tr><td>401</td><td>Unauthorized</td><td>object</td></tr><tr><td>500</td><td>Internal Server Error</td><td>object</td></tr></tbody></table>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="schemas">Schemas<a href="#schemas" class="hash-link" aria-label="Link direto para Schemas" title="Link direto para Schemas" translate="no">​</a></h3>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="v1emailverificationconfirmrequest">v1.emailVerificationConfirmRequest<a href="#v1emailverificationconfirmrequest" class="hash-link" aria-label="Link direto para v1.emailVerificationConfirmRequest" title="Link direto para v1.emailVerificationConfirmRequest" translate="no">​</a></h4>
 <table><thead><tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr></thead><tbody><tr><td>token</td><td>string</td><td>sim</td><td></td></tr></tbody></table>

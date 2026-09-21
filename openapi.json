@@ -119,6 +119,47 @@
                 }
             }
         },
+        "/accounts/images": {
+            "get": {
+                "description": "List image objects available under the configured S3-compatible storage prefix",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "List account images",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/objectstorage.Image"
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/accounts/{account_id}": {
             "get": {
                 "description": "Get a single account by its ID",
@@ -582,6 +623,50 @@
                 }
             }
         },
+        "/admin/train-embeddings": {
+            "post": {
+                "description": "Starts category embedding training in the background (admin only).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Train category embeddings",
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users/deleted": {
             "get": {
                 "security": [
@@ -784,7 +869,7 @@
                         "required": true
                     },
                     {
-                        "description": "API Key details",
+                        "description": "API Key details, with scopes or scope_preset (read_only, read_write, admin)",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -862,9 +947,67 @@
                 }
             }
         },
+        "/api-keys/{id}/scopes": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the scopes granted to an existing API key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api-keys"
+                ],
+                "summary": "Update API Key scopes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "API Key ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Scopes or scope_preset (read_only, read_write, admin)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateApiKeyScopesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ApiKey"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/forgot-password": {
             "post": {
-                "description": "Request a password reset email",
+                "description": "Queue a password reset request for asynchronous processing. Links are valid for 15 minutes. Always returns the same accepted response for valid requests without waiting for account lookup or email delivery.",
                 "consumes": [
                     "application/json"
                 ],
@@ -910,7 +1053,7 @@
         },
         "/auth/login": {
             "post": {
-                "description": "Login with email and password, returns authentication cookie",
+                "description": "Login with email and password. Returns 200 with mfa_required=true and access/CSRF cookies when MFA is enabled; no refresh cookie is issued until MFA verification. Otherwise returns a full cookie session. Unverified email returns 403.",
                 "consumes": [
                     "application/json"
                 ],
@@ -937,9 +1080,7 @@
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "additionalProperties": true
                         }
                     },
                     "400": {
@@ -953,6 +1094,24 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email not verified",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -990,7 +1149,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Confirm MFA enrollment and return recovery codes",
+                "description": "Confirm MFA enrollment and return recovery codes. Requires verified MFA if MFA is already enabled.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1235,7 +1394,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Verify a recovery code and issue MFA-verified tokens",
+                "description": "Verify a recovery code and issue MFA-verified tokens. Accepts an authenticated intermediate token before MFA verification.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1304,7 +1463,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Initialize MFA enrollment and return secret/QR",
+                "description": "Initialize MFA enrollment and return secret/QR. Requires verified MFA if MFA is already enabled.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1350,7 +1509,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Verify MFA code and issue MFA-verified tokens",
+                "description": "Verify MFA code and issue MFA-verified tokens. Accepts an authenticated intermediate token before MFA verification.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1812,6 +1971,15 @@
                                 "type": "string"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
@@ -1869,7 +2037,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Validate authentication token and return user information with workspaces",
+                "description": "Validate authentication token and return user information with workspaces. Requires verified MFA when enabled.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1953,7 +2121,7 @@
         },
         "/auth/verify-email/request": {
             "post": {
-                "description": "Request an email verification token",
+                "description": "Send email verification. Token responses require explicit development email delivery.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1977,7 +2145,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Explicit development delivery only",
                         "schema": {
                             "$ref": "#/definitions/v1.emailVerificationResponse"
                         }
@@ -2019,7 +2187,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Resend email verification token for the authenticated user",
+                "description": "Resend email verification for the authenticated user. Token responses require explicit development email delivery.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2032,7 +2200,7 @@
                 "summary": "Resend email verification",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Explicit development delivery only",
                         "schema": {
                             "$ref": "#/definitions/v1.emailVerificationResponse"
                         }
@@ -2069,7 +2237,7 @@
         },
         "/auth/{provider}/callback": {
             "get": {
-                "description": "Handle OAuth callback from provider and set authentication cookie or link provider",
+                "description": "Handle OAuth callback from provider and set authentication cookie or link provider. Linking requires verified MFA when enabled.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2135,7 +2303,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Initiate OAuth link flow with the specified provider",
+                "description": "Initiate OAuth link flow with the specified provider. Requires verified MFA when enabled.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2167,6 +2335,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -3283,7 +3460,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.Card"
+                                "$ref": "#/definitions/v1.cardResponse"
                             }
                         }
                     },
@@ -3341,7 +3518,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entity.Card"
+                            "$ref": "#/definitions/v1.cardResponse"
                         }
                     },
                     "400": {
@@ -3355,6 +3532,47 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cards/images": {
+            "get": {
+                "description": "List image objects available under the configured S3-compatible storage prefix for cards",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "List card images",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/objectstorage.Image"
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -3398,7 +3616,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Card"
+                            "$ref": "#/definitions/v1.cardResponse"
                         }
                     },
                     "400": {
@@ -3523,7 +3741,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Card"
+                            "$ref": "#/definitions/v1.cardResponse"
                         }
                     },
                     "400": {
@@ -4878,6 +5096,12 @@
                         "name": "month",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include projected recurring transactions (default true)",
+                        "name": "include_projected",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -6404,7 +6628,7 @@
         },
         "/import-sessions/{id}/commit": {
             "post": {
-                "description": "Commit all READY staged transactions to their respective main tables (incomes, expenses, transfers, etc). Sets transaction status to VALIDATING or IGNORE based on the ignore flag.",
+                "description": "Commit all READY staged transactions to their respective main tables (incomes, expenses, transfers, etc). Final transactions are created as PAID (or IGNORE when flagged), while staged rows retain the final transaction ID for audit history.",
                 "consumes": [
                     "application/json"
                 ],
@@ -6468,6 +6692,67 @@
                     "import-sessions"
                 ],
                 "summary": "Enrich staged transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Optional staged transaction IDs to commit",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/v1.commitSessionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/finalize": {
+            "post": {
+                "description": "Promote VALIDATING transactions in this import session's account or card context to PAID without closing or removing the import session.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Finalize committed transactions",
                 "parameters": [
                     {
                         "type": "string",
@@ -8868,6 +9153,92 @@
                 }
             }
         },
+        "/open-finance/credentials": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "open-finance"
+                ],
+                "summary": "Get current workspace Pluggy credential status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.OpenFinanceCredentialStatus"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "open-finance"
+                ],
+                "summary": "Validate and save Pluggy credentials for the current workspace",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Pluggy application credentials",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.saveOpenFinanceCredentialRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.OpenFinanceCredentialStatus"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "open-finance"
+                ],
+                "summary": "Remove Pluggy credentials from the current workspace",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/open-finance/transactions/{id}/restore": {
             "post": {
                 "tags": [
@@ -10171,7 +10542,7 @@
         },
         "/transactions": {
             "get": {
-                "description": "List all transactions for the workspace with optional filters",
+                "description": "Returns the legacy array. Pagination is opt-in with limit or cursor; without either, returns all items. Order: date ASC, amount DESC, type/ID/source/occurrence ASC. Cursors are bound to workspace and filters; no snapshot guarantee.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10183,6 +10554,18 @@
                 ],
                 "summary": "List transactions",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Opt-in pagination limit (1-500; default 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authenticated continuation cursor bound to filters",
+                        "name": "cursor",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "Workspace ID",
@@ -10225,6 +10608,12 @@
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "date_to",
                         "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include projected recurring transactions (default true)",
+                        "name": "include_projected",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -10233,7 +10622,21 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/v1.transactionResponse"
+                                "$ref": "#/definitions/transactiondto.TransactionItemDTO"
+                            }
+                        },
+                        "headers": {
+                            "X-Has-More": {
+                                "type": "boolean",
+                                "description": "Whether another page exists"
+                            },
+                            "X-Next-Cursor": {
+                                "type": "string",
+                                "description": "Cursor when another page exists"
+                            },
+                            "X-Pagination-Limit": {
+                                "type": "integer",
+                                "description": "Page size for opt-in pagination"
                             }
                         }
                     },
@@ -10323,13 +10726,19 @@
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "date_to",
                         "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include projected recurring transactions (default true)",
+                        "name": "include_projected",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/v1.transactionSummaryResponse"
+                            "$ref": "#/definitions/transactiondto.TransactionSummaryDTO"
                         }
                     },
                     "400": {
@@ -10364,7 +10773,7 @@
         },
         "/transfers": {
             "get": {
-                "description": "List all transfers for a given account (as either source or destination)",
+                "description": "List transfers for an account in the authenticated workspace (as either source or destination). Foreign account IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10410,6 +10819,24 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -10422,7 +10849,7 @@
                 }
             },
             "post": {
-                "description": "Create a new transfer between accounts",
+                "description": "Create a new transfer between accounts in the authenticated workspace. Source and destination must belong to that workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10467,6 +10894,24 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -10481,7 +10926,7 @@
         },
         "/transfers/{id}": {
             "get": {
-                "description": "Get a single transfer by its ID",
+                "description": "Get a single transfer by its ID in the authenticated workspace. Foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10524,6 +10969,24 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -10536,7 +10999,7 @@
                 }
             },
             "put": {
-                "description": "Update an existing transfer (you can set/unset recurring_transaction_id)",
+                "description": "Update an existing transfer in the authenticated workspace. PUT remains a partial update: omitted fields are preserved. Empty description clears it. Amount, when present, must be greater than 0; zero or negative returns 400 without writing. recurring_transaction_id omitted preserves the current link; null unsets it. Foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10563,7 +11026,7 @@
                         "required": true
                     },
                     {
-                        "description": "Transfer object (recurring_transaction_id optional; null clears)",
+                        "description": "Partial transfer fields (omitted preserved; empty description clears; invalid amount rejected; recurring_transaction_id null unsets)",
                         "name": "transfer",
                         "in": "body",
                         "required": true,
@@ -10588,6 +11051,24 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -10600,7 +11081,7 @@
                 }
             },
             "delete": {
-                "description": "Delete an existing transfer",
+                "description": "Delete an existing transfer in the authenticated workspace. Foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10639,6 +11120,24 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -11142,6 +11641,12 @@
                 "summary": "Create a new workspace",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Optional retry key, scoped to the authenticated user",
+                        "name": "Idempotency-Key",
+                        "in": "header"
+                    },
+                    {
                         "description": "Workspace creation request",
                         "name": "workspace",
                         "in": "body",
@@ -11166,6 +11671,12 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
@@ -11214,6 +11725,12 @@
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -11223,7 +11740,7 @@
                 }
             },
             "delete": {
-                "description": "Delete a workspace and all its data (cascade). User must be ADMIN.",
+                "description": "Delete a workspace and all its data atomically. User must be ADMIN; every member must retain at least one workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -11249,6 +11766,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -11322,8 +11848,35 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -11478,6 +12031,9 @@
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "image_key": {
                     "type": "string"
                 },
                 "initial_balance": {
@@ -11649,6 +12205,9 @@
                 "id": {
                     "type": "string"
                 },
+                "image_key": {
+                    "type": "string"
+                },
                 "import_sessions": {
                     "type": "array",
                     "items": {
@@ -11788,6 +12347,41 @@
                     "$ref": "#/definitions/entity.Tag"
                 },
                 "tag_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.CardInvoiceBalanceAdjustment": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "billing_month": {
+                    "type": "string"
+                },
+                "card_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "source_billing_month": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "$ref": "#/definitions/entity.TransactionStatus"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -12555,6 +13149,12 @@
         "entity.Invoice": {
             "type": "object",
             "properties": {
+                "balance_adjustments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CardInvoiceBalanceAdjustment"
+                    }
+                },
                 "billing_month": {
                     "description": "YYYY-MM",
                     "type": "string"
@@ -13231,6 +13831,9 @@
                 "description": {
                     "type": "string"
                 },
+                "final_transaction_id": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -13286,7 +13889,8 @@
                 "CARD_PAYMENT",
                 "CARD_PAYMENT_ADVANCE",
                 "CARD_EXPENSE",
-                "CARD_CHARGEBACK"
+                "CARD_CHARGEBACK",
+                "CARD_INVOICE_BALANCE_ADJUSTMENT"
             ],
             "x-enum-varnames": [
                 "StagedTransactionTypeIncome",
@@ -13297,7 +13901,8 @@
                 "StagedTransactionTypeCardPayment",
                 "StagedTransactionTypeCardPaymentAdvance",
                 "StagedTransactionTypeCardExpense",
-                "StagedTransactionTypeCardChargeback"
+                "StagedTransactionTypeCardChargeback",
+                "StagedTransactionTypeCardInvoiceBalanceAdjustment"
             ]
         },
         "entity.SubCategory": {
@@ -13616,6 +14221,17 @@
                 "WorkspaceMemberRoleMember"
             ]
         },
+        "objectstorage.Image": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "openfinance.AccountKind": {
             "type": "string",
             "enum": [
@@ -13626,6 +14242,94 @@
                 "AccountKindBank",
                 "AccountKindCreditCard"
             ]
+        },
+        "transactiondto.TransactionItemDTO": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "account_name": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "card_id": {
+                    "type": "string"
+                },
+                "card_name": {
+                    "type": "string"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "destination_account_id": {
+                    "type": "string"
+                },
+                "destination_account_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "investment_id": {
+                    "type": "string"
+                },
+                "investment_name": {
+                    "type": "string"
+                },
+                "recurring_transaction_id": {
+                    "type": "string"
+                },
+                "running_balance": {
+                    "type": "number"
+                },
+                "source_account_id": {
+                    "type": "string"
+                },
+                "source_account_name": {
+                    "type": "string"
+                },
+                "sub_category_id": {
+                    "type": "string"
+                },
+                "sub_category_name": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "transactiondto.TransactionSummaryDTO": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "current_balance": {
+                    "type": "number"
+                },
+                "total_in": {
+                    "type": "number"
+                },
+                "total_out": {
+                    "type": "number"
+                }
+            }
         },
         "usecase.ApiKeyCreated": {
             "type": "object",
@@ -13648,6 +14352,12 @@
                 "rawKey": {
                     "description": "Mostrar apenas uma vez!",
                     "type": "string"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -14122,6 +14832,26 @@
                 }
             }
         },
+        "usecase.OpenFinanceCredentialStatus": {
+            "type": "object",
+            "properties": {
+                "client_id_last4": {
+                    "type": "string"
+                },
+                "configured": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "usecase.OpenFinanceSyncResult": {
             "type": "object",
             "properties": {
@@ -14263,6 +14993,10 @@
                 "currency_code": {
                     "type": "string"
                 },
+                "image_key": {
+                    "type": "string",
+                    "maxLength": 1024
+                },
                 "initial_balance": {
                     "type": "number"
                 },
@@ -14284,6 +15018,12 @@
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "image_key": {
+                    "type": "string"
+                },
+                "image_url": {
                     "type": "string"
                 },
                 "initial_balance": {
@@ -14311,6 +15051,10 @@
             "properties": {
                 "currency_code": {
                     "type": "string"
+                },
+                "image_key": {
+                    "type": "string",
+                    "maxLength": 1024
                 },
                 "initial_balance": {
                     "type": "number"
@@ -14472,6 +15216,55 @@
                 }
             }
         },
+        "v1.cardResponse": {
+            "type": "object",
+            "properties": {
+                "closing_date": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "credit_limit": {
+                    "type": "number"
+                },
+                "due_date": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_key": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.commitSessionRequest": {
+            "type": "object",
+            "properties": {
+                "staged_transaction_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "v1.connectedProviderResponse": {
             "type": "object",
             "properties": {
@@ -14494,6 +15287,15 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "scope_preset": {
+                    "type": "string"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -14658,6 +15460,10 @@
                     "type": "integer",
                     "maximum": 31,
                     "minimum": 1
+                },
+                "image_key": {
+                    "type": "string",
+                    "maxLength": 1024
                 },
                 "is_active": {
                     "type": "boolean"
@@ -15863,6 +16669,21 @@
                 }
             }
         },
+        "v1.saveOpenFinanceCredentialRequest": {
+            "type": "object",
+            "required": [
+                "client_id",
+                "client_secret"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "client_secret": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.securitySettingsPasskeyResponse": {
             "type": "object",
             "properties": {
@@ -15934,94 +16755,6 @@
                 }
             }
         },
-        "v1.transactionResponse": {
-            "type": "object",
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "account_name": {
-                    "type": "string"
-                },
-                "amount": {
-                    "type": "number"
-                },
-                "card_id": {
-                    "type": "string"
-                },
-                "card_name": {
-                    "type": "string"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "category_name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "destination_account_id": {
-                    "type": "string"
-                },
-                "destination_account_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "investment_id": {
-                    "type": "string"
-                },
-                "investment_name": {
-                    "type": "string"
-                },
-                "recurring_transaction_id": {
-                    "type": "string"
-                },
-                "running_balance": {
-                    "type": "number"
-                },
-                "source_account_id": {
-                    "type": "string"
-                },
-                "source_account_name": {
-                    "type": "string"
-                },
-                "sub_category_id": {
-                    "type": "string"
-                },
-                "sub_category_name": {
-                    "type": "string"
-                },
-                "transaction_date": {
-                    "type": "string"
-                },
-                "transaction_status": {
-                    "$ref": "#/definitions/entity.TransactionStatus"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "v1.transactionSummaryResponse": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "number"
-                },
-                "current_balance": {
-                    "type": "number"
-                },
-                "total_in": {
-                    "type": "number"
-                },
-                "total_out": {
-                    "type": "number"
-                }
-            }
-        },
         "v1.transferResponse": {
             "type": "object",
             "properties": {
@@ -16060,6 +16793,20 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.updateApiKeyScopesRequest": {
+            "type": "object",
+            "properties": {
+                "scope_preset": {
+                    "type": "string"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -16170,6 +16917,10 @@
                 },
                 "due_date": {
                     "type": "integer"
+                },
+                "image_key": {
+                    "type": "string",
+                    "maxLength": 1024
                 },
                 "is_active": {
                     "type": "boolean"
@@ -16494,25 +17245,36 @@
             "type": "object",
             "properties": {
                 "amount": {
+                    "description": "Amount. Omitted preserves the current value. When present must be greater than 0; zero or negative returns 400 without writing.",
                     "type": "number"
                 },
                 "description": {
+                    "description": "Description. Omitted preserves the current value. Empty string clears it.",
                     "type": "string"
                 },
                 "destination_account_id": {
+                    "description": "Destination account ID. Omitted preserves the current value.",
                     "type": "string"
                 },
                 "recurring_transaction_id": {
+                    "description": "Recurring transfer ID. Omitted preserves the current link; null unsets it.",
                     "type": "string"
                 },
                 "source_account_id": {
+                    "description": "Source account ID. Omitted preserves the current value.",
                     "type": "string"
                 },
                 "transaction_date": {
+                    "description": "Transaction date (YYYY-MM-DD). Omitted preserves the current value.",
                     "type": "string"
                 },
                 "transaction_status": {
-                    "$ref": "#/definitions/entity.TransactionStatus"
+                    "description": "Transaction status. Omitted preserves the current value.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.TransactionStatus"
+                        }
+                    ]
                 }
             }
         },
