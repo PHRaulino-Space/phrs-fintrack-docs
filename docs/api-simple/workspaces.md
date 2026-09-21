@@ -5,7 +5,7 @@ title: Workspaces
 
 **Resumo:** Delete a workspace
 
-Delete a workspace and all its data (cascade). User must be ADMIN.
+Delete a workspace and all its data atomically. User must be ADMIN; every member must retain at least one workspace.
 
 **Consumes:** application/json
 
@@ -23,6 +23,7 @@ Delete a workspace and all its data (cascade). User must be ADMIN.
 | --- | --- | --- |
 | 204 | No Content |  |
 | 400 | Bad Request | object |
+| 401 | Unauthorized | object |
 | 403 | Forbidden | object |
 | 500 | Internal Server Error | object |
 
@@ -70,6 +71,7 @@ Get a single workspace by its ID
 | --- | --- | --- |
 | 200 | OK | entity.Workspace |
 | 400 | Bad Request | v1.ErrorResponse |
+| 404 | Not Found | v1.ErrorResponse |
 | 500 | Internal Server Error | v1.ErrorResponse |
 
 ## PATCH `/workspaces/{id}`
@@ -95,7 +97,10 @@ Update a workspace
 | --- | --- | --- |
 | 200 | OK | entity.Workspace |
 | 400 | Bad Request | object |
+| 401 | Unauthorized | object |
+| 403 | Forbidden | object |
 | 404 | Not Found | object |
+| 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
 ## POST `/workspaces`
@@ -112,6 +117,7 @@ Create a new workspace. The authenticated user will be added as admin.
 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
+| Idempotency-Key | header | string | não | Optional retry key, scoped to the authenticated user |
 | workspace | body | v1.createWorkspaceRequest | sim | Workspace creation request |
 
 ### Respostas
@@ -121,6 +127,7 @@ Create a new workspace. The authenticated user will be added as admin.
 | 201 | Created | entity.Workspace |
 | 400 | Bad Request | v1.ErrorResponse |
 | 401 | Unauthorized | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
 | 500 | Internal Server Error | v1.ErrorResponse |
 
 ### Schemas
@@ -134,6 +141,7 @@ Create a new workspace. The authenticated user will be added as admin.
 | currency_code | string | não |  |
 | deleted_at | string | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
@@ -180,6 +188,7 @@ Sem propriedades.
 | deleted_at | string | não |  |
 | due_date | integer | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | import_sessions | array&lt;entity.ImportSession&gt; | não |  |
 | invoices | array&lt;entity.Invoice&gt; | não | Relationships |
 | is_active | boolean | não |  |
@@ -231,6 +240,21 @@ Sem propriedades.
 | card_expense_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.CardInvoiceBalanceAdjustment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| billing_month | string | não |  |
+| card_id | string | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| source_billing_month | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
 
 #### entity.CardPayment
 
@@ -363,6 +387,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| balance_adjustments | array&lt;entity.CardInvoiceBalanceAdjustment&gt; | não |  |
 | billing_month | string | não | YYYY-MM |
 | card | object | não | Relationships |
 | card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
@@ -523,6 +548,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | data | object | não |  |
 | description | string | não |  |
+| final_transaction_id | string | não |  |
 | id | string | não |  |
 | processing_enrichment | boolean | não |  |
 | session_id | string | não |  |

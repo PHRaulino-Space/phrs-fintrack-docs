@@ -74,7 +74,7 @@ List all cards for a given workspace
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;entity.Card&gt; |
+| 200 | OK | array&lt;v1.cardResponse&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -99,7 +99,7 @@ Get a single card by its ID
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Card |
+| 200 | OK | v1.cardResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -183,6 +183,27 @@ List card expenses, chargebacks and payments for a given invoice (billing month)
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## GET `/cards/images`
+
+**Resumo:** List card images
+
+List image objects available under the configured S3-compatible storage prefix for cards
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;objectstorage.Image&gt; |
+| 503 | Service Unavailable | object |
+
 ## PATCH `/cards/{id}`
 
 **Resumo:** Update an existing card
@@ -205,7 +226,7 @@ Update an existing card by its ID
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | entity.Card |
+| 200 | OK | v1.cardResponse |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -229,7 +250,7 @@ Update an existing card by its ID
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 201 | Created | entity.Card |
+| 201 | Created | v1.cardResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
@@ -295,6 +316,7 @@ Recalculates and updates the invoice status based on business rules: PAID if a f
 | currency_code | string | não |  |
 | deleted_at | string | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
@@ -316,6 +338,7 @@ Sem propriedades.
 | deleted_at | string | não |  |
 | due_date | integer | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | import_sessions | array&lt;entity.ImportSession&gt; | não |  |
 | invoices | array&lt;entity.Invoice&gt; | não | Relationships |
 | is_active | boolean | não |  |
@@ -367,6 +390,21 @@ Sem propriedades.
 | card_expense_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.CardInvoiceBalanceAdjustment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| billing_month | string | não |  |
+| card_id | string | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| source_billing_month | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
 
 #### entity.CardPayment
 
@@ -499,6 +537,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| balance_adjustments | array&lt;entity.CardInvoiceBalanceAdjustment&gt; | não |  |
 | billing_month | string | não | YYYY-MM |
 | card | object | não | Relationships |
 | card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
@@ -659,6 +698,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | data | object | não |  |
 | description | string | não |  |
+| final_transaction_id | string | não |  |
 | id | string | não |  |
 | processing_enrichment | boolean | não |  |
 | session_id | string | não |  |
@@ -716,6 +756,29 @@ Sem propriedades.
 
 Sem propriedades.
 
+#### objectstorage.Image
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| key | string | não |  |
+| url | string | não |  |
+
+#### v1.cardResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| closing_date | integer | não |  |
+| created_at | string | não |  |
+| credit_limit | number | não |  |
+| due_date | integer | não |  |
+| id | string | não |  |
+| image_key | string | não |  |
+| image_url | string | não |  |
+| is_active | boolean | não |  |
+| name | string | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
 #### v1.createCardRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -723,6 +786,7 @@ Sem propriedades.
 | closing_date | integer | sim |  |
 | credit_limit | number | sim |  |
 | due_date | integer | sim |  |
+| image_key | string | não |  |
 | is_active | boolean | não |  |
 | name | string | sim |  |
 
@@ -772,5 +836,6 @@ Sem propriedades.
 | closing_date | integer | não |  |
 | credit_limit | number | não |  |
 | due_date | integer | não |  |
+| image_key | string | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |

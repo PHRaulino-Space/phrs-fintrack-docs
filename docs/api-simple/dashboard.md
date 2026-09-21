@@ -44,6 +44,7 @@ Returns financial summary data for dashboard
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | year | query | integer | sim | Year |
 | month | query | integer | sim | Month (1-12) |
+| include_projected | query | boolean | não | Include projected recurring transactions (default true) |
 
 ### Respostas
 

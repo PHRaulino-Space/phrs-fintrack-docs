@@ -223,7 +223,7 @@ Close an import session and trigger reconciliation. Updates all VALIDATING trans
 
 **Resumo:** Commit staged transactions to main tables
 
-Commit all READY staged transactions to their respective main tables (incomes, expenses, transfers, etc). Sets transaction status to VALIDATING or IGNORE based on the ignore flag.
+Commit all READY staged transactions to their respective main tables (incomes, expenses, transfers, etc). Final transactions are created as PAID (or IGNORE when flagged), while staged rows retain the final transaction ID for audit history.
 
 **Consumes:** application/json
 
@@ -248,6 +248,31 @@ Commit all READY staged transactions to their respective main tables (incomes, e
 **Resumo:** Enrich staged transactions
 
 Trigger enrichment for all PENDING staged transactions in a session.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| request | body | v1.commitSessionRequest | não | Optional staged transaction IDs to commit |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+## POST `/import-sessions/{id}/finalize`
+
+**Resumo:** Finalize committed transactions
+
+Promote VALIDATING transactions in this import session's account or card context to PAID without closing or removing the import session.
 
 **Consumes:** application/json
 
@@ -432,6 +457,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | data | object | não |  |
 | description | string | não |  |
+| final_transaction_id | string | não |  |
 | id | string | não |  |
 | processing_enrichment | boolean | não |  |
 | session_id | string | não |  |
@@ -487,6 +513,12 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | recurring_transaction_id | string | sim |  |
 | staged_transaction_id | string | sim |  |
+
+#### v1.commitSessionRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| staged_transaction_ids | array&lt;string&gt; | não |  |
 
 #### v1.createImportSessionRequest
 

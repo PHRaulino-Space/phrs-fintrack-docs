@@ -18,6 +18,22 @@ title: Open Finance
 | --- | --- | --- |
 | 204 | No Content |  |
 
+## DELETE `/open-finance/credentials`
+
+**Resumo:** Remove Pluggy credentials from the current workspace
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
 ## GET `/open-finance/account-links/{id}/transactions`
 
 **Resumo:** List synchronized transaction copies
@@ -79,6 +95,24 @@ Lists every provider transaction version and whether it is new, imported, ignore
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | array&lt;usecase.OpenFinanceAccountResponse&gt; |
+
+## GET `/open-finance/credentials`
+
+**Resumo:** Get current workspace Pluggy credential status
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.OpenFinanceCredentialStatus |
 
 ## POST `/open-finance/account-links/{id}/sync`
 
@@ -253,6 +287,27 @@ Persist a provider webhook event for asynchronous processing
 | --- | --- | --- |
 | 200 | OK | entity.OpenFinanceAccountLink |
 
+## PUT `/open-finance/credentials`
+
+**Resumo:** Validate and save Pluggy credentials for the current workspace
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | v1.saveOpenFinanceCredentialRequest | sim | Pluggy application credentials |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.OpenFinanceCredentialStatus |
+
 ### Schemas
 
 #### entity.OpenFinanceAccountLink
@@ -315,6 +370,7 @@ Persist a provider webhook event for asynchronous processing
 | created_at | string | não |  |
 | data | object | não |  |
 | description | string | não |  |
+| final_transaction_id | string | não |  |
 | id | string | não |  |
 | processing_enrichment | boolean | não |  |
 | session_id | string | não |  |
@@ -360,6 +416,16 @@ Sem propriedades.
 | connection_id | string | não |  |
 | expires_at | string | não |  |
 
+#### usecase.OpenFinanceCredentialStatus
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| client_id_last4 | string | não |  |
+| configured | boolean | não |  |
+| created_at | string | não |  |
+| provider | string | não |  |
+| updated_at | string | não |  |
+
 #### usecase.OpenFinanceSyncResult
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -390,6 +456,13 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | account_id | string | não |  |
 | card_id | string | não |  |
+
+#### v1.saveOpenFinanceCredentialRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| client_id | string | sim |  |
+| client_secret | string | sim |  |
 
 #### v1.syncOpenFinanceAccountRequest
 

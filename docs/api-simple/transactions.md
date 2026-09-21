@@ -103,7 +103,7 @@ Get a card expense by ID
 
 **Resumo:** List transactions
 
-List all transactions for the workspace with optional filters
+Returns the legacy array. Pagination is opt-in with limit or cursor; without either, returns all items. Order: date ASC, amount DESC, type/ID/source/occurrence ASC. Cursors are bound to workspace and filters; no snapshot guarantee.
 
 **Consumes:** application/json
 
@@ -113,6 +113,8 @@ List all transactions for the workspace with optional filters
 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
+| limit | query | integer | não | Opt-in pagination limit (1-500; default 100) |
+| cursor | query | string | não | Authenticated continuation cursor bound to filters |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
 | account_id | query | string | não | Account ID |
@@ -120,12 +122,13 @@ List all transactions for the workspace with optional filters
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
+| include_projected | query | boolean | não | Include projected recurring transactions (default true) |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;v1.transactionResponse&gt; |
+| 200 | OK | array&lt;transactiondto.TransactionItemDTO&gt; |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -151,12 +154,13 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
+| include_projected | query | boolean | não | Include projected recurring transactions (default true) |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | v1.transactionSummaryResponse |
+| 200 | OK | transactiondto.TransactionSummaryDTO |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -383,6 +387,7 @@ Update an existing card payment transaction
 | currency_code | string | não |  |
 | deleted_at | string | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
@@ -404,6 +409,7 @@ Sem propriedades.
 | deleted_at | string | não |  |
 | due_date | integer | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | import_sessions | array&lt;entity.ImportSession&gt; | não |  |
 | invoices | array&lt;entity.Invoice&gt; | não | Relationships |
 | is_active | boolean | não |  |
@@ -455,6 +461,21 @@ Sem propriedades.
 | card_expense_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.CardInvoiceBalanceAdjustment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| billing_month | string | não |  |
+| card_id | string | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| source_billing_month | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
 
 #### entity.CardPayment
 
@@ -674,6 +695,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| balance_adjustments | array&lt;entity.CardInvoiceBalanceAdjustment&gt; | não |  |
 | billing_month | string | não | YYYY-MM |
 | card | object | não | Relationships |
 | card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
@@ -838,6 +860,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | data | object | não |  |
 | description | string | não |  |
+| final_transaction_id | string | não |  |
 | id | string | não |  |
 | processing_enrichment | boolean | não |  |
 | session_id | string | não |  |
@@ -894,6 +917,42 @@ Sem propriedades.
 #### entity.TransactionStatus
 
 Sem propriedades.
+
+#### transactiondto.TransactionItemDTO
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| account_name | string | não |  |
+| amount | number | não |  |
+| card_id | string | não |  |
+| card_name | string | não |  |
+| category_id | string | não |  |
+| category_name | string | não |  |
+| description | string | não |  |
+| destination_account_id | string | não |  |
+| destination_account_name | string | não |  |
+| id | string | não |  |
+| investment_id | string | não |  |
+| investment_name | string | não |  |
+| recurring_transaction_id | string | não |  |
+| running_balance | number | não |  |
+| source_account_id | string | não |  |
+| source_account_name | string | não |  |
+| sub_category_id | string | não |  |
+| sub_category_name | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | string | não |  |
+| type | string | não |  |
+
+#### transactiondto.TransactionSummaryDTO
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| balance | number | não |  |
+| current_balance | number | não |  |
+| total_in | number | não |  |
+| total_out | number | não |  |
 
 #### v1.createCardChargebackRequest
 
@@ -956,42 +1015,6 @@ Sem propriedades.
 #### v1.installmentAmountType
 
 Sem propriedades.
-
-#### v1.transactionResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| account_id | string | não |  |
-| account_name | string | não |  |
-| amount | number | não |  |
-| card_id | string | não |  |
-| card_name | string | não |  |
-| category_id | string | não |  |
-| category_name | string | não |  |
-| description | string | não |  |
-| destination_account_id | string | não |  |
-| destination_account_name | string | não |  |
-| id | string | não |  |
-| investment_id | string | não |  |
-| investment_name | string | não |  |
-| recurring_transaction_id | string | não |  |
-| running_balance | number | não |  |
-| source_account_id | string | não |  |
-| source_account_name | string | não |  |
-| sub_category_id | string | não |  |
-| sub_category_name | string | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
-| type | string | não |  |
-
-#### v1.transactionSummaryResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| balance | number | não |  |
-| current_balance | number | não |  |
-| total_in | number | não |  |
-| total_out | number | não |  |
 
 #### v1.updateCardChargebackRequest
 

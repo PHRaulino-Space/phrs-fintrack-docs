@@ -137,6 +137,7 @@ Update a tag
 | currency_code | string | não |  |
 | deleted_at | string | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
@@ -158,6 +159,7 @@ Sem propriedades.
 | deleted_at | string | não |  |
 | due_date | integer | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
 | import_sessions | array&lt;entity.ImportSession&gt; | não |  |
 | invoices | array&lt;entity.Invoice&gt; | não | Relationships |
 | is_active | boolean | não |  |
@@ -209,6 +211,21 @@ Sem propriedades.
 | card_expense_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.CardInvoiceBalanceAdjustment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| billing_month | string | não |  |
+| card_id | string | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| source_billing_month | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
 
 #### entity.CardPayment
 
@@ -341,6 +358,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| balance_adjustments | array&lt;entity.CardInvoiceBalanceAdjustment&gt; | não |  |
 | billing_month | string | não | YYYY-MM |
 | card | object | não | Relationships |
 | card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
@@ -501,6 +519,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | data | object | não |  |
 | description | string | não |  |
+| final_transaction_id | string | não |  |
 | id | string | não |  |
 | processing_enrichment | boolean | não |  |
 | session_id | string | não |  |

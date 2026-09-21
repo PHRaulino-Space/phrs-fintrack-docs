@@ -50,6 +50,28 @@ Sem parâmetros.
 | 403 | Forbidden | object |
 | 500 | Internal Server Error | object |
 
+## POST `/admin/train-embeddings`
+
+**Resumo:** Train category embeddings
+
+Starts category embedding training in the background (admin only).
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 202 | Accepted | object |
+| 401 | Unauthorized | object |
+| 403 | Forbidden | object |
+
 ### Schemas
 
 #### v1.deletedUserResponse

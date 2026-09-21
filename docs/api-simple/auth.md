@@ -55,7 +55,7 @@ Remove a connected OAuth provider from the user account
 
 **Resumo:** OAuth callback
 
-Handle OAuth callback from provider and set authentication cookie or link provider
+Handle OAuth callback from provider and set authentication cookie or link provider. Linking requires verified MFA when enabled.
 
 **Consumes:** application/json
 
@@ -81,7 +81,7 @@ Handle OAuth callback from provider and set authentication cookie or link provid
 
 **Resumo:** OAuth link initiation
 
-Initiate OAuth link flow with the specified provider
+Initiate OAuth link flow with the specified provider. Requires verified MFA when enabled.
 
 **Consumes:** application/json
 
@@ -100,6 +100,7 @@ Initiate OAuth link flow with the specified provider
 | --- | --- | --- |
 | 307 | Redirect to OAuth provider |  |
 | 400 | Bad Request | object |
+| 401 | Unauthorized | object |
 
 ## GET `/auth/{provider}/login`
 
@@ -129,7 +130,7 @@ Initiate OAuth login flow with the specified provider (e.g., github)
 
 **Resumo:** Validate token
 
-Validate authentication token and return user information with workspaces
+Validate authentication token and return user information with workspaces. Requires verified MFA when enabled.
 
 **Consumes:** application/json
 
@@ -151,7 +152,7 @@ Sem parâmetros.
 
 **Resumo:** Request password reset
 
-Request a password reset email
+Queue a password reset request for asynchronous processing. Links are valid for 15 minutes. Always returns the same accepted response for valid requests without waiting for account lookup or email delivery.
 
 **Consumes:** application/json
 
@@ -174,7 +175,7 @@ Request a password reset email
 
 **Resumo:** Native login
 
-Login with email and password, returns authentication cookie
+Login with email and password. Returns 200 with mfa_required=true and access/CSRF cookies when MFA is enabled; no refresh cookie is issued until MFA verification. Otherwise returns a full cookie session. Unverified email returns 403.
 
 **Consumes:** application/json
 
@@ -193,6 +194,8 @@ Login with email and password, returns authentication cookie
 | 200 | OK | object |
 | 400 | Bad Request | object |
 | 401 | Unauthorized | object |
+| 403 | Email not verified | object |
+| 500 | Internal Server Error | object |
 
 ## POST `/auth/logout`
 
@@ -218,7 +221,7 @@ Sem parâmetros.
 
 **Resumo:** Confirm MFA
 
-Confirm MFA enrollment and return recovery codes
+Confirm MFA enrollment and return recovery codes. Requires verified MFA if MFA is already enabled.
 
 **Consumes:** application/json
 
@@ -314,7 +317,7 @@ Sem parâmetros.
 
 **Resumo:** Verify MFA recovery code
 
-Verify a recovery code and issue MFA-verified tokens
+Verify a recovery code and issue MFA-verified tokens. Accepts an authenticated intermediate token before MFA verification.
 
 **Consumes:** application/json
 
@@ -339,7 +342,7 @@ Verify a recovery code and issue MFA-verified tokens
 
 **Resumo:** Setup MFA
 
-Initialize MFA enrollment and return secret/QR
+Initialize MFA enrollment and return secret/QR. Requires verified MFA if MFA is already enabled.
 
 **Consumes:** application/json
 
@@ -361,7 +364,7 @@ Sem parâmetros.
 
 **Resumo:** Verify MFA
 
-Verify MFA code and issue MFA-verified tokens
+Verify MFA code and issue MFA-verified tokens. Accepts an authenticated intermediate token before MFA verification.
 
 **Consumes:** application/json
 
@@ -517,6 +520,7 @@ Register a new user with email and password (native authentication)
 | --- | --- | --- |
 | 201 | User created successfully |  |
 | 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
 
 ## POST `/auth/reset-password`
 
@@ -569,7 +573,7 @@ Confirm email verification using a valid token
 
 **Resumo:** Request email verification
 
-Request an email verification token
+Send email verification. Token responses require explicit development email delivery.
 
 **Consumes:** application/json
 
@@ -585,7 +589,7 @@ Request an email verification token
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | v1.emailVerificationResponse |
+| 200 | Explicit development delivery only | v1.emailVerificationResponse |
 | 202 | Accepted | object |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
@@ -594,7 +598,7 @@ Request an email verification token
 
 **Resumo:** Resend email verification
 
-Resend email verification token for the authenticated user
+Resend email verification for the authenticated user. Token responses require explicit development email delivery.
 
 **Consumes:** application/json
 
@@ -608,7 +612,7 @@ Sem parâmetros.
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | v1.emailVerificationResponse |
+| 200 | Explicit development delivery only | v1.emailVerificationResponse |
 | 202 | Accepted | object |
 | 401 | Unauthorized | object |
 | 500 | Internal Server Error | object |

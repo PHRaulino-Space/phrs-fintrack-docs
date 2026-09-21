@@ -43,6 +43,31 @@ List all API keys for the current user in the current workspace
 | 200 | OK | array&lt;entity.ApiKey&gt; |
 | 401 | Unauthorized | v1.ErrorResponse |
 
+## PATCH `/api-keys/{id}/scopes`
+
+**Resumo:** Update API Key scopes
+
+Update the scopes granted to an existing API key
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | API Key ID |
+| request | body | v1.updateApiKeyScopesRequest | sim | Scopes or scope_preset (read_only, read_write, admin) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ApiKey |
+| 400 | Bad Request | v1.ErrorResponse |
+| 401 | Unauthorized | v1.ErrorResponse |
+
 ## POST `/api-keys`
 
 **Resumo:** Create API Key
@@ -58,7 +83,7 @@ Create a new API key for programmatic access
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| request | body | v1.createApiKeyRequest | sim | API Key details |
+| request | body | v1.createApiKeyRequest | sim | API Key details, with scopes or scope_preset (read_only, read_write, admin) |
 
 ### Respostas
 
@@ -96,6 +121,7 @@ Create a new API key for programmatic access
 | keyPrefix | string | não |  |
 | name | string | não |  |
 | rawKey | string | não | Mostrar apenas uma vez! |
+| scopes | array&lt;string&gt; | não |  |
 
 #### v1.createApiKeyRequest
 
@@ -103,9 +129,18 @@ Create a new API key for programmatic access
 | --- | --- | --- | --- |
 | expires_at | string | não |  |
 | name | string | sim |  |
+| scope_preset | string | não |  |
+| scopes | array&lt;string&gt; | não |  |
 
 #### v1.ErrorResponse
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | error | string | não |  |
+
+#### v1.updateApiKeyScopesRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| scope_preset | string | não |  |
+| scopes | array&lt;string&gt; | não |  |

@@ -76,6 +76,27 @@ Get a single account by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## GET `/accounts/images`
+
+**Resumo:** List account images
+
+List image objects available under the configured S3-compatible storage prefix
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;objectstorage.Image&gt; |
+| 503 | Service Unavailable | object |
+
 ## PATCH `/accounts/{account_id}`
 
 **Resumo:** Update an existing account
@@ -132,11 +153,19 @@ Update an existing account by its ID
 
 Sem propriedades.
 
+#### objectstorage.Image
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| key | string | não |  |
+| url | string | não |  |
+
 #### v1.AccountRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | currency_code | string | não |  |
+| image_key | string | não |  |
 | initial_balance | number | não |  |
 | name | string | sim |  |
 | type | entity.AccountType | sim |  |
@@ -148,6 +177,8 @@ Sem propriedades.
 | created_at | string | não |  |
 | currency_code | string | não |  |
 | id | string | não |  |
+| image_key | string | não |  |
+| image_url | string | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
@@ -160,6 +191,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | currency_code | string | não |  |
+| image_key | string | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
