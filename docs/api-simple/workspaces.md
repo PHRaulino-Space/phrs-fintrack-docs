@@ -1,7 +1,7 @@
 ---
 title: Workspaces
 ---
-## DELETE `/workspaces/{id}`
+## DELETE `/workspaces/{workspace_id}`
 
 **Resumo:** Delete a workspace
 
@@ -15,7 +15,7 @@ Delete a workspace and all its data atomically. User must be ADMIN; every member
 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
-| id | path | string | sim | Workspace ID |
+| workspace_id | path | string | sim | Workspace ID |
 
 ### Respostas
 
@@ -49,7 +49,7 @@ Sem parâmetros.
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
-## GET `/workspaces/{id}`
+## GET `/workspaces/{workspace_id}`
 
 **Resumo:** Get a single workspace
 
@@ -63,7 +63,7 @@ Get a single workspace by its ID
 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
-| id | path | string | sim | Workspace ID |
+| workspace_id | path | string | sim | Workspace ID |
 
 ### Respostas
 
@@ -74,7 +74,7 @@ Get a single workspace by its ID
 | 404 | Not Found | v1.ErrorResponse |
 | 500 | Internal Server Error | v1.ErrorResponse |
 
-## PATCH `/workspaces/{id}`
+## PATCH `/workspaces/{workspace_id}`
 
 **Resumo:** Update workspace
 
@@ -88,7 +88,7 @@ Update a workspace
 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
-| id | path | string | sim | Workspace ID |
+| workspace_id | path | string | sim | Workspace ID |
 | workspace | body | v1.updateWorkspaceRequest | sim | Workspace update request |
 
 ### Respostas
@@ -628,11 +628,15 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| accepted_at | string | não |  |
+| accepted_by_user_id | string | não |  |
 | created_at | string | não |  |
 | email | string | não |  |
 | expires_at | string | não |  |
 | id | string | não |  |
-| token | string | não |  |
+| invited_by | string | não |  |
+| role | entity.WorkspaceMemberRole | não |  |
+| updated_at | string | não |  |
 | workspace_id | string | não |  |
 
 #### entity.WorkspaceMember
