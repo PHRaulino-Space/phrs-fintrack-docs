@@ -502,6 +502,7 @@ Sem propriedades.
 | is_completed | boolean | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
+| purpose | entity.GoalPurpose | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
@@ -529,6 +530,10 @@ Sem propriedades.
 | investment_id | string | não |  |
 
 #### entity.GoalPriority
+
+Sem propriedades.
+
+#### entity.GoalPurpose
 
 Sem propriedades.
 
@@ -928,6 +933,7 @@ Sem propriedades.
 | investment_ids | array&lt;string&gt; | não |  |
 | name | string | sim |  |
 | priority | entity.GoalPriority | não |  |
+| purpose | entity.GoalPurpose | não |  |
 | target_value | number | sim |  |
 | type | entity.GoalType | sim |  |
 
@@ -946,6 +952,7 @@ Sem propriedades.
 | is_completed | boolean | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
+| purpose | entity.GoalPurpose | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
@@ -986,5 +993,6 @@ Sem propriedades.
 | investment_ids | array&lt;string&gt; | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
+| purpose | entity.GoalPurpose | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |

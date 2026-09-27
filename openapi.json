@@ -6646,6 +6646,14 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Optional staged transaction IDs to commit; omit to commit every READY row",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/v1.commitSessionRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -6699,14 +6707,6 @@
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Optional staged transaction IDs to commit",
-                        "name": "request",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/v1.commitSessionRequest"
-                        }
                     }
                 ],
                 "responses": {
@@ -13067,6 +13067,9 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
+                "purpose": {
+                    "$ref": "#/definitions/entity.GoalPurpose"
+                },
                 "target_value": {
                     "type": "number"
                 },
@@ -13140,6 +13143,17 @@
                 "GoalPriorityHigh",
                 "GoalPriorityMedium",
                 "GoalPriorityLow"
+            ]
+        },
+        "entity.GoalPurpose": {
+            "type": "string",
+            "enum": [
+                "OBJECTIVE",
+                "RESERVE"
+            ],
+            "x-enum-varnames": [
+                "GoalPurposeObjective",
+                "GoalPurposeReserve"
             ]
         },
         "entity.GoalType": {
@@ -16058,6 +16072,9 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
+                "purpose": {
+                    "$ref": "#/definitions/entity.GoalPurpose"
+                },
                 "target_value": {
                     "type": "number"
                 },
@@ -16537,6 +16554,9 @@
                 },
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
+                },
+                "purpose": {
+                    "$ref": "#/definitions/entity.GoalPurpose"
                 },
                 "target_value": {
                     "type": "number"
@@ -17494,6 +17514,9 @@
                 },
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
+                },
+                "purpose": {
+                    "$ref": "#/definitions/entity.GoalPurpose"
                 },
                 "target_value": {
                     "type": "number"
