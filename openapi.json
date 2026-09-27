@@ -4130,6 +4130,88 @@
                 }
             }
         },
+        "/cards/{id}/invoices/{billing_month}/payment-type": {
+            "patch": {
+                "description": "Choose automatic or manual payment for one card invoice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Set invoice payment type",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month (YYYY-MM)",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Payment type",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.setInvoicePaymentTypeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Invoice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/cards/{id}/invoices/{billing_month}/recalculate-status": {
             "post": {
                 "description": "Recalculates and updates the invoice status based on business rules: PAID if a final payment exists, OVERDUE if past due date, OPEN otherwise. Also creates next month's invoice if the closing date has passed.",
@@ -9115,6 +9197,193 @@
                 }
             }
         },
+        "/planning/categories/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Assign an expense category to a planning bucket",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Bucket",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.categoryBucketRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/planning/month": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Get monthly financial plan and result",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.PlanningMonth"
+                        }
+                    }
+                }
+            }
+        },
+        "/planning/settings": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Get planning settings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.PlanningSettings"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Update planning distribution",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Percentages summing to 100",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.allocationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.PlanningAllocation"
+                        }
+                    }
+                }
+            }
+        },
+        "/planning/year": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Get annual financial plan and report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.PlanningYear"
+                        }
+                    }
+                }
+            }
+        },
         "/recurring": {
             "get": {
                 "description": "List recurring transactions",
@@ -9349,6 +9618,12 @@
                         "type": "string",
                         "description": "Card ID (opcional; se omitir, busca todas as contas/cartões)",
                         "name": "card_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limitar pendências até o fim de YYYY-MM (padrão: mês atual)",
+                        "name": "month",
                         "in": "query"
                     }
                 ],
@@ -12673,6 +12948,9 @@
                 "name": {
                     "type": "string"
                 },
+                "planning_bucket": {
+                    "type": "string"
+                },
                 "recurring_card_transactions": {
                     "type": "array",
                     "items": {
@@ -12843,8 +13121,15 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
+                "priority_rank": {
+                    "description": "PriorityRank allows more than three levels; nil preserves legacy priority semantics.",
+                    "type": "integer"
+                },
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
+                },
+                "reserve_kind": {
+                    "type": "string"
                 },
                 "target_value": {
                     "type": "number"
@@ -13373,6 +13658,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "status": {
                     "$ref": "#/definitions/entity.InvoiceStatus"
                 },
@@ -13536,6 +13824,17 @@
                 }
             }
         },
+        "entity.PaymentType": {
+            "type": "string",
+            "enum": [
+                "AUTOMATIC",
+                "MANUAL"
+            ],
+            "x-enum-varnames": [
+                "PaymentTypeAutomatic",
+                "PaymentTypeManual"
+            ]
+        },
         "entity.PendingSlot": {
             "type": "object",
             "properties": {
@@ -13556,6 +13855,9 @@
                 },
                 "include_in_summary": {
                     "type": "boolean"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "recurring_id": {
                     "type": "string"
@@ -13578,6 +13880,23 @@
                 },
                 "type": {
                     "$ref": "#/definitions/entity.RecurringType"
+                }
+            }
+        },
+        "entity.PlanningAllocation": {
+            "type": "object",
+            "properties": {
+                "essential_percent": {
+                    "type": "integer"
+                },
+                "growth_percent": {
+                    "type": "integer"
+                },
+                "personal_percent": {
+                    "type": "integer"
+                },
+                "workspace_id": {
+                    "type": "string"
                 }
             }
         },
@@ -13661,6 +13980,9 @@
                 },
                 "payment_status": {
                     "type": "string"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "pending_amount": {
                     "type": "number"
@@ -13761,6 +14083,9 @@
                 "payment_status": {
                     "type": "string"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "pending_amount": {
                     "type": "number"
                 },
@@ -13859,6 +14184,9 @@
                 },
                 "payment_status": {
                     "type": "string"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "pending_amount": {
                     "type": "number"
@@ -15109,6 +15437,203 @@
                 }
             }
         },
+        "usecase.PlanningBucketSummary": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "number"
+                },
+                "percent": {
+                    "type": "integer"
+                },
+                "remaining": {
+                    "type": "number"
+                },
+                "spent": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.PlanningCategory": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.PlanningCommitment": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.PlanningGoal": {
+            "type": "object",
+            "properties": {
+                "current_value": {
+                    "type": "number"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "estimated_months": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "investment_guidance": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "on_track": {
+                    "type": "boolean"
+                },
+                "priority_rank": {
+                    "type": "integer"
+                },
+                "suggested_amount": {
+                    "type": "number"
+                },
+                "target_value": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.PlanningMonth": {
+            "type": "object",
+            "properties": {
+                "available_to_invest": {
+                    "type": "number"
+                },
+                "cash_balance": {
+                    "type": "number"
+                },
+                "commitments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningCommitment"
+                    }
+                },
+                "current": {
+                    "type": "boolean"
+                },
+                "essential": {
+                    "$ref": "#/definitions/usecase.PlanningBucketSummary"
+                },
+                "goals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningGoal"
+                    }
+                },
+                "growth": {
+                    "$ref": "#/definitions/usecase.PlanningBucketSummary"
+                },
+                "income_expected": {
+                    "type": "number"
+                },
+                "income_received": {
+                    "type": "number"
+                },
+                "invested": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "integer"
+                },
+                "pending_payments": {
+                    "type": "number"
+                },
+                "personal": {
+                    "$ref": "#/definitions/usecase.PlanningBucketSummary"
+                },
+                "personal_available": {
+                    "type": "number"
+                },
+                "projected_contribution": {
+                    "type": "number"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.PlanningSettings": {
+            "type": "object",
+            "properties": {
+                "allocation": {
+                    "$ref": "#/definitions/entity.PlanningAllocation"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningCategory"
+                    }
+                }
+            }
+        },
+        "usecase.PlanningYear": {
+            "type": "object",
+            "properties": {
+                "expenses": {
+                    "type": "number"
+                },
+                "expenses_expected": {
+                    "type": "number"
+                },
+                "goals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningGoal"
+                    }
+                },
+                "income_expected": {
+                    "type": "number"
+                },
+                "income_received": {
+                    "type": "number"
+                },
+                "invested": {
+                    "type": "number"
+                },
+                "months": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningMonth"
+                    }
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
         "usecase.RecurringCardExpenseSummary": {
             "type": "object",
             "properties": {
@@ -15168,6 +15693,9 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "source_account_id": {
                     "type": "string"
@@ -15429,6 +15957,26 @@
                 }
             }
         },
+        "v1.allocationRequest": {
+            "type": "object",
+            "properties": {
+                "essential_percent": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "growth_percent": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "personal_percent": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                }
+            }
+        },
         "v1.attachConnectionRequest": {
             "type": "object",
             "required": [
@@ -15490,6 +16038,22 @@
                 },
                 "workspace_id": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.categoryBucketRequest": {
+            "type": "object",
+            "required": [
+                "bucket"
+            ],
+            "properties": {
+                "bucket": {
+                    "type": "string",
+                    "enum": [
+                        "ESSENTIAL",
+                        "GROWTH",
+                        "PERSONAL"
+                    ]
                 }
             }
         },
@@ -15801,8 +16365,16 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
+                "priority_rank": {
+                    "type": "integer",
+                    "maximum": 20,
+                    "minimum": 0
+                },
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
+                },
+                "reserve_kind": {
+                    "type": "string"
                 },
                 "target_value": {
                     "type": "number"
@@ -16284,8 +16856,14 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
+                "priority_rank": {
+                    "type": "integer"
+                },
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
+                },
+                "reserve_kind": {
+                    "type": "string"
                 },
                 "target_value": {
                     "type": "number"
@@ -16663,6 +17241,9 @@
                 "paid_amount": {
                     "type": "number"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "status": {
                     "$ref": "#/definitions/entity.InvoiceStatus"
                 },
@@ -16977,6 +17558,17 @@
                 }
             }
         },
+        "v1.setInvoicePaymentTypeRequest": {
+            "type": "object",
+            "required": [
+                "payment_type"
+            ],
+            "properties": {
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                }
+            }
+        },
         "v1.slotIgnoreRequest": {
             "type": "object",
             "required": [
@@ -17244,8 +17836,16 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
+                "priority_rank": {
+                    "type": "integer",
+                    "maximum": 20,
+                    "minimum": 0
+                },
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
+                },
+                "reserve_kind": {
+                    "type": "string"
                 },
                 "target_value": {
                     "type": "number"
@@ -17424,6 +18024,9 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "source_account_id": {
                     "type": "string"

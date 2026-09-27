@@ -363,6 +363,7 @@ Sem propriedades.
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
+| planning_bucket | string | não |  |
 | recurring_card_transactions | array&lt;entity.RecurringCardTransaction&gt; | não |  |
 | recurring_expenses | array&lt;entity.RecurringExpense&gt; | não |  |
 | recurring_incomes | array&lt;entity.RecurringIncome&gt; | não |  |
@@ -421,7 +422,9 @@ Sem propriedades.
 | is_completed | boolean | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
+| priority_rank | integer | não | PriorityRank allows more than three levels; nil preserves legacy priority semantics. |
 | purpose | entity.GoalPurpose | não |  |
+| reserve_kind | string | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
@@ -841,7 +844,9 @@ Sem propriedades.
 | investment_ids | array&lt;string&gt; | não |  |
 | name | string | sim |  |
 | priority | entity.GoalPriority | não |  |
+| priority_rank | integer | não |  |
 | purpose | entity.GoalPurpose | não |  |
+| reserve_kind | string | não |  |
 | target_value | number | sim |  |
 | type | entity.GoalType | não |  |
 
@@ -860,7 +865,9 @@ Sem propriedades.
 | is_completed | boolean | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
+| priority_rank | integer | não |  |
 | purpose | entity.GoalPurpose | não |  |
+| reserve_kind | string | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
@@ -901,6 +908,8 @@ Sem propriedades.
 | investment_ids | array&lt;string&gt; | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
+| priority_rank | integer | não |  |
 | purpose | entity.GoalPurpose | não |  |
+| reserve_kind | string | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |

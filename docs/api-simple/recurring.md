@@ -415,6 +415,7 @@ Sem propriedades.
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
+| planning_bucket | string | não |  |
 | recurring_card_transactions | array&lt;entity.RecurringCardTransaction&gt; | não |  |
 | recurring_expenses | array&lt;entity.RecurringExpense&gt; | não |  |
 | recurring_incomes | array&lt;entity.RecurringIncome&gt; | não |  |
