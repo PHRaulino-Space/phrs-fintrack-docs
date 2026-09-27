@@ -5808,224 +5808,6 @@
                 }
             }
         },
-        "/goals/{goal_id}/deposits": {
-            "get": {
-                "description": "List deposits for a manual goal",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "goals"
-                ],
-                "summary": "List goal deposits",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Goal ID",
-                        "name": "goal_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.GoalDeposit"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a deposit for a manual goal",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "goals"
-                ],
-                "summary": "Create goal deposit",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Goal ID",
-                        "name": "goal_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Goal deposit object",
-                        "name": "deposit",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.createGoalDepositRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entity.GoalDeposit"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/goals/{goal_id}/deposits/{deposit_id}": {
-            "delete": {
-                "description": "Delete a deposit from a manual goal",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "goals"
-                ],
-                "summary": "Delete goal deposit",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Workspace ID",
-                        "name": "X-Workspace-ID",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Goal ID",
-                        "name": "goal_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Deposit ID",
-                        "name": "deposit_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/goals/{goal_id}/investments": {
             "post": {
                 "description": "Add an investment to an invest goal",
@@ -13039,13 +12821,6 @@
                 "current_value": {
                     "type": "number"
                 },
-                "deposits": {
-                    "description": "Relationships",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.GoalDeposit"
-                    }
-                },
                 "due_date": {
                     "type": "string"
                 },
@@ -13053,6 +12828,7 @@
                     "type": "string"
                 },
                 "investments": {
+                    "description": "Relationships",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.GoalInvestment"
@@ -13080,37 +12856,6 @@
                     "type": "string"
                 },
                 "workspace_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.GoalDeposit": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "goal": {
-                    "description": "Relationships",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/entity.Goal"
-                        }
-                    ]
-                },
-                "goal_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "transaction_date": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }
@@ -13159,11 +12904,9 @@
         "entity.GoalType": {
             "type": "string",
             "enum": [
-                "MANUAL",
                 "INVESTMENT"
             ],
             "x-enum-varnames": [
-                "GoalTypeManual",
                 "GoalTypeInvest"
             ]
         },
@@ -13488,6 +13231,7 @@
                 "FII",
                 "CRYPTO",
                 "POUPANCA",
+                "CAIXINHA",
                 "OUTRO"
             ],
             "x-enum-varnames": [
@@ -13500,6 +13244,7 @@
                 "InvestmentTypeFII",
                 "InvestmentTypeCrypto",
                 "InvestmentTypePoupanca",
+                "InvestmentTypeCaixinha",
                 "InvestmentTypeOutro"
             ]
         },
@@ -16025,21 +15770,6 @@
                 }
             }
         },
-        "v1.createGoalDepositRequest": {
-            "type": "object",
-            "required": [
-                "amount",
-                "transaction_date"
-            ],
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "transaction_date": {
-                    "type": "string"
-                }
-            }
-        },
         "v1.createGoalRequest": {
             "type": "object",
             "required": [
@@ -16047,8 +15777,7 @@
                 "color",
                 "due_date",
                 "name",
-                "target_value",
-                "type"
+                "target_value"
             ],
             "properties": {
                 "category": {

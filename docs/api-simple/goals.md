@@ -27,33 +27,6 @@ Delete a goal
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## DELETE `/goals/{goal_id}/deposits/{deposit_id}`
-
-**Resumo:** Delete goal deposit
-
-Delete a deposit from a manual goal
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| goal_id | path | string | sim | Goal ID |
-| deposit_id | path | string | sim | Deposit ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content | object |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
 ## DELETE `/goals/{goal_id}/investments/{investment_id}`
 
 **Resumo:** Remove investment from goal
@@ -131,32 +104,6 @@ Get a single goal by its ID
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
-## GET `/goals/{goal_id}/deposits`
-
-**Resumo:** List goal deposits
-
-List deposits for a manual goal
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| goal_id | path | string | sim | Goal ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;entity.GoalDeposit&gt; |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
 ## PATCH `/goals/{goal_id}`
 
 **Resumo:** Update goal
@@ -229,33 +176,6 @@ Mark a goal as completed
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | entity.Goal |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## POST `/goals/{goal_id}/deposits`
-
-**Resumo:** Create goal deposit
-
-Create a deposit for a manual goal
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| goal_id | path | string | sim | Goal ID |
-| deposit | body | v1.createGoalDepositRequest | sim | Goal deposit object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.GoalDeposit |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
@@ -495,10 +415,9 @@ Sem propriedades.
 | completed_at | string | não |  |
 | created_at | string | não |  |
 | current_value | number | não |  |
-| deposits | array&lt;entity.GoalDeposit&gt; | não | Relationships |
 | due_date | string | não |  |
 | id | string | não |  |
-| investments | array&lt;entity.GoalInvestment&gt; | não |  |
+| investments | array&lt;entity.GoalInvestment&gt; | não | Relationships |
 | is_completed | boolean | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
@@ -507,18 +426,6 @@ Sem propriedades.
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
 | workspace_id | string | não |  |
-
-#### entity.GoalDeposit
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| amount | number | não |  |
-| created_at | string | não |  |
-| goal | object | não | Relationships |
-| goal_id | string | não |  |
-| id | string | não |  |
-| transaction_date | string | não |  |
-| updated_at | string | não |  |
 
 #### entity.GoalInvestment
 
@@ -916,13 +823,6 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | investment_id | string | sim |  |
 
-#### v1.createGoalDepositRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| amount | number | sim |  |
-| transaction_date | string | sim |  |
-
 #### v1.createGoalRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -935,7 +835,7 @@ Sem propriedades.
 | priority | entity.GoalPriority | não |  |
 | purpose | entity.GoalPurpose | não |  |
 | target_value | number | sim |  |
-| type | entity.GoalType | sim |  |
+| type | entity.GoalType | não |  |
 
 #### v1.goalListResponse
 
