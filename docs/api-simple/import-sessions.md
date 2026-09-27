@@ -234,6 +234,7 @@ Commit all READY staged transactions to their respective main tables (incomes, e
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | id | path | string | sim | Session ID |
+| request | body | v1.commitSessionRequest | não | Optional staged transaction IDs to commit; omit to commit every READY row |
 
 ### Respostas
 
@@ -258,7 +259,6 @@ Trigger enrichment for all PENDING staged transactions in a session.
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | id | path | string | sim | Session ID |
-| request | body | v1.commitSessionRequest | não | Optional staged transaction IDs to commit |
 
 ### Respostas
 

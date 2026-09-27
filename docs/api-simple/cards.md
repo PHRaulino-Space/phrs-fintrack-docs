@@ -231,6 +231,34 @@ Update an existing card by its ID
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## PATCH `/cards/{id}/invoices/{billing_month}/payment-type`
+
+**Resumo:** Set invoice payment type
+
+Choose automatic or manual payment for one card invoice
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | Billing month (YYYY-MM) |
+| input | body | v1.setInvoicePaymentTypeRequest | sim | Payment type |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.Invoice |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## POST `/cards`
 
 **Resumo:** Create a new card
@@ -545,10 +573,15 @@ Sem propriedades.
 | card_id | string | não |  |
 | card_payments | array&lt;entity.CardPayment&gt; | não |  |
 | created_at | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | status | entity.InvoiceStatus | não |  |
 | updated_at | string | não |  |
 
 #### entity.InvoiceStatus
+
+Sem propriedades.
+
+#### entity.PaymentType
 
 Sem propriedades.
 
@@ -571,6 +604,7 @@ Sem propriedades.
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -607,6 +641,7 @@ Sem propriedades.
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -643,6 +678,7 @@ Sem propriedades.
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -807,6 +843,7 @@ Sem propriedades.
 | card_id | string | não |  |
 | created_at | string | não |  |
 | paid_amount | number | não |  |
+| payment_type | entity.PaymentType | não |  |
 | status | entity.InvoiceStatus | não |  |
 | total_amount | number | não |  |
 | updated_at | string | não |  |
@@ -828,6 +865,12 @@ Sem propriedades.
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | type | entity.StagedTransactionType | não |  |
+
+#### v1.setInvoicePaymentTypeRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| payment_type | entity.PaymentType | sim |  |
 
 #### v1.updateCardRequest
 

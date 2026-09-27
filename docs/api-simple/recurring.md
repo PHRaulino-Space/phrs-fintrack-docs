@@ -118,6 +118,7 @@ Identify empty slots for recurring transactions up to end of month
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | account_id | query | string | não | Account ID (opcional; se omitir, busca todas as contas/cartões) |
 | card_id | query | string | não | Card ID (opcional; se omitir, busca todas as contas/cartões) |
+| month | query | string | não | Limitar pendências até o fim de YYYY-MM (padrão: mês atual) |
 
 ### Respostas
 
@@ -524,10 +525,15 @@ Sem propriedades.
 | card_id | string | não |  |
 | card_payments | array&lt;entity.CardPayment&gt; | não |  |
 | created_at | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | status | entity.InvoiceStatus | não |  |
 | updated_at | string | não |  |
 
 #### entity.InvoiceStatus
+
+Sem propriedades.
+
+#### entity.PaymentType
 
 Sem propriedades.
 
@@ -541,6 +547,7 @@ Sem propriedades.
 | category_id | string | não |  |
 | description | string | não |  |
 | include_in_summary | boolean | não |  |
+| payment_type | entity.PaymentType | não |  |
 | recurring_id | string | não |  |
 | recurring_status | string | não | Active/Inactive |
 | reference_date | string | não |  |
@@ -577,6 +584,7 @@ Sem propriedades.
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -613,6 +621,7 @@ Sem propriedades.
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -649,6 +658,7 @@ Sem propriedades.
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -784,6 +794,7 @@ Sem propriedades.
 | frequency | string | não | "MONTHLY", etc. |
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
+| payment_type | entity.PaymentType | não |  |
 | source_account_id | string | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -818,6 +829,7 @@ Sem propriedades.
 | frequency | string | não |  |
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
+| payment_type | entity.PaymentType | não |  |
 | source_account_id | string | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |

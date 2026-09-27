@@ -368,10 +368,15 @@ Sem propriedades.
 | card_id | string | não |  |
 | card_payments | array&lt;entity.CardPayment&gt; | não |  |
 | created_at | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | status | entity.InvoiceStatus | não |  |
 | updated_at | string | não |  |
 
 #### entity.InvoiceStatus
+
+Sem propriedades.
+
+#### entity.PaymentType
 
 Sem propriedades.
 
@@ -394,6 +399,7 @@ Sem propriedades.
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -430,6 +436,7 @@ Sem propriedades.
 | include_in_summary | boolean | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
@@ -466,6 +473,7 @@ Sem propriedades.
 | incomes | array&lt;entity.Income&gt; | não |  |
 | is_active | boolean | não |  |
 | payment_status | string | não |  |
+| payment_type | entity.PaymentType | não |  |
 | pending_amount | number | não |  |
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
