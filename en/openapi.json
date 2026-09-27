@@ -4130,6 +4130,88 @@
                 }
             }
         },
+        "/cards/{id}/invoices/{billing_month}/payment-type": {
+            "patch": {
+                "description": "Choose automatic or manual payment for one card invoice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Set invoice payment type",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month (YYYY-MM)",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Payment type",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.setInvoicePaymentTypeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Invoice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/cards/{id}/invoices/{billing_month}/recalculate-status": {
             "post": {
                 "description": "Recalculates and updates the invoice status based on business rules: PAID if a final payment exists, OVERDUE if past due date, OPEN otherwise. Also creates next month's invoice if the closing date has passed.",
@@ -9350,6 +9432,12 @@
                         "description": "Card ID (opcional; se omitir, busca todas as contas/cartões)",
                         "name": "card_id",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limitar pendências até o fim de YYYY-MM (padrão: mês atual)",
+                        "name": "month",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -13373,6 +13461,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "status": {
                     "$ref": "#/definitions/entity.InvoiceStatus"
                 },
@@ -13536,6 +13627,17 @@
                 }
             }
         },
+        "entity.PaymentType": {
+            "type": "string",
+            "enum": [
+                "AUTOMATIC",
+                "MANUAL"
+            ],
+            "x-enum-varnames": [
+                "PaymentTypeAutomatic",
+                "PaymentTypeManual"
+            ]
+        },
         "entity.PendingSlot": {
             "type": "object",
             "properties": {
@@ -13556,6 +13658,9 @@
                 },
                 "include_in_summary": {
                     "type": "boolean"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "recurring_id": {
                     "type": "string"
@@ -13662,6 +13767,9 @@
                 "payment_status": {
                     "type": "string"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "pending_amount": {
                     "type": "number"
                 },
@@ -13761,6 +13869,9 @@
                 "payment_status": {
                     "type": "string"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "pending_amount": {
                     "type": "number"
                 },
@@ -13859,6 +13970,9 @@
                 },
                 "payment_status": {
                     "type": "string"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "pending_amount": {
                     "type": "number"
@@ -15168,6 +15282,9 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "source_account_id": {
                     "type": "string"
@@ -16663,6 +16780,9 @@
                 "paid_amount": {
                     "type": "number"
                 },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
                 "status": {
                     "$ref": "#/definitions/entity.InvoiceStatus"
                 },
@@ -16974,6 +17094,17 @@
                 },
                 "recovery_codes_generated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.setInvoicePaymentTypeRequest": {
+            "type": "object",
+            "required": [
+                "payment_type"
+            ],
+            "properties": {
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 }
             }
         },
@@ -17424,6 +17555,9 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
                 },
                 "source_account_id": {
                     "type": "string"
