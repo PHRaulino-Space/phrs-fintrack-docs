@@ -133,6 +133,32 @@ Returns the legacy array. Pagination is opt-in with limit or cursor; without eit
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## GET `/transactions/editor`
+
+**Resumo:** Search persisted transaction history for editing
+
+Workspace-scoped search across account and card transactions. Totals cover all matches; offset and limit page only items. Transfers and card payments are neutral in workspace totals.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| search | query | string | não | Description substring |
+| type | query | string | não | Transaction type |
+| date_from | query | string | não | Start date (YYYY-MM-DD) |
+| date_to | query | string | não | End date (YYYY-MM-DD) |
+| limit | query | integer | não | Page size (1-100, default 20) |
+| offset | query | integer | não | Row offset |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.EditorPage |
+
 ## GET `/transactions/summary`
 
 **Resumo:** Transactions summary
@@ -294,6 +320,29 @@ Create a new investment withdrawal
 | 201 | Created | entity.InvestmentWithdrawal |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+
+## POST `/transactions/editor/batch`
+
+**Resumo:** Edit descriptions, categories or recurring links in a transaction selection
+
+Only explicitly allowed metadata changes. On non-open card invoices only description and category can change. Each target returns an independent result.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| edit | body | v1.editorBatchRequest | sim | Metadata changes |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.EditorBatchResult |
 
 ## PUT `/card-chargebacks/{chargeback_id}`
 
@@ -963,6 +1012,63 @@ Sem propriedades.
 | total_in | number | não |  |
 | total_out | number | não |  |
 
+#### usecase.EditorBatchResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| failures | array&lt;usecase.EditorFailure&gt; | não |  |
+| updated | integer | não |  |
+
+#### usecase.EditorFailure
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | não |  |
+| reason | string | não |  |
+| type | string | não |  |
+
+#### usecase.EditorItem
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| account_name | string | não |  |
+| amount | number | não |  |
+| card_id | string | não |  |
+| card_name | string | não |  |
+| category_id | string | não |  |
+| category_name | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| invoice_status | string | não |  |
+| recurring_transaction_id | string | não |  |
+| transaction_date | string | não |  |
+| type | string | não |  |
+
+#### usecase.EditorPage
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| items | array&lt;usecase.EditorItem&gt; | não |  |
+| limit | integer | não |  |
+| offset | integer | não |  |
+| totals | usecase.EditorTotals | não |  |
+
+#### usecase.EditorTarget
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | não |  |
+| type | string | não |  |
+
+#### usecase.EditorTotals
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| count | integer | não |  |
+| negative | number | não |  |
+| positive | number | não |  |
+
 #### v1.createCardChargebackRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -1020,6 +1126,15 @@ Sem propriedades.
 | rescued | boolean | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
+
+#### v1.editorBatchRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| category_id | string | não |  |
+| description | string | não |  |
+| recurring_transaction_id | string | não |  |
+| targets | array&lt;usecase.EditorTarget&gt; | não |  |
 
 #### v1.installmentAmountType
 
