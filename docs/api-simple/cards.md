@@ -77,6 +77,7 @@ List all cards for a given workspace
 | 200 | OK | array&lt;v1.cardResponse&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## GET `/cards/{id}`
 
@@ -102,6 +103,7 @@ Get a single card by its ID
 | 200 | OK | v1.cardResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## GET `/cards/{id}/invoices`
 
@@ -230,6 +232,7 @@ Update an existing card by its ID
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## PATCH `/cards/{id}/invoices/{billing_month}/payment-type`
 
@@ -259,6 +262,31 @@ Choose automatic or manual payment for one card invoice
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## POST `/accounts/images/upload-url`
+
+**Resumo:** Create an image PUT URL
+
+Sign a PUT for a relative image key under the configured prefix and authenticated workspace ID. Upload with the returned Content-Type, then save key as image_key.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| request | body | v1.imageUploadRequest | sim | Image key and content type |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.imageUploadResponse |
+| 400 | Bad Request | object |
+| 503 | Service Unavailable | object |
+
 ## POST `/cards`
 
 **Resumo:** Create a new card
@@ -281,6 +309,7 @@ Choose automatic or manual payment for one card invoice
 | 201 | Created | v1.cardResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## POST `/cards/{id}/invoices`
 
@@ -332,6 +361,31 @@ Recalculates and updates the invoice status based on business rules: PAID if a f
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
+
+## POST `/cards/images/upload-url`
+
+**Resumo:** Create an image PUT URL
+
+Sign a PUT for a relative image key under the configured prefix and authenticated workspace ID. Upload with the returned Content-Type, then save key as image_key.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| request | body | v1.imageUploadRequest | sim | Image key and content type |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.imageUploadResponse |
+| 400 | Bad Request | object |
+| 503 | Service Unavailable | object |
 
 ### Schemas
 
@@ -832,6 +886,23 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | billing_month | string | sim |  |
+
+#### v1.imageUploadRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| content_type | string | sim |  |
+| key | string | sim |  |
+
+#### v1.imageUploadResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| expires_in | integer | não |  |
+| headers | object | não |  |
+| key | string | não |  |
+| method | string | não |  |
+| url | string | não |  |
 
 #### v1.invoiceResponse
 

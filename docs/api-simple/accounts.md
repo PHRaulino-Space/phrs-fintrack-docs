@@ -50,6 +50,7 @@ List all accounts for a given workspace
 | 200 | OK | array&lt;v1.AccountResponse&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## GET `/accounts/{account_id}`
 
@@ -75,6 +76,7 @@ Get a single account by its ID
 | 200 | OK | v1.AccountResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## GET `/accounts/images`
 
@@ -123,6 +125,7 @@ Update an existing account by its ID
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
 
 ## POST `/accounts`
 
@@ -146,6 +149,57 @@ Update an existing account by its ID
 | 201 | Created | v1.AccountResponse |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
+
+## POST `/accounts/images/upload-url`
+
+**Resumo:** Create an image PUT URL
+
+Sign a PUT for a relative image key under the configured prefix and authenticated workspace ID. Upload with the returned Content-Type, then save key as image_key.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| request | body | v1.imageUploadRequest | sim | Image key and content type |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.imageUploadResponse |
+| 400 | Bad Request | object |
+| 503 | Service Unavailable | object |
+
+## POST `/cards/images/upload-url`
+
+**Resumo:** Create an image PUT URL
+
+Sign a PUT for a relative image key under the configured prefix and authenticated workspace ID. Upload with the returned Content-Type, then save key as image_key.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| request | body | v1.imageUploadRequest | sim | Image key and content type |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.imageUploadResponse |
+| 400 | Bad Request | object |
+| 503 | Service Unavailable | object |
 
 ### Schemas
 
@@ -196,3 +250,20 @@ Sem propriedades.
 | is_active | boolean | não |  |
 | name | string | não |  |
 | type | entity.AccountType | não |  |
+
+#### v1.imageUploadRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| content_type | string | sim |  |
+| key | string | sim |  |
+
+#### v1.imageUploadResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| expires_in | integer | não |  |
+| headers | object | não |  |
+| key | string | não |  |
+| method | string | não |  |
+| url | string | não |  |
