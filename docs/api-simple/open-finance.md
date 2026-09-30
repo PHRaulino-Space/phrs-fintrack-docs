@@ -200,6 +200,27 @@ Creates a short-lived token for the provider's consent widget. Provider credenti
 | --- | --- | --- |
 | 200 | OK | entity.OpenFinanceConnection |
 
+## POST `/open-finance/connections/{id}/refresh`
+
+**Resumo:** Request a fresh Open Finance institution update
+
+Triggers an asynchronous provider update. Transactions are imported after the provider webhook confirms completion.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Connection ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 202 | Accepted |  |
+
 ## POST `/open-finance/connections/attach`
 
 **Resumo:** Attach an existing provider connection
