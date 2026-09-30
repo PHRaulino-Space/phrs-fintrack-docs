@@ -9209,6 +9209,39 @@
                 }
             }
         },
+        "/open-finance/connections/{id}/refresh": {
+            "post": {
+                "description": "Triggers an asynchronous provider update. Transactions are imported after the provider webhook confirms completion.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "open-finance"
+                ],
+                "summary": "Request a fresh Open Finance institution update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Connection ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted"
+                    }
+                }
+            }
+        },
         "/open-finance/credentials": {
             "get": {
                 "produces": [
