@@ -104,6 +104,7 @@ Create a new API key for programmatic access
 | id | string | não |  |
 | key_prefix | string | não | Adjusted length to fit prefix + partial hash |
 | last_used_at | string | não |  |
+| mcp_managed | boolean | não |  |
 | name | string | não |  |
 | revoked_at | string | não |  |
 | scopes | array&lt;string&gt; | não |  |
