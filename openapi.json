@@ -11860,6 +11860,15 @@
                                 "type": "string"
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
@@ -16782,7 +16791,13 @@
                 "email": {
                     "type": "string"
                 },
+                "email_matches": {
+                    "type": "boolean"
+                },
                 "linked_at": {
+                    "type": "string"
+                },
+                "logout_url": {
                     "type": "string"
                 }
             }

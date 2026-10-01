@@ -181,6 +181,7 @@ Verifies a signed Access assertion and a one-time state for the Fintrack session
 | 400 | Bad Request | object |
 | 401 | Unauthorized | object |
 | 409 | Conflict | object |
+| 422 | Unprocessable Entity | object |
 
 ## POST `/user/delete-request`
 
@@ -281,7 +282,9 @@ Update the user password using the current password
 | available | boolean | não |  |
 | connected | boolean | não |  |
 | email | string | não |  |
+| email_matches | boolean | não |  |
 | linked_at | string | não |  |
+| logout_url | string | não |  |
 
 #### v1.preferencesRequest
 
