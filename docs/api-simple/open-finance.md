@@ -220,6 +220,11 @@ Triggers an asynchronous provider update. Transactions are imported after the pr
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 202 | Accepted |  |
+| 400 | The connection needs a new authorization | object |
+| 404 | The provider no longer has the connection | object |
+| 409 | An update is already in progress | object |
+| 429 | Wait before requesting another update | object |
+| 502 | The provider is temporarily unavailable | object |
 
 ## POST `/open-finance/connections/attach`
 
