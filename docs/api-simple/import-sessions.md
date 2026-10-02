@@ -406,6 +406,7 @@ Update editable fields of an import session (description, billing_month, target_
 | id | string | não |  |
 | is_active | boolean | não |  |
 | kind | entity.ImportSessionKind | não |  |
+| last_activity_at | string | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
@@ -489,6 +490,7 @@ Sem propriedades.
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | kind | entity.ImportSessionKind | não |  |
+| last_activity_at | string | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | usecase.SessionStats | não |  |

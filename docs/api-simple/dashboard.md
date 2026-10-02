@@ -96,12 +96,14 @@ Returns summary metrics for goals
 | amount | number | não |  |
 | category | string | não |  |
 | color | string | não |  |
+| historicalAverage | number | não |  |
 | percentage | number | não |  |
 
 #### usecase.CardOverviewSummary
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| automaticDebit | boolean | não |  |
 | available | number | não |  |
 | closingDate | integer | não |  |
 | dueDate | integer | não |  |

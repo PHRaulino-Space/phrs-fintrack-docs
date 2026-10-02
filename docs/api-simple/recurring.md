@@ -86,6 +86,44 @@ Get a recurring transaction by ID
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 
+## GET `/recurring/{id}/match-rule-suggestions`
+
+**Resumo:** Suggest draft import match rules from confirmed history
+
+Returns unsaved drafts derived from learned recurring aliases. A user must save rules before they can suggest links in import review.
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;entity.RecurringMatchRule&gt; |
+
+## GET `/recurring/{id}/match-rules`
+
+**Resumo:** List configured import match rules for a recurring item
+
+Rules are applied only to staged transactions during import review.
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;entity.RecurringMatchRule&gt; |
+
 ## GET `/recurring/{id}/projection`
 
 **Resumo:** Get projection for a recurring item
@@ -285,6 +323,30 @@ Replace a recurring transaction using the complete recurring input
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## PUT `/recurring/{id}/match-rules`
+
+**Resumo:** Replace import match rules for a recurring item
+
+Atomically replaces rules; regex alternatives, relative date window and inclusive amount range must all match. No ledger transaction is linked by this operation.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Recurring ID |
+| input | body | v1.replaceMatchRulesRequest | sim | Rules |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;entity.RecurringMatchRule&gt; |
+
 ### Schemas
 
 #### entity.Account
@@ -314,6 +376,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| automatic_debit | boolean | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |
@@ -473,6 +536,7 @@ Sem propriedades.
 | id | string | não |  |
 | is_active | boolean | não |  |
 | kind | entity.ImportSessionKind | não |  |
+| last_activity_at | string | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
@@ -679,6 +743,22 @@ Sem propriedades.
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
 
+#### entity.RecurringMatchRule
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| created_at | string | não |  |
+| days_after | integer | não |  |
+| days_before | integer | não |  |
+| id | string | não |  |
+| max_amount | number | não |  |
+| min_amount | number | não |  |
+| patterns | array&lt;string&gt; | não |  |
+| recurring_id | string | não |  |
+| recurring_type | entity.RecurringType | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
 #### entity.RecurringSummary
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -811,6 +891,12 @@ Sem propriedades.
 | amount | number | sim |  |
 | billing_month | string | não | optional, for card transactions (YYYY-MM) |
 | date | string | sim |  |
+
+#### v1.replaceMatchRulesRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| rules | array&lt;entity.RecurringMatchRule&gt; | sim |  |
 
 #### v1.slotIgnoreRequest
 

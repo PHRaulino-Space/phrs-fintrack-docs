@@ -418,6 +418,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| automatic_debit | boolean | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |
@@ -577,6 +578,7 @@ Sem propriedades.
 | id | string | não |  |
 | is_active | boolean | não |  |
 | kind | entity.ImportSessionKind | não |  |
+| last_activity_at | string | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |
@@ -863,6 +865,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| automatic_debit | boolean | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |
@@ -880,6 +883,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| automatic_debit | boolean | não |  |
 | closing_date | integer | sim |  |
 | credit_limit | number | sim |  |
 | due_date | integer | sim |  |
@@ -955,6 +959,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| automatic_debit | boolean | não |  |
 | closing_date | integer | não |  |
 | credit_limit | number | não |  |
 | due_date | integer | não |  |

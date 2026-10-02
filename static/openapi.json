@@ -10426,6 +10426,127 @@
                 }
             }
         },
+        "/recurring/{id}/match-rule-suggestions": {
+            "get": {
+                "description": "Returns unsaved drafts derived from learned recurring aliases. A user must save rules before they can suggest links in import review.",
+                "tags": [
+                    "recurring"
+                ],
+                "summary": "Suggest draft import match rules from confirmed history",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Recurring ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.RecurringMatchRule"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/recurring/{id}/match-rules": {
+            "get": {
+                "description": "Rules are applied only to staged transactions during import review.",
+                "tags": [
+                    "recurring"
+                ],
+                "summary": "List configured import match rules for a recurring item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Recurring ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.RecurringMatchRule"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atomically replaces rules; regex alternatives, relative date window and inclusive amount range must all match. No ledger transaction is linked by this operation.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recurring"
+                ],
+                "summary": "Replace import match rules for a recurring item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Recurring ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Rules",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.replaceMatchRulesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.RecurringMatchRule"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/recurring/{id}/pay": {
             "post": {
                 "description": "Registers a payment for a recurring transaction, creating the corresponding income, expense, transfer or card expense",
@@ -11072,7 +11193,7 @@
                     },
                     {
                         "type": "boolean",
-                        "description": "Include projected recurring transactions (default true)",
+                        "description": "Include projected and PROJECTED-status transactions (default true)",
                         "name": "include_projected",
                         "in": "query"
                     }
@@ -11296,7 +11417,7 @@
                     },
                     {
                         "type": "boolean",
-                        "description": "Include projected recurring transactions (default true)",
+                        "description": "Include projected and PROJECTED-status transactions (default true)",
                         "name": "include_projected",
                         "in": "query"
                     }
@@ -13627,6 +13748,9 @@
                 "assigned_user_id": {
                     "type": "string"
                 },
+                "automatic_debit": {
+                    "type": "boolean"
+                },
                 "closing_date": {
                     "type": "integer"
                 },
@@ -14182,6 +14306,9 @@
                 },
                 "kind": {
                     "$ref": "#/definitions/entity.ImportSessionKind"
+                },
+                "last_activity_at": {
+                    "type": "string"
                 },
                 "recurring_transaction_bindings": {
                     "type": "array",
@@ -15211,6 +15338,47 @@
                 }
             }
         },
+        "entity.RecurringMatchRule": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "days_after": {
+                    "type": "integer"
+                },
+                "days_before": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "max_amount": {
+                    "type": "number"
+                },
+                "min_amount": {
+                    "type": "number"
+                },
+                "patterns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "recurring_id": {
+                    "type": "string"
+                },
+                "recurring_type": {
+                    "$ref": "#/definitions/entity.RecurringType"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.RecurringSummary": {
             "type": "object",
             "properties": {
@@ -15952,6 +16120,9 @@
                 "color": {
                     "type": "string"
                 },
+                "historicalAverage": {
+                    "type": "number"
+                },
                 "percentage": {
                     "type": "number"
                 }
@@ -15960,6 +16131,9 @@
         "usecase.CardOverviewSummary": {
             "type": "object",
             "properties": {
+                "automaticDebit": {
+                    "type": "boolean"
+                },
                 "available": {
                     "type": "number"
                 },
@@ -16331,6 +16505,9 @@
                 },
                 "kind": {
                     "$ref": "#/definitions/entity.ImportSessionKind"
+                },
+                "last_activity_at": {
+                    "type": "string"
                 },
                 "recurring_transaction_bindings": {
                     "type": "array",
@@ -17158,6 +17335,9 @@
                 "assigned_user_id": {
                     "type": "string"
                 },
+                "automatic_debit": {
+                    "type": "boolean"
+                },
                 "closing_date": {
                     "type": "integer"
                 },
@@ -17457,6 +17637,9 @@
             "properties": {
                 "assigned_user_id": {
                     "type": "string"
+                },
+                "automatic_debit": {
+                    "type": "boolean"
                 },
                 "closing_date": {
                     "type": "integer",
@@ -18783,6 +18966,20 @@
                 }
             }
         },
+        "v1.replaceMatchRulesRequest": {
+            "type": "object",
+            "required": [
+                "rules"
+            ],
+            "properties": {
+                "rules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.RecurringMatchRule"
+                    }
+                }
+            }
+        },
         "v1.resetPasswordRequest": {
             "type": "object",
             "required": [
@@ -19052,6 +19249,9 @@
             "properties": {
                 "assigned_user_id": {
                     "type": "string"
+                },
+                "automatic_debit": {
+                    "type": "boolean"
                 },
                 "closing_date": {
                     "type": "integer"

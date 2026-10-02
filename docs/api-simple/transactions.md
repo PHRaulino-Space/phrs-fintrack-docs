@@ -122,7 +122,7 @@ Returns the legacy array. Pagination is opt-in with limit or cursor; without eit
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
-| include_projected | query | boolean | não | Include projected recurring transactions (default true) |
+| include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
 
 ### Respostas
 
@@ -180,7 +180,7 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
-| include_projected | query | boolean | não | Include projected recurring transactions (default true) |
+| include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
 
 ### Respostas
 
@@ -454,6 +454,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| automatic_debit | boolean | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |
@@ -613,6 +614,7 @@ Sem propriedades.
 | id | string | não |  |
 | is_active | boolean | não |  |
 | kind | entity.ImportSessionKind | não |  |
+| last_activity_at | string | não |  |
 | recurring_transaction_bindings | array&lt;entity.RecurringTransactionBinding&gt; | não |  |
 | staged_transactions | array&lt;entity.StagedTransaction&gt; | não | Relationships |
 | stats | object | não | Transient |

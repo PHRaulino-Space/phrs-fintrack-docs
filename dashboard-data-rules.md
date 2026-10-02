@@ -154,6 +154,11 @@ O Dashboard possui **3 abas** e um **filtro global** de mês/ano que afeta todas
 | `closingDate` | `number`  | Dia do fechamento (1–31)               |
 | `dueDate`     | `number`  | Dia do vencimento (1–31)               |
 | `isActive`    | `boolean` | Cartão ativo ou inativo                |
+| `automaticDebit` | `boolean` | Débito automático configurado no cartão; padrão falso |
+
+A Gestão de Cartões mostra apenas cartões ativos. Limite total, limite usado,
+fatura aberta, histórico, recorrências e categorias dessa aba consideram apenas
+esses cartões. A aba Resumo Financeiro preserva suas próprias consultas.
 
 **Regra de cor por uso:**
 
@@ -165,8 +170,8 @@ O Dashboard possui **3 abas** e um **filtro global** de mês/ano que afeta todas
 
 ### 2.4 Despesas por Categoria (CardCategoryBarChart + CardCategoryRanking)
 
-- **Gráfico:** Pizza das despesas do cartão por categoria
-- **Ranking:** Top 5 categorias com valor e percentual
+- **Gráfico:** Barras verticais das dez maiores categorias e `Outros`, com nome e percentual sob cada barra; linha azul escura fina e pontilhada conecta suavemente as médias históricas específicas, sem marcadores. Em telas estreitas, a área do gráfico rola horizontalmente para preservar rótulos.
+- **Ranking:** Mesmas categorias, com valores exatos
 - **Dados:** Array `expensesByCategory` (do `CardsSummary`)
 - **Campos por item:**
 
@@ -176,6 +181,14 @@ O Dashboard possui **3 abas** e um **filtro global** de mês/ano que afeta todas
 | `amount`     | `number` | Valor gasto                            |
 | `color`      | `string` | Cor hexadecimal                        |
 | `percentage` | `number` | Percentual normalizado (soma = 100%)   |
+| `historicalAverage` | `number` | Média específica da categoria nos até três meses completos anteriores |
+
+Para cada categoria, a média é a soma dos gastos nos meses disponíveis da
+janela dividida pela quantidade desses meses (0, 1, 2 ou 3). Um mês com gastos
+em outras categorias conta no divisor com zero para a categoria ausente.
+`Outros` soma, em cada mês histórico, as categorias fora das dez maiores
+do mês selecionado. Sem histórico, a média é zero. A linha de referência de
+cada barra representa a média daquela categoria.
 
 ---
 
@@ -195,55 +208,21 @@ O Dashboard possui **3 abas** e um **filtro global** de mês/ano que afeta todas
 ### 3.2 Pendências do Período
 
 - **Tipo:** Tabela paginada (10 itens por página)
-- **Filtro:** Exclui itens com `status === "paid"`
+- **Abas:** `Contas` mostra receitas/despesas recorrentes de conta; `Cartões`
+  mostra faturas com ao menos uma despesa `CARD_EXPENSE` registrada,
+  não ignorada e com `recurring_card_transaction_id`.
+- A linha de fatura usa o subtotal dessas despesas recorrentes confirmadas.
+  Compras avulsas, estornos, pagamentos, ajustes e projeções não entram nos
+  detalhes, contagens ou subtotal.
+- `Pagamento` da fatura reflete `cards.automatic_debit`; o pagamento das
+  ocorrências de conta continua a refletir a configuração da recorrência.
+- Todas as sete colunas aceitam ordenação crescente, decrescente e sem ordenação
+  explícita. A ordenação opera sobre todos os itens da aba antes da paginação.
 
-#### Estrutura `PendingBill`
-
-| Campo         | Tipo     | Valores possíveis                         | Descrição                    |
-|---------------|----------|-------------------------------------------|------------------------------|
-| `id`          | `string` | —                                         | Identificador único          |
-| `description` | `string` | —                                         | Descrição do item            |
-| `amount`      | `number` | —                                         | Valor                        |
-| `dueDate`     | `string` | Formato `YYYY-MM-DD`                      | Data de vencimento           |
-| `status`      | `string` | `"paid"`, `"pending"`, `"overdue"`        | Status original do backend   |
-| `category`    | `string` | —                                         | Categoria associada          |
-| `type`        | `string` | `"expense"`, `"income"`, `"transfer"`     | Tipo da transação            |
-
-#### Regra de Status Visual (calculado no frontend)
-
-| Status visual | Condição                                                        | Badge          |
-|---------------|-----------------------------------------------------------------|----------------|
-| `overdue`     | `status === "overdue"` **OU** `dueDate < hoje`                 | Vermelho: "Vencido" |
-| `dueSoon`     | Data de vencimento dentro de **7 dias**                         | Amarelo: "A vencer" |
-| `pending`     | Demais casos                                                    | Cinza: "Pendente"   |
-
-#### Ordenação
-
-1. **Prioridade:** `overdue` (0) > `dueSoon` (1) > `pending` (2)
-2. **Dentro da mesma prioridade:** Por `dueDate` crescente (mais próximo primeiro)
-
-#### Formatação do Valor
-
-| Tipo          | Prefixo | Cor       |
-|---------------|---------|-----------|
-| `income`      | `+`     | Verde     |
-| `transfer`    | —       | Azul      |
-| `expense`     | `-`     | Vermelho  |
-
-#### Coluna Observações (calculada no frontend)
-
-| Condição                                      | Texto exibido                                              |
-|-----------------------------------------------|------------------------------------------------------------|
-| `type === "transfer"`                         | "Transferência programada."                                |
-| `type === "income"`                           | "Receita prevista de R$ {amount}."                         |
-| `type === "expense"` sem orçamento            | "Sem orçamento definido."                                  |
-| `type === "expense"` vai exceder orçamento    | "Ao pagar, excede R$ {valor_excedido} do orçamento."      |
-| `type === "expense"` dentro do orçamento      | "Ao pagar, consome {X}% do orçamento."                     |
-
-**Cálculo de impacto no orçamento:**
-- `projectedTotal = budget.actual + bill.amount`
-- Se `projectedTotal > budget.planned` → excede por `projectedTotal - budget.planned`
-- Caso contrário → `budgetShare = round((bill.amount / budget.planned) * 100)`
+As linhas são montadas no frontend a partir de `/recurring/pending` e das
+faturas e suas transações. O status visual depende da data alvo: vencido,
+a vencer em até sete dias, ou pendente. O subtotal recorrente confirmado não é
+o total integral nem o saldo a pagar da fatura.
 
 ### 3.3 Orçamentos
 
@@ -292,7 +271,6 @@ interface FinancialSummary {
   categoryComparison: CategoryComparison[]
   monthlyTrend: MonthlyTrend[]
   budgets: Budget[]
-  pendingBills: PendingBill[]
   month: number
   year: number
 }
@@ -351,16 +329,6 @@ interface Budget {
   color: string
 }
 
-interface PendingBill {
-  id: string
-  description: string
-  amount: number
-  dueDate: string          // formato YYYY-MM-DD
-  status: "paid" | "pending" | "overdue"
-  category: string
-  type: "expense" | "income" | "transfer"
-}
-
 interface CardOverview {
   id: string
   name: string
@@ -370,6 +338,7 @@ interface CardOverview {
   closingDate: number      // dia do mês (1-31)
   dueDate: number          // dia do mês (1-31)
   isActive: boolean
+  automaticDebit: boolean
 }
 
 interface InvoiceHistory {
@@ -394,6 +363,7 @@ interface CardCategoryExpense {
   amount: number
   color: string
   percentage: number
+  historicalAverage: number
 }
 ```
 
