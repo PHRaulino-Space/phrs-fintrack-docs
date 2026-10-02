@@ -214,6 +214,7 @@ CREATE TABLE public.workspaces (
 CREATE TABLE public.accounts (
 	id uuid DEFAULT uuid_generate_v4() NOT NULL,
 	workspace_id uuid NOT NULL,
+	assigned_user_id uuid NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"type" public."account_type" NOT NULL,
 	initial_balance numeric(15, 2) DEFAULT 0 NOT NULL,
@@ -279,6 +280,7 @@ CREATE TABLE public.cards (
 	"name" varchar(100) NOT NULL,
 	credit_limit numeric(15, 2) NOT NULL,
 	workspace_id uuid NOT NULL,
+	assigned_user_id uuid NOT NULL,
 	closing_date int8 NOT NULL,
 	due_date int8 NOT NULL,
 	is_active bool DEFAULT true NOT NULL,
@@ -1166,4 +1168,3 @@ CREATE TABLE public.incomes_tags (
 	CONSTRAINT fk_incomes_tags FOREIGN KEY (income_id) REFERENCES public.incomes(id),
 	CONSTRAINT fk_tags_incomes_tags FOREIGN KEY (tag_id) REFERENCES public.tags(id)
 );
-

@@ -141,6 +141,7 @@ Table "workspaces" {
 Table "accounts" {
   "id" uuid [not null, default: `uuid_generate_v4()`]
   "workspace_id" uuid [not null]
+  "assigned_user_id" uuid [not null]
   "name" varchar(100) [not null]
   "type" account_type [not null]
   "initial_balance" numeric(15,2) [not null, default: 0]
@@ -183,6 +184,7 @@ Table "cards" {
   "name" varchar(100) [not null]
   "credit_limit" numeric(15,2) [not null]
   "workspace_id" uuid [not null]
+  "assigned_user_id" uuid [not null]
   "closing_date" int8 [not null]
   "due_date" int8 [not null]
   "is_active" bool [not null, default: true]

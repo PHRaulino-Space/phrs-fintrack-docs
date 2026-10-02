@@ -12,10 +12,17 @@ Consulte o [Diagrama ER](../architecture/database.md) na seção de Arquitetura.
 Armazena as contas financeiras.
 - `id` (UUID, PK)
 - `workspace_id` (UUID, FK -> workspaces)
+- `assigned_user_id` (UUID, NOT NULL; usuário atual do workspace)
 - `name` (VARCHAR)
 - `type` (ENUM: CHECKING, SAVINGS, WALLET, INVESTMENT, CRIPTO, CRIPTOWALLET, MEAL_VOUCHER, FOOD_VOUCHER)
 - `initial_balance` (NUMERIC)
 - `currency_code` (VARCHAR, FK -> currencies)
+
+### `cards`
+Armazena os cartões financeiros.
+- `id` (UUID, PK)
+- `workspace_id` (UUID, FK -> workspaces)
+- `assigned_user_id` (UUID, NOT NULL; usuário atual do workspace)
 
 ### `transactions` (Conceitual)
 Na prática, dividido em `expenses`, `incomes`, `transfers`.

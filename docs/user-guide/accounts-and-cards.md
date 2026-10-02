@@ -20,6 +20,7 @@ Representam qualquer lugar onde há saldo financeiro.
 3.  Preencha:
     - **Nome**: Ex: "Nubank", "Itaú".
     - **Tipo**: Selecione na lista.
+    - **Usuário marcado**: Obrigatório para identificar a conta nos filtros. O criador é selecionado inicialmente; a marcação não altera permissões.
     - **Saldo Inicial**: O valor que existe na conta hoje. Isso servirá de base para o cálculo de saldo futuro.
 
 ## Cartões de Crédito (Cards)
@@ -31,6 +32,7 @@ Cartões têm um comportamento diferente pois geram uma fatura (Invoice) e possu
 2.  Clique em "Novo Cartão".
 3.  Preencha:
     - **Nome**: Ex: "Visa Platinum".
+    - **Usuário marcado**: Obrigatório para identificar o cartão nos filtros. O criador é selecionado inicialmente; a marcação não altera permissões.
     - **Conta de Pagamento**: De qual conta (já cadastrada) o dinheiro sairá para pagar a fatura?
     - **Limite**: Seu limite de crédito.
     - **Dia de Fechamento**: O dia que a fatura "vira". Compras após esse dia caem no mês seguinte.
