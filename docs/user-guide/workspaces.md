@@ -43,3 +43,5 @@ Você pode convidar outros usuários para colaborar em um workspace (ex: seu cô
 3.  Defina o nível de permissão (Admin ou Membro).
 
 Cada usuário tem nome, email e um **username** único. Nas listas e filtros de contas e cartões, o app identifica membros pelo username. Cada pessoa pode alterá-lo em **Configurações > Perfil**; ele aceita de 3 a 32 letras minúsculas, números ou `_`.
+
+No perfil, o nome aparece ao lado da foto e o `@username` abaixo. A pessoa pode enviar uma foto JPEG, PNG ou WebP de até 2 MiB; a imagem fica no armazenamento privado configurado para o backend.

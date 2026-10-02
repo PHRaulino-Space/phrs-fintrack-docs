@@ -138,6 +138,32 @@ Update the user name and unique username, and request an email change (requires 
 | 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
+## POST `/user/avatar`
+
+**Resumo:** Upload a profile photo
+
+Upload a JPEG, PNG or WebP photo up to 2 MiB to private storage for the authenticated user. Requires recent MFA verification when MFA is enabled.
+
+**Consumes:** multipart/form-data
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| file | formData | file | sim | Profile photo |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.UserResponse |
+| 400 | Bad Request | object |
+| 401 | Unauthorized | object |
+| 413 | Request Entity Too Large | object |
+| 503 | Service Unavailable | object |
+
 ## POST `/user/cloudflare-link/begin`
 
 **Resumo:** Begin Cloudflare MCP account link
@@ -318,6 +344,7 @@ Update the user password using the current password
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| avatar_url | string | não |  |
 | email | string | não |  |
 | email_verified | boolean | não |  |
 | has_password | boolean | não |  |

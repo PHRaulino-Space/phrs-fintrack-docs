@@ -13,6 +13,7 @@ Armazena o perfil de cada pessoa.
 - `name` (VARCHAR; nome de perfil)
 - `email` (VARCHAR; usado para acesso e notificações)
 - `username` (VARCHAR(32), NOT NULL; único sem diferenciar maiúsculas de minúsculas)
+- `avatar_key` (VARCHAR(1024), opcional; chave da foto no armazenamento privado)
 
 Usuários existentes recebem um username derivado do email durante a migração. O username pode ser alterado em **Configurações > Perfil**.
 

@@ -177,6 +177,7 @@ CREATE TABLE public.users (
 	"name" varchar(100) NULL,
 	email varchar(255) NOT NULL,
 	username varchar(32) NOT NULL,
+	avatar_key varchar(1024) NULL,
 	password_hash varchar(255) NULL,
 	external_id varchar(255) NULL,
 	deleted_at timestamptz NULL,

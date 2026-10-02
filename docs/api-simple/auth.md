@@ -715,6 +715,7 @@ Sem parâmetros.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| avatar_url | string | não |  |
 | email | string | não |  |
 | email_verified | boolean | não |  |
 | has_password | boolean | não |  |

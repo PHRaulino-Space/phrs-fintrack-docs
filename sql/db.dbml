@@ -112,6 +112,7 @@ Table "users" {
   "name" varchar(100)
   "email" varchar(255) [not null]
   "username" varchar(32) [not null]
+  "avatar_key" varchar(1024)
   "password_hash" varchar(255)
   "external_id" varchar(255)
   "deleted_at" timestamptz
