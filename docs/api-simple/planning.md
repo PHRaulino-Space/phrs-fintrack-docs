@@ -1,6 +1,26 @@
 ---
 title: Planning
 ---
+## GET `/planning/actions`
+
+**Resumo:** Get current month's planning actions and goal forecast
+
+Uses current eligible cash minus the entire active budget; lists unpaid manual recurring expenses, outstanding invoices on manually paid cards, and informative goal contributions. No payment is executed.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.PlanningActions |
+
 ## GET `/planning/month`
 
 **Resumo:** Get monthly financial plan and result
@@ -103,6 +123,10 @@ title: Planning
 
 ### Schemas
 
+#### entity.GoalPurpose
+
+Sem propriedades.
+
 #### entity.PlanningAllocation
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -111,6 +135,15 @@ title: Planning
 | growth_percent | integer | não |  |
 | personal_percent | integer | não |  |
 | workspace_id | string | não |  |
+
+#### usecase.PlanningActions
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| currency_code | string | não |  |
+| forecast | usecase.PlanningForecast | não |  |
+| manual_invoices | array&lt;usecase.PlanningManualInvoice&gt; | não |  |
+| manual_unpaid | array&lt;usecase.PlanningManualUnpaid&gt; | não |  |
 
 #### usecase.PlanningBucketSummary
 
@@ -140,6 +173,49 @@ title: Planning
 | kind | string | não |  |
 | status | string | não |  |
 
+#### usecase.PlanningForecast
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| assumptions | array&lt;string&gt; | não |  |
+| available_today | number | não |  |
+| budget_total | number | não |  |
+| cash_balance | number | não |  |
+| currency_code | string | não |  |
+| current_deficit | number | não |  |
+| goals | array&lt;usecase.PlanningForecastGoal&gt; | não |  |
+| month | string | não |  |
+| months | array&lt;usecase.PlanningForecastMonth&gt; | não |  |
+
+#### usecase.PlanningForecastGoal
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| current_value | number | não |  |
+| due_date | string | não |  |
+| id | string | não |  |
+| monthly | array&lt;usecase.PlanningGoalMonth&gt; | não |  |
+| name | string | não |  |
+| priority_rank | integer | não |  |
+| projected_at_deadline | number | não |  |
+| purpose | entity.GoalPurpose | não |  |
+| reserve_kind | string | não |  |
+| status | usecase.PlanningGoalForecastStatus | não |  |
+| status_reason | string | não |  |
+| suggested_today | number | não |  |
+| target_value | number | não |  |
+
+#### usecase.PlanningForecastMonth
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| available | number | não |  |
+| budget | number | não |  |
+| deficit | number | não |  |
+| income | number | não |  |
+| month | string | não |  |
+| unallocated | number | não |  |
+
 #### usecase.PlanningGoal
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -154,6 +230,41 @@ title: Planning
 | priority_rank | integer | não |  |
 | suggested_amount | number | não |  |
 | target_value | number | não |  |
+
+#### usecase.PlanningGoalForecastStatus
+
+Sem propriedades.
+
+#### usecase.PlanningGoalMonth
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| accumulated | number | não |  |
+| contribution | number | não |  |
+| month | string | não |  |
+
+#### usecase.PlanningManualInvoice
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| billing_month | string | não |  |
+| card_id | string | não |  |
+| card_name | string | não |  |
+| currency_code | string | não |  |
+| due_date | string | não |  |
+
+#### usecase.PlanningManualUnpaid
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| category_id | string | não |  |
+| category_name | string | não |  |
+| currency_code | string | não |  |
+| description | string | não |  |
+| due_date | string | não |  |
+| recurring_id | string | não |  |
 
 #### usecase.PlanningMonth
 

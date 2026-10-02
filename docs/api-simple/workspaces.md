@@ -164,11 +164,13 @@ Sem propriedades.
 | category_name | string | não | Computed fields |
 | color | string | não |  |
 | created_at | string | não |  |
+| currency_code | string | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
 | month | integer | não |  |
 | percentage_used | number | não |  |
 | planned_amount | number | não |  |
+| projected_amount | number | não |  |
 | remaining_amount | number | não |  |
 | spent_amount | number | não |  |
 | updated_at | string | não |  |

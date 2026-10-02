@@ -180,6 +180,53 @@ Duplicate budgets from a source month/year to a target month/year, keeping exist
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## POST `/budgets/generate/apply`
+
+**Resumo:** Apply recurring expense budget proposal
+
+Create absent category budgets and replace only explicitly selected existing budget IDs
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | v1.generateBudgetRequest | sim | Month, margin and optional replacement IDs |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.BudgetGenerationResult |
+| 409 | Conflict | object |
+
+## POST `/budgets/generate/preview`
+
+**Resumo:** Preview monthly budgets from registered recurring expenses
+
+Group expected recurring expense slots by category and apply a percentage margin; existing budgets are preserved
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | v1.generateBudgetRequest | sim | Month and margin |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.BudgetGenerationPreview |
+
 ### Schemas
 
 #### entity.Budget
@@ -192,11 +239,13 @@ Duplicate budgets from a source month/year to a target month/year, keeping exist
 | category_name | string | não | Computed fields |
 | color | string | não |  |
 | created_at | string | não |  |
+| currency_code | string | não |  |
 | id | string | não |  |
 | is_active | boolean | não |  |
 | month | integer | não |  |
 | percentage_used | number | não |  |
 | planned_amount | number | não |  |
+| projected_amount | number | não |  |
 | remaining_amount | number | não |  |
 | spent_amount | number | não |  |
 | updated_at | string | não |  |
@@ -213,6 +262,47 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | created | integer | não |  |
 | skipped | integer | não |  |
+
+#### usecase.BudgetGenerationExpectation
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| category_id | string | não |  |
+| existing_amount | number | não |  |
+| existing_budget_id | string | não |  |
+| existing_is_active | boolean | não |  |
+| proposed_amount | number | não |  |
+
+#### usecase.BudgetGenerationItem
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| action | string | não |  |
+| category_id | string | não |  |
+| category_name | string | não |  |
+| existing_amount | number | não |  |
+| existing_budget_id | string | não |  |
+| existing_is_active | boolean | não |  |
+| proposed_amount | number | não |  |
+| recurring_total | number | não |  |
+
+#### usecase.BudgetGenerationPreview
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| currency_code | string | não |  |
+| items | array&lt;usecase.BudgetGenerationItem&gt; | não |  |
+| margin_percent | number | não |  |
+| month | integer | não |  |
+| year | integer | não |  |
+
+#### usecase.BudgetGenerationResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| created | integer | não |  |
+| preserved | integer | não |  |
+| updated | integer | não |  |
 
 #### usecase.BudgetSummary
 
@@ -245,6 +335,16 @@ Sem propriedades.
 | source_year | integer | sim |  |
 | target_month | integer | sim |  |
 | target_year | integer | sim |  |
+
+#### v1.generateBudgetRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| expected_items | array&lt;usecase.BudgetGenerationExpectation&gt; | não |  |
+| margin_percent | number | não |  |
+| month | integer | sim |  |
+| replace_budget_ids | array&lt;string&gt; | não |  |
+| year | integer | sim |  |
 
 #### v1.updateBudgetRequest
 

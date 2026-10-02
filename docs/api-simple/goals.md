@@ -104,6 +104,30 @@ Get a single goal by its ID
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## GET `/goals/{goal_id}/history`
+
+**Resumo:** Get the recorded value history of a goal
+
+Reconstruct dated balances from deposits, withdrawals and value records of the investments currently linked to the goal. Earlier records are opening balance; undated reconciliation is never called a contribution.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.GoalHistory |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## PATCH `/goals/{goal_id}`
 
 **Resumo:** Update goal
@@ -232,6 +256,31 @@ Mark a goal as not completed
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
+
+## PUT `/goals/reorder`
+
+**Resumo:** Reorder goals by numeric priority
+
+Persist the complete workspace goal order, starting with rank zero
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | v1.reorderGoalsRequest | sim | All goal IDs in priority order |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;v1.goalListResponse&gt; |
+| 400 | Bad Request | object |
+| 409 | Conflict | object |
 
 ### Schemas
 
@@ -832,6 +881,29 @@ Sem propriedades.
 
 Sem propriedades.
 
+#### usecase.GoalHistory
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| as_of_date | string | não |  |
+| created_date | string | não |  |
+| current_value | number | não |  |
+| goal_id | string | não |  |
+| notes | array&lt;string&gt; | não |  |
+| opening_balance | number | não |  |
+| points | array&lt;usecase.GoalHistoryPoint&gt; | não |  |
+
+#### usecase.GoalHistoryPoint
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| accumulated | number | não |  |
+| contributions | number | não |  |
+| date | string | não |  |
+| reconciliation | number | não |  |
+| valuation_change | number | não |  |
+| withdrawals | number | não |  |
+
 #### v1.addGoalInvestmentRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -848,7 +920,6 @@ Sem propriedades.
 | investment_ids | array&lt;string&gt; | não |  |
 | name | string | sim |  |
 | priority | entity.GoalPriority | não |  |
-| priority_rank | integer | não |  |
 | purpose | entity.GoalPurpose | não |  |
 | reserve_kind | string | não |  |
 | target_value | number | sim |  |
@@ -902,6 +973,12 @@ Sem propriedades.
 | updated_at | string | não |  |
 | validity | string | não |  |
 
+#### v1.reorderGoalsRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| goal_ids | array&lt;string&gt; | sim |  |
+
 #### v1.updateGoalRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -912,7 +989,6 @@ Sem propriedades.
 | investment_ids | array&lt;string&gt; | não |  |
 | name | string | não |  |
 | priority | entity.GoalPriority | não |  |
-| priority_rank | integer | não |  |
 | purpose | entity.GoalPurpose | não |  |
 | reserve_kind | string | não |  |
 | target_value | number | não |  |

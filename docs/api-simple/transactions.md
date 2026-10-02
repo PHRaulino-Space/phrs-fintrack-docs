@@ -118,6 +118,7 @@ Returns the legacy array. Pagination is opt-in with limit or cursor; without eit
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
 | account_id | query | string | não | Account ID |
+| assigned_user_id | query | string | não | Account assignee UUID; transfers match either involved account within the workspace |
 | card_id | query | string | não | Card ID (not supported yet) |
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
@@ -176,6 +177,7 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
 | account_id | query | string | não | Account ID |
+| assigned_user_id | query | string | não | Account assignee UUID; transfers match either involved account within the workspace |
 | card_id | query | string | não | Card ID (not supported yet) |
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |

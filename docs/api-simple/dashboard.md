@@ -87,7 +87,9 @@ Returns summary metrics for goals
 | actual | number | não |  |
 | category | string | não |  |
 | color | string | não |  |
+| currencyCode | string | não |  |
 | planned | number | não |  |
+| projected | number | não |  |
 
 #### usecase.CardCategoryExpense
 

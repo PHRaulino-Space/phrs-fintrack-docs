@@ -2689,6 +2689,97 @@
                 }
             }
         },
+        "/budgets/generate/apply": {
+            "post": {
+                "description": "Create absent category budgets and replace only explicitly selected existing budget IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Apply recurring expense budget proposal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Month, margin and optional replacement IDs",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.generateBudgetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.BudgetGenerationResult"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/budgets/generate/preview": {
+            "post": {
+                "description": "Group expected recurring expense slots by category and apply a percentage margin; existing budgets are preserved",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "budgets"
+                ],
+                "summary": "Preview monthly budgets from registered recurring expenses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Month and margin",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.generateBudgetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.BudgetGenerationPreview"
+                        }
+                    }
+                }
+            }
+        },
         "/budgets/summary": {
             "get": {
                 "description": "Get budgets summary for a given workspace and month/year",
@@ -5834,6 +5925,68 @@
                 }
             }
         },
+        "/goals/reorder": {
+            "put": {
+                "description": "Persist the complete workspace goal order, starting with rank zero",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "Reorder goals by numeric priority",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "All goal IDs in priority order",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.reorderGoalsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.goalListResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/goals/{goal_id}": {
             "get": {
                 "description": "Get a single goal by its ID",
@@ -6074,6 +6227,69 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/entity.Goal"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/goals/{goal_id}/history": {
+            "get": {
+                "description": "Reconstruct dated balances from deposits, withdrawals and value records of the investments currently linked to the goal. Earlier records are opening balance; undated reconciliation is never called a contribution.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "Get the recorded value history of a goal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Goal ID",
+                        "name": "goal_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.GoalHistory"
                         }
                     },
                     "400": {
@@ -9601,6 +9817,35 @@
                 }
             }
         },
+        "/planning/actions": {
+            "get": {
+                "description": "Uses current eligible cash minus the entire active budget; lists unpaid manual recurring expenses, outstanding invoices on manually paid cards, and informative goal contributions. No payment is executed.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Get current month's planning actions and goal forecast",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.PlanningActions"
+                        }
+                    }
+                }
+            }
+        },
         "/planning/categories/{id}": {
             "put": {
                 "consumes": [
@@ -11169,6 +11414,12 @@
                     },
                     {
                         "type": "string",
+                        "description": "Account assignee UUID; transfers match either involved account within the workspace",
+                        "name": "assigned_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Card ID (not supported yet)",
                         "name": "card_id",
                         "in": "query"
@@ -11389,6 +11640,12 @@
                         "type": "string",
                         "description": "Account ID",
                         "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account assignee UUID; transfers match either involved account within the workspace",
+                        "name": "assigned_user_id",
                         "in": "query"
                     },
                     {
@@ -13697,6 +13954,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "currency_code": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -13710,6 +13970,9 @@
                     "type": "number"
                 },
                 "planned_amount": {
+                    "type": "number"
+                },
+                "projected_amount": {
                     "type": "number"
                 },
                 "remaining_amount": {
@@ -16068,6 +16331,92 @@
                 }
             }
         },
+        "usecase.BudgetGenerationExpectation": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "existing_amount": {
+                    "type": "number"
+                },
+                "existing_budget_id": {
+                    "type": "string"
+                },
+                "existing_is_active": {
+                    "type": "boolean"
+                },
+                "proposed_amount": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.BudgetGenerationItem": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "existing_amount": {
+                    "type": "number"
+                },
+                "existing_budget_id": {
+                    "type": "string"
+                },
+                "existing_is_active": {
+                    "type": "boolean"
+                },
+                "proposed_amount": {
+                    "type": "number"
+                },
+                "recurring_total": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.BudgetGenerationPreview": {
+            "type": "object",
+            "properties": {
+                "currency_code": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetGenerationItem"
+                    }
+                },
+                "margin_percent": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "integer"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.BudgetGenerationResult": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "integer"
+                },
+                "preserved": {
+                    "type": "integer"
+                },
+                "updated": {
+                    "type": "integer"
+                }
+            }
+        },
         "usecase.BudgetSummary": {
             "type": "object",
             "properties": {
@@ -16103,7 +16452,13 @@
                 "color": {
                     "type": "string"
                 },
+                "currencyCode": {
+                    "type": "string"
+                },
                 "planned": {
+                    "type": "number"
+                },
+                "projected": {
                     "type": "number"
                 }
             }
@@ -16469,6 +16824,61 @@
                 }
             }
         },
+        "usecase.GoalHistory": {
+            "type": "object",
+            "properties": {
+                "as_of_date": {
+                    "type": "string"
+                },
+                "created_date": {
+                    "type": "string"
+                },
+                "current_value": {
+                    "type": "number"
+                },
+                "goal_id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "opening_balance": {
+                    "type": "number"
+                },
+                "points": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.GoalHistoryPoint"
+                    }
+                }
+            }
+        },
+        "usecase.GoalHistoryPoint": {
+            "type": "object",
+            "properties": {
+                "accumulated": {
+                    "type": "number"
+                },
+                "contributions": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "reconciliation": {
+                    "type": "number"
+                },
+                "valuation_change": {
+                    "type": "number"
+                },
+                "withdrawals": {
+                    "type": "number"
+                }
+            }
+        },
         "usecase.ImportSessionResponse": {
             "type": "object",
             "properties": {
@@ -16748,6 +17158,29 @@
                 }
             }
         },
+        "usecase.PlanningActions": {
+            "type": "object",
+            "properties": {
+                "currency_code": {
+                    "type": "string"
+                },
+                "forecast": {
+                    "$ref": "#/definitions/usecase.PlanningForecast"
+                },
+                "manual_invoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningManualInvoice"
+                    }
+                },
+                "manual_unpaid": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningManualUnpaid"
+                    }
+                }
+            }
+        },
         "usecase.PlanningBucketSummary": {
             "type": "object",
             "properties": {
@@ -16802,6 +17235,117 @@
                 }
             }
         },
+        "usecase.PlanningForecast": {
+            "type": "object",
+            "properties": {
+                "assumptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "available_today": {
+                    "type": "number"
+                },
+                "budget_total": {
+                    "type": "number"
+                },
+                "cash_balance": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "current_deficit": {
+                    "type": "number"
+                },
+                "goals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningForecastGoal"
+                    }
+                },
+                "month": {
+                    "type": "string"
+                },
+                "months": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningForecastMonth"
+                    }
+                }
+            }
+        },
+        "usecase.PlanningForecastGoal": {
+            "type": "object",
+            "properties": {
+                "current_value": {
+                    "type": "number"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "monthly": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.PlanningGoalMonth"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "priority_rank": {
+                    "type": "integer"
+                },
+                "projected_at_deadline": {
+                    "type": "number"
+                },
+                "purpose": {
+                    "$ref": "#/definitions/entity.GoalPurpose"
+                },
+                "reserve_kind": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/usecase.PlanningGoalForecastStatus"
+                },
+                "status_reason": {
+                    "type": "string"
+                },
+                "suggested_today": {
+                    "type": "number"
+                },
+                "target_value": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.PlanningForecastMonth": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "number"
+                },
+                "budget": {
+                    "type": "number"
+                },
+                "deficit": {
+                    "type": "number"
+                },
+                "income": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "unallocated": {
+                    "type": "number"
+                }
+            }
+        },
         "usecase.PlanningGoal": {
             "type": "object",
             "properties": {
@@ -16834,6 +17378,84 @@
                 },
                 "target_value": {
                     "type": "number"
+                }
+            }
+        },
+        "usecase.PlanningGoalForecastStatus": {
+            "type": "string",
+            "enum": [
+                "ACHIEVABLE",
+                "AT_RISK",
+                "UNACHIEVABLE",
+                "NEEDS_CONFIGURATION"
+            ],
+            "x-enum-varnames": [
+                "PlanningGoalAchievable",
+                "PlanningGoalAtRisk",
+                "PlanningGoalUnachievable",
+                "PlanningGoalNeedsConfig"
+            ]
+        },
+        "usecase.PlanningGoalMonth": {
+            "type": "object",
+            "properties": {
+                "accumulated": {
+                    "type": "number"
+                },
+                "contribution": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.PlanningManualInvoice": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "billing_month": {
+                    "type": "string"
+                },
+                "card_id": {
+                    "type": "string"
+                },
+                "card_name": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.PlanningManualUnpaid": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "recurring_id": {
+                    "type": "string"
                 }
             }
         },
@@ -17756,11 +18378,6 @@
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
                 },
-                "priority_rank": {
-                    "type": "integer",
-                    "maximum": 20,
-                    "minimum": 0
-                },
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
                 },
@@ -18227,6 +18844,42 @@
             "properties": {
                 "email": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.generateBudgetRequest": {
+            "type": "object",
+            "required": [
+                "month",
+                "year"
+            ],
+            "properties": {
+                "expected_items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetGenerationExpectation"
+                    }
+                },
+                "margin_percent": {
+                    "type": "number",
+                    "maximum": 1000,
+                    "minimum": 0
+                },
+                "month": {
+                    "type": "integer",
+                    "maximum": 12,
+                    "minimum": 1
+                },
+                "replace_budget_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "year": {
+                    "type": "integer",
+                    "maximum": 9999,
+                    "minimum": 2000
                 }
             }
         },
@@ -18966,6 +19619,20 @@
                 }
             }
         },
+        "v1.reorderGoalsRequest": {
+            "type": "object",
+            "required": [
+                "goal_ids"
+            ],
+            "properties": {
+                "goal_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "v1.replaceMatchRulesRequest": {
             "type": "object",
             "required": [
@@ -19343,11 +20010,6 @@
                 },
                 "priority": {
                     "$ref": "#/definitions/entity.GoalPriority"
-                },
-                "priority_rank": {
-                    "type": "integer",
-                    "maximum": 20,
-                    "minimum": 0
                 },
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
