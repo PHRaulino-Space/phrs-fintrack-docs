@@ -41,3 +41,5 @@ Você pode convidar outros usuários para colaborar em um workspace (ex: seu cô
 1.  Vá em **Configurações > Membros**.
 2.  Envie um convite por e-mail.
 3.  Defina o nível de permissão (Admin ou Membro).
+
+Cada usuário tem nome, email e um **username** único. Nas listas e filtros de contas e cartões, o app identifica membros pelo username. Cada pessoa pode alterá-lo em **Configurações > Perfil**; ele aceita de 3 a 32 letras minúsculas, números ou `_`.

@@ -116,7 +116,7 @@ Update preferences for the authenticated user
 
 **Resumo:** Update user profile
 
-Update the user name and request an email change (requires verification).
+Update the user name and unique username, and request an email change (requires verification).
 
 **Consumes:** application/json
 
@@ -135,6 +135,7 @@ Update the user name and request an email change (requires verification).
 | 200 | OK | v1.UserResponse |
 | 400 | Bad Request | object |
 | 401 | Unauthorized | object |
+| 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
 ## POST `/user/cloudflare-link/begin`
@@ -311,6 +312,7 @@ Update the user password using the current password
 | --- | --- | --- | --- |
 | email | string | sim |  |
 | name | string | sim |  |
+| username | string | não |  |
 
 #### v1.UserResponse
 
@@ -322,3 +324,4 @@ Update the user password using the current password
 | id | string | não |  |
 | name | string | não |  |
 | pending_email | string | não |  |
+| username | string | não |  |

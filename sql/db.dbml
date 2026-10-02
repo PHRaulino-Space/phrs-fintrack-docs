@@ -111,6 +111,7 @@ Table "users" {
   "id" uuid [not null, default: `uuid_generate_v4()`]
   "name" varchar(100)
   "email" varchar(255) [not null]
+  "username" varchar(32) [not null]
   "password_hash" varchar(255)
   "external_id" varchar(255)
   "deleted_at" timestamptz
@@ -120,6 +121,7 @@ Table "users" {
 
   Indexes {
     email [unique, name: "uni_users_email"]
+    username [unique, name: "uq_users_username_ci", note: "UNIQUE lower(username)"]
     external_id [unique, name: "uni_users_external_id"]
     id [pk, name: "users_pkey"]
     external_id [type: btree, name: "idx_users_external_id"]

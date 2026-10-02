@@ -204,6 +204,7 @@ Create or resend a workspace invitation. Only workspace administrators may invit
 | name | string | não |  |
 | role | entity.WorkspaceMemberRole | não |  |
 | user_id | string | não |  |
+| username | string | não |  |
 | workspace_id | string | não |  |
 
 #### entity.WorkspaceMemberRole

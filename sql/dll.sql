@@ -176,6 +176,7 @@ CREATE TABLE public.users (
 	id uuid DEFAULT uuid_generate_v4() NOT NULL,
 	"name" varchar(100) NULL,
 	email varchar(255) NOT NULL,
+	username varchar(32) NOT NULL,
 	password_hash varchar(255) NULL,
 	external_id varchar(255) NULL,
 	deleted_at timestamptz NULL,
@@ -183,10 +184,12 @@ CREATE TABLE public.users (
 	updated_at timestamptz DEFAULT now() NULL,
 	"role" varchar(20) DEFAULT 'user'::character varying NULL,
 	CONSTRAINT uni_users_email UNIQUE (email),
+	CONSTRAINT ck_users_username_format CHECK (username ~ '^[a-z0-9][a-z0-9_]{2,31}$'),
 	CONSTRAINT uni_users_external_id UNIQUE (external_id),
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 CREATE INDEX idx_users_external_id ON public.users USING btree (external_id);
+CREATE UNIQUE INDEX uq_users_username_ci ON public.users USING btree (lower(username));
 
 
 -- public.workspaces definition

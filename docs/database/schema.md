@@ -8,6 +8,14 @@ Consulte o [Diagrama ER](../architecture/database.md) na seção de Arquitetura.
 
 ## Tabelas Principais
 
+### `users`
+Armazena o perfil de cada pessoa.
+- `name` (VARCHAR; nome de perfil)
+- `email` (VARCHAR; usado para acesso e notificações)
+- `username` (VARCHAR(32), NOT NULL; único sem diferenciar maiúsculas de minúsculas)
+
+Usuários existentes recebem um username derivado do email durante a migração. O username pode ser alterado em **Configurações > Perfil**.
+
 ### `accounts`
 Armazena as contas financeiras.
 - `id` (UUID, PK)

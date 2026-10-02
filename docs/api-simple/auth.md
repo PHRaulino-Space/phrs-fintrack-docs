@@ -721,6 +721,7 @@ Sem parâmetros.
 | id | string | não |  |
 | name | string | não |  |
 | pending_email | string | não |  |
+| username | string | não |  |
 
 #### v1.ValidateResponse
 

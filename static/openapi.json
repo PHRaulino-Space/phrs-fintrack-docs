@@ -12265,7 +12265,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Update the user name and request an email change (requires verification).",
+                "description": "Update the user name and unique username, and request an email change (requires verification).",
                 "consumes": [
                     "application/json"
                 ],
@@ -12305,6 +12305,15 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -15648,6 +15657,9 @@
                 "user_id": {
                     "type": "string"
                 },
+                "username": {
+                    "type": "string"
+                },
                 "workspace_id": {
                     "type": "string"
                 }
@@ -16941,6 +16953,9 @@
                     "type": "string"
                 },
                 "pending_email": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -19205,6 +19220,9 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
