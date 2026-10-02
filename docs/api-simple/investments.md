@@ -375,6 +375,7 @@ Create a value history entry for an investment
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | created_at | string | não |  |
 | currency | string | não | Relationships |
 | currency_code | string | não |  |
@@ -396,6 +397,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |

@@ -70,6 +70,8 @@ title: Workspace Access
 
 **Resumo:** List workspace members
 
+Any member of the workspace may list its members. Only administrators may change access.
+
 **Produces:** application/json
 
 ### Parâmetros

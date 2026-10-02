@@ -11,6 +11,8 @@ Representam qualquer lugar onde há saldo financeiro.
 - **Carteira (Wallet)**: Dinheiro em espécie.
 - **Investimentos**: Corretoras.
 - **Poupança**: Reservas financeiras.
+- **Vale Refeição**: Saldo destinado a refeições.
+- **Vale Alimentação**: Saldo destinado a compras de alimentos.
 
 ### Como Cadastrar
 1.  Vá para **Configurações > Contas**.

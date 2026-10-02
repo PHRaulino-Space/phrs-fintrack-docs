@@ -69,6 +69,8 @@ List all cards for a given workspace
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| assigned_user_id | query | string | não | Filter by assigned workspace user ID |
+| unassigned | query | boolean | não | Only cards without an assigned user (true) |
 
 ### Respostas
 
@@ -393,6 +395,7 @@ Sign a PUT for a relative image key under the configured prefix and authenticate
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | created_at | string | não |  |
 | currency | string | não | Relationships |
 | currency_code | string | não |  |
@@ -414,6 +417,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |
@@ -858,6 +862,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | closing_date | integer | não |  |
 | created_at | string | não |  |
 | credit_limit | number | não |  |
@@ -874,6 +879,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | closing_date | integer | sim |  |
 | credit_limit | number | sim |  |
 | due_date | integer | sim |  |
@@ -948,6 +954,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | closing_date | integer | não |  |
 | credit_limit | number | não |  |
 | due_date | integer | não |  |

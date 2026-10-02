@@ -6,6 +6,8 @@ Enum "account_type" {
   "INVESTMENT"
   "CRIPTO"
   "CRIPTOWALLET"
+  "MEAL_VOUCHER"
+  "FOOD_VOUCHER"
 }
 
 Enum "category_type" {

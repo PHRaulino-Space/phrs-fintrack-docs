@@ -13,7 +13,7 @@ Armazena as contas financeiras.
 - `id` (UUID, PK)
 - `workspace_id` (UUID, FK -> workspaces)
 - `name` (VARCHAR)
-- `type` (ENUM: CHECKING, SAVINGS, WALLET, INVESTMENT)
+- `type` (ENUM: CHECKING, SAVINGS, WALLET, INVESTMENT, CRIPTO, CRIPTOWALLET, MEAL_VOUCHER, FOOD_VOUCHER)
 - `initial_balance` (NUMERIC)
 - `currency_code` (VARCHAR, FK -> currencies)
 

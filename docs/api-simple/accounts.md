@@ -42,6 +42,8 @@ List all accounts for a given workspace
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| assigned_user_id | query | string | não | Filter by assigned workspace user ID |
+| unassigned | query | boolean | não | Only accounts without an assigned user (true) |
 
 ### Respostas
 
@@ -218,6 +220,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | currency_code | string | não |  |
 | image_key | string | não |  |
 | initial_balance | number | não |  |
@@ -228,6 +231,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | created_at | string | não |  |
 | currency_code | string | não |  |
 | id | string | não |  |
@@ -244,6 +248,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| assigned_user_id | string | não |  |
 | currency_code | string | não |  |
 | image_key | string | não |  |
 | initial_balance | number | não |  |

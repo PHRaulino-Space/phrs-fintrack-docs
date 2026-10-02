@@ -10,7 +10,9 @@ CREATE TYPE public."account_type" AS ENUM (
 	'WALLET',
 	'INVESTMENT',
 	'CRIPTO',
-	'CRIPTOWALLET');
+	'CRIPTOWALLET',
+	'MEAL_VOUCHER',
+	'FOOD_VOUCHER');
 
 -- DROP TYPE public."category_type";
 
