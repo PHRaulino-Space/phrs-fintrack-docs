@@ -952,6 +952,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| currency_code | string | não |  |
 | id | string | não |  |
 | name | string | não |  |
 

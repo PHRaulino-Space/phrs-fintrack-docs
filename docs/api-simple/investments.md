@@ -136,7 +136,7 @@ List all investments for the workspace (filtered by accounts in the workspace)
 
 **Resumo:** Get investment details with summary
 
-Get an investment and its summary for a given year and month
+Get an investment and its summary. When year and month are omitted, the summary uses the current month in America/Sao_Paulo.
 
 **Consumes:** application/json
 
@@ -148,8 +148,8 @@ Get an investment and its summary for a given year and month
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Investment ID |
-| year | query | integer | sim | Year |
-| month | query | integer | sim | Month (1-12) |
+| year | query | integer | não | Year (requires month) |
+| month | query | integer | não | Month (1-12; requires year) |
 
 ### Respostas
 
@@ -947,6 +947,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| currency_code | string | não |  |
 | id | string | não |  |
 | name | string | não |  |
 
@@ -988,6 +989,7 @@ Sem propriedades.
 | liquidity | entity.LiquidityType | não |  |
 | profit_loss | number | não |  |
 | profit_loss_percentage | number | não |  |
+| return_available | boolean | não |  |
 | type | entity.InvestmentType | não |  |
 | validity | string | não |  |
 
@@ -1015,7 +1017,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | month | string | não |  |
 | value | number | não |  |
-| variation | number | não |  |
+| variation | number | não | Variation is the gross change in recorded position from the previous month, as a fraction (0.10 = 10%). It includes deposits and withdrawals, so it is not an investment return. Zero also denotes no comparable prior position. |
 
 #### v1.investmentPortfolioResponse
 
@@ -1023,13 +1025,17 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | active_investments | integer | não |  |
 | avg_yield_rate | number | não |  |
+| currency_code | string | não |  |
+| currency_summaries | array&lt;v1.investmentPortfolioResponse&gt; | não |  |
 | distribution | array&lt;v1.investmentPortfolioDistributionResponse&gt; | não |  |
 | estimated_monthly_yield | number | não |  |
 | liquidity_distribution | array&lt;v1.investmentPortfolioLiquidityResponse&gt; | não |  |
+| monthly_available | boolean | não |  |
 | performance_history | array&lt;v1.investmentPortfolioPerformanceHistoryResponse&gt; | não |  |
 | rescued_investments | integer | não |  |
 | total_assets | integer | não |  |
 | total_invested | number | não |  |
+| valuation_complete | boolean | não |  |
 
 #### v1.investmentSummaryResponse
 
@@ -1037,9 +1043,11 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | accumulated_return | number | não |  |
 | current_value | number | não |  |
+| monthly_available | boolean | não |  |
 | monthly_return | number | não |  |
 | net_balance | number | não |  |
 | portfolio_percentage | number | não |  |
+| return_available | boolean | não |  |
 | return_rate | number | não |  |
 
 #### v1.investmentValueHistoryResponse
