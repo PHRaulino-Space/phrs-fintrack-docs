@@ -7824,7 +7824,7 @@
         },
         "/investments/{id}": {
             "get": {
-                "description": "Get an investment and its summary for a given year and month",
+                "description": "Get an investment and its summary. When year and month are omitted, the summary uses the current month in America/Sao_Paulo.",
                 "consumes": [
                     "application/json"
                 ],
@@ -7852,17 +7852,15 @@
                     },
                     {
                         "type": "integer",
-                        "description": "Year",
+                        "description": "Year (requires month)",
                         "name": "year",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Month (1-12)",
+                        "description": "Month (1-12; requires year)",
                         "name": "month",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -19065,6 +19063,9 @@
         "v1.investmentAccountSummary": {
             "type": "object",
             "properties": {
+                "currency_code": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -19158,6 +19159,9 @@
                 "profit_loss_percentage": {
                     "type": "number"
                 },
+                "return_available": {
+                    "type": "boolean"
+                },
                 "type": {
                     "$ref": "#/definitions/entity.InvestmentType"
                 },
@@ -19210,6 +19214,7 @@
                     "type": "number"
                 },
                 "variation": {
+                    "description": "Variation is the gross change in recorded position from the previous month,\nas a fraction (0.10 = 10%). It includes deposits and withdrawals, so it is\nnot an investment return. Zero also denotes no comparable prior position.",
                     "type": "number"
                 }
             }
@@ -19222,6 +19227,15 @@
                 },
                 "avg_yield_rate": {
                     "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "currency_summaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.investmentPortfolioResponse"
+                    }
                 },
                 "distribution": {
                     "type": "array",
@@ -19238,6 +19252,9 @@
                         "$ref": "#/definitions/v1.investmentPortfolioLiquidityResponse"
                     }
                 },
+                "monthly_available": {
+                    "type": "boolean"
+                },
                 "performance_history": {
                     "type": "array",
                     "items": {
@@ -19252,6 +19269,9 @@
                 },
                 "total_invested": {
                     "type": "number"
+                },
+                "valuation_complete": {
+                    "type": "boolean"
                 }
             }
         },
@@ -19264,6 +19284,9 @@
                 "current_value": {
                     "type": "number"
                 },
+                "monthly_available": {
+                    "type": "boolean"
+                },
                 "monthly_return": {
                     "type": "number"
                 },
@@ -19272,6 +19295,9 @@
                 },
                 "portfolio_percentage": {
                     "type": "number"
+                },
+                "return_available": {
+                    "type": "boolean"
                 },
                 "return_rate": {
                     "type": "number"
