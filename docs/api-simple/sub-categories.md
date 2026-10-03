@@ -5,7 +5,7 @@ title: Sub Categories
 
 **Resumo:** Delete sub-category
 
-Delete a sub-category
+Legacy route is disabled; use deletion preview and explicit confirmation.
 
 **Consumes:** application/json
 
@@ -23,9 +23,9 @@ Delete a sub-category
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 204 | No Content |  |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
+| 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
 ## GET `/categories/{category_id}/sub-categories`
@@ -79,6 +79,31 @@ Get a single sub-category by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## GET `/categories/{category_id}/sub-categories/{id}/deletion-preview`
+
+**Resumo:** Preview sub-category deletion impact
+
+Count persisted sub-category references by type. Informational only; a future confirmation must revalidate counts transactionally.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Parent category ID |
+| id | path | string | sim | Sub-category ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.ImpactPreview |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
 ## PATCH `/categories/{category_id}/sub-categories/{id}`
 
 **Resumo:** Update sub-category
@@ -130,6 +155,32 @@ Update a sub-category
 | 201 | Created | entity.SubCategory |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+
+## POST `/categories/{category_id}/sub-categories/{id}/deletion-confirmation`
+
+**Resumo:** Confirm subcategory deletion or move
+
+Revalidate the preview and atomically move subcategory references or soft-delete supported associated records; unsupported links return conflict.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| category_id | path | string | sim | Category ID |
+| id | path | string | sim | Subcategory ID |
+| confirmation | body | usecase.ImpactConfirmation | sim | Confirmation |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 409 | Conflict | object |
 
 ### Schemas
 
@@ -594,6 +645,33 @@ Sem propriedades.
 #### entity.TransactionStatus
 
 Sem propriedades.
+
+#### usecase.ImpactConfirmation
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| action | string | não |  |
+| child_destinations | object | não |  |
+| confirm_name | string | não |  |
+| destination_id | string | não |  |
+| version | string | não |  |
+
+#### usecase.ImpactKind
+
+Sem propriedades.
+
+#### usecase.ImpactPreview
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| confirmation | string | não |  |
+| count_scope | string | não |  |
+| counts | object | não |  |
+| generated_at | string | não |  |
+| id | string | não |  |
+| kind | usecase.ImpactKind | não |  |
+| version | string | não |  |
+| workspace_id | string | não |  |
 
 #### v1.createSubCategoryRequest
 

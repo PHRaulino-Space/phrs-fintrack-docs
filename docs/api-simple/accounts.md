@@ -5,7 +5,7 @@ title: Accounts
 
 **Resumo:** Delete an account
 
-Delete an account and all its related data (Cascade)
+Legacy route is disabled; use deletion preview and explicit confirmation.
 
 **Consumes:** application/json
 
@@ -22,9 +22,9 @@ Delete an account and all its related data (Cascade)
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 204 | No Content |  |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
+| 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
 ## GET `/accounts`
@@ -79,6 +79,30 @@ Get a single account by its ID
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 | 503 | Service Unavailable | object |
+
+## GET `/accounts/{account_id}/deletion-preview`
+
+**Resumo:** Preview account deletion impact
+
+Count persisted account references by type. Informational only; a future confirmation must revalidate counts transactionally.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| account_id | path | string | sim | Account ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.ImpactPreview |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
 
 ## GET `/accounts/images`
 
@@ -153,6 +177,31 @@ Update an existing account by its ID
 | 500 | Internal Server Error | object |
 | 503 | Service Unavailable | object |
 
+## POST `/accounts/{account_id}/deletion-confirmation`
+
+**Resumo:** Confirm account deletion or move
+
+Revalidate the preview and atomically move compatible references or soft-delete supported associated records; unsupported links return conflict.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| account_id | path | string | sim | Account ID |
+| confirmation | body | usecase.ImpactConfirmation | sim | Confirmation |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 409 | Conflict | object |
+
 ## POST `/accounts/images/upload-url`
 
 **Resumo:** Create an image PUT URL
@@ -215,6 +264,33 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | key | string | não |  |
 | url | string | não |  |
+
+#### usecase.ImpactConfirmation
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| action | string | não |  |
+| child_destinations | object | não |  |
+| confirm_name | string | não |  |
+| destination_id | string | não |  |
+| version | string | não |  |
+
+#### usecase.ImpactKind
+
+Sem propriedades.
+
+#### usecase.ImpactPreview
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| confirmation | string | não |  |
+| count_scope | string | não |  |
+| counts | object | não |  |
+| generated_at | string | não |  |
+| id | string | não |  |
+| kind | usecase.ImpactKind | não |  |
+| version | string | não |  |
+| workspace_id | string | não |  |
 
 #### v1.AccountRequest
 
