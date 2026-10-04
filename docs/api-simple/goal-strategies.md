@@ -1,11 +1,32 @@
 ---
-title: Cards
+title: Goal Strategies
 ---
-## DELETE `/cards/{id}`
+## GET `/goal-strategies/context/{goal_id}`
 
-**Resumo:** Delete a card
+**Resumo:** Get goal strategy context
 
-Delete a card and all its related data (Cascade)
+Read one goal, its saved value and linked investments, the current planning suggestion and observed offers. No write occurs.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| goal_id | path | string | sim | Goal ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.GoalStrategyContext |
+
+## POST `/goal-strategies/compare`
+
+**Resumo:** Compare hypothetical distributions for one goal
+
+V1 models one new contribution in simple fixed income only. Explicit choices and rate scenarios are required when used. Does not save a simulation, change a goal or buy an investment.
 
 **Consumes:** application/json
 
@@ -16,378 +37,13 @@ Delete a card and all its related data (Cascade)
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
+| payload | body | usecase.GoalStrategyRequest | sim | Explicit goal scenario and up to three editable distributions |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## DELETE `/cards/{id}/invoices/{billing_month}`
-
-**Resumo:** Delete an invoice
-
-Removes the invoice identified by billing_month for the given card
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards`
-
-**Resumo:** List cards
-
-List all cards for a given workspace
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| assigned_user_id | query | string | não | Filter by assigned workspace user ID |
-| unassigned | query | boolean | não | Only cards without an assigned user (true) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;v1.cardResponse&gt; |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
-
-## GET `/cards/{id}`
-
-**Resumo:** Get a single card
-
-Get a single card by its ID
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| id | path | string | sim | Card ID |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | v1.cardResponse |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
-
-## GET `/cards/{id}/invoices`
-
-**Resumo:** List invoices for a card
-
-Returns all invoices associated with the specified card within the current workspace
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;entity.Invoice&gt; |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards/{id}/invoices/{billing_month}`
-
-**Resumo:** Get a specific invoice
-
-Returns a single invoice identified by billing_month for the provided card
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | v1.invoiceResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards/{id}/invoices/{billing_month}/transactions`
-
-**Resumo:** List invoice transactions
-
-List card expenses, chargebacks and payments for a given invoice (billing month)
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;v1.invoiceTransactionResponse&gt; |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## GET `/cards/images`
-
-**Resumo:** List card images
-
-List image objects available under the configured S3-compatible storage prefix for cards
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | array&lt;objectstorage.Image&gt; |
-| 503 | Service Unavailable | object |
-
-## PATCH `/cards/{id}`
-
-**Resumo:** Update an existing card
-
-Update an existing card by its ID
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| card | body | v1.updateCardRequest | sim | Card object for update |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | v1.cardResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
-
-## PATCH `/cards/{id}/invoices/{billing_month}/payment-type`
-
-**Resumo:** Set invoice payment type
-
-Choose automatic or manual payment for one card invoice
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-| input | body | v1.setInvoicePaymentTypeRequest | sim | Payment type |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.Invoice |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## POST `/accounts/images/upload-url`
-
-**Resumo:** Create an image PUT URL
-
-Sign a PUT for a relative image key under the configured prefix and authenticated workspace ID. Upload with the returned Content-Type, then save key as image_key.
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| request | body | v1.imageUploadRequest | sim | Image key and content type |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | v1.imageUploadResponse |
-| 400 | Bad Request | object |
-| 503 | Service Unavailable | object |
-
-## POST `/cards`
-
-**Resumo:** Create a new card
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| card | body | v1.createCardRequest | sim | Card object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | v1.cardResponse |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
-
-## POST `/cards/{id}/invoices`
-
-**Resumo:** Create an invoice for a card
-
-Create a new invoice for the specified card and billing month
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| invoice | body | v1.createInvoiceRequest | sim | Invoice object |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 201 | Created | entity.Invoice |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
-
-## POST `/cards/{id}/invoices/{billing_month}/recalculate-status`
-
-**Resumo:** Recalculate invoice status
-
-Recalculates and updates the invoice status based on business rules: PAID if a final payment exists, OVERDUE if past due date, OPEN otherwise. Also creates next month's invoice if the closing date has passed.
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| id | path | string | sim | Card ID |
-| billing_month | path | string | sim | Billing month (YYYY-MM) |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | entity.Invoice |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-
-## POST `/cards/images/upload-url`
-
-**Resumo:** Create an image PUT URL
-
-Sign a PUT for a relative image key under the configured prefix and authenticated workspace ID. Upload with the returned Content-Type, then save key as image_key.
-
-**Consumes:** application/json
-
-**Produces:** application/json
-
-### Parâmetros
-
-| Nome | Em | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- | --- |
-| X-Workspace-ID | header | string | sim | Workspace ID |
-| request | body | v1.imageUploadRequest | sim | Image key and content type |
-
-### Respostas
-
-| Status | Descrição | Schema |
-| --- | --- | --- |
-| 200 | OK | v1.imageUploadResponse |
-| 400 | Bad Request | object |
-| 503 | Service Unavailable | object |
+| 200 | OK | usecase.GoalStrategyResponse |
 
 ### Schemas
 
@@ -567,6 +223,50 @@ Sem propriedades.
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
 
+#### entity.Goal
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| category | string | não |  |
+| color | string | não |  |
+| completed_at | string | não |  |
+| created_at | string | não |  |
+| current_value | number | não |  |
+| due_date | string | não |  |
+| id | string | não |  |
+| investments | array&lt;entity.GoalInvestment&gt; | não | Relationships |
+| is_completed | boolean | não |  |
+| name | string | não |  |
+| priority | entity.GoalPriority | não |  |
+| priority_rank | integer | não | PriorityRank allows more than three levels; nil preserves legacy priority semantics. |
+| purpose | entity.GoalPurpose | não |  |
+| reserve_kind | string | não |  |
+| target_value | number | não |  |
+| type | entity.GoalType | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
+#### entity.GoalInvestment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| goal | entity.Goal | não |  |
+| goal_id | string | não |  |
+| investment | entity.Investment | não |  |
+| investment_id | string | não |  |
+
+#### entity.GoalPriority
+
+Sem propriedades.
+
+#### entity.GoalPurpose
+
+Sem propriedades.
+
+#### entity.GoalType
+
+Sem propriedades.
+
 #### entity.ImportSession
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -623,6 +323,93 @@ Sem propriedades.
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
 
+#### entity.IndexType
+
+Sem propriedades.
+
+#### entity.Investment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account | object | não | Relationships |
+| account_id | string | não |  |
+| asset_name | string | não |  |
+| created_at | string | não |  |
+| current_value | number | não |  |
+| id | string | não |  |
+| index_type | entity.IndexType | não |  |
+| index_value | string | não |  |
+| investment_deposits | array&lt;entity.InvestmentDeposit&gt; | não |  |
+| investment_withdrawals | array&lt;entity.InvestmentWithdrawal&gt; | não |  |
+| is_rescued | boolean | não |  |
+| liquidity | entity.LiquidityType | não |  |
+| tags | array&lt;entity.InvestmentTag&gt; | não |  |
+| type | entity.InvestmentType | não |  |
+| updated_at | string | não |  |
+| validity | string | não |  |
+| value_history | array&lt;entity.InvestmentValueHistory&gt; | não |  |
+
+#### entity.InvestmentDeposit
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account | entity.Account | não |  |
+| account_id | string | não |  |
+| amount | number | não |  |
+| created_at | string | não |  |
+| deleted_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| investment | object | não | Relationships |
+| investment_id | string | não |  |
+| recurring_transaction_id | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
+
+#### entity.InvestmentTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| investment | entity.Investment | não |  |
+| investment_id | string | não |  |
+| tag | entity.Tag | não |  |
+| tag_id | string | não |  |
+
+#### entity.InvestmentType
+
+Sem propriedades.
+
+#### entity.InvestmentValueHistory
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| created_at | string | não |  |
+| id | string | não |  |
+| investment | object | não | Relationships |
+| investment_id | string | não |  |
+| updated_at | string | não |  |
+| updated_at_value | string | não |  |
+| value | number | não |  |
+
+#### entity.InvestmentWithdrawal
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account | entity.Account | não |  |
+| account_id | string | não |  |
+| amount | number | não |  |
+| created_at | string | não |  |
+| deleted_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| investment | object | não | Relationships |
+| investment_id | string | não |  |
+| recurring_transaction_id | string | não |  |
+| transaction_date | string | não |  |
+| transaction_status | entity.TransactionStatus | não |  |
+| updated_at | string | não |  |
+
 #### entity.Invoice
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -640,6 +427,10 @@ Sem propriedades.
 | updated_at | string | não |  |
 
 #### entity.InvoiceStatus
+
+Sem propriedades.
+
+#### entity.LiquidityType
 
 Sem propriedades.
 
@@ -854,116 +645,152 @@ Sem propriedades.
 
 Sem propriedades.
 
-#### objectstorage.Image
+#### usecase.GoalStrategyAllocation
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| key | string | não |  |
-| url | string | não |  |
+| amount | number | não |  |
+| opportunity_id | string | não |  |
 
-#### v1.cardResponse
+#### usecase.GoalStrategyChoices
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| assigned_user_id | string | não |  |
-| automatic_debit | boolean | não |  |
-| closing_date | integer | não |  |
-| created_at | string | não |  |
-| credit_limit | number | não |  |
-| due_date | integer | não |  |
-| id | string | não |  |
-| image_key | string | não |  |
-| image_url | string | não |  |
-| is_active | boolean | não |  |
+| deadline | string | não | rigid \| flexible |
+| early_liquidity | string | não | required \| not_required |
+| focus | string | não | preserve \| purchasing_power \| income |
+| loss_tolerance | string | não | none \| accepts_fluctuation |
+| value_basis | string | não | nominal \| purchasing_power |
+
+#### usecase.GoalStrategyContext
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| available_today | number | não |  |
+| currency_code | string | não |  |
+| goal | entity.Goal | não |  |
+| offers | array&lt;usecase.OpportunityView&gt; | não |  |
+| remaining | number | não |  |
+| suggested_today | number | não |  |
+| version | string | não |  |
+
+#### usecase.GoalStrategyLeg
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| allocation | usecase.GoalStrategyAllocation | não |  |
+| simulation | usecase.SimulationResult | não |  |
+
+#### usecase.GoalStrategyOffer
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| can_illustrate | boolean | não |  |
+| opportunity | usecase.OpportunityView | não |  |
+| reasons | array&lt;string&gt; | não |  |
+| risk_warnings | array&lt;string&gt; | não |  |
+
+#### usecase.GoalStrategyPlan
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| allocations | array&lt;usecase.GoalStrategyAllocation&gt; | não |  |
 | name | string | não |  |
-| updated_at | string | não |  |
-| workspace_id | string | não |  |
 
-#### v1.createCardRequest
+#### usecase.GoalStrategyRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| assigned_user_id | string | não |  |
-| automatic_debit | boolean | não |  |
-| closing_date | integer | sim |  |
-| credit_limit | number | sim |  |
-| due_date | integer | sim |  |
-| image_key | string | não |  |
-| is_active | boolean | não |  |
-| name | string | sim |  |
+| annual_cdi_percent | number | não |  |
+| annual_ipca_percent | number | não |  |
+| choices | usecase.GoalStrategyChoices | não |  |
+| goal_id | string | não |  |
+| horizon_date | string | não |  |
+| principal | number | não |  |
+| start_date | string | não |  |
+| strategies | array&lt;usecase.GoalStrategyPlan&gt; | não |  |
+| version | string | não |  |
 
-#### v1.createInvoiceRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| billing_month | string | sim |  |
-
-#### v1.imageUploadRequest
+#### usecase.GoalStrategyResponse
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| content_type | string | sim |  |
-| key | string | sim |  |
+| context | usecase.GoalStrategyContext | não |  |
+| missing_fields | array&lt;string&gt; | não |  |
+| offers | array&lt;usecase.GoalStrategyOffer&gt; | não |  |
+| strategies | array&lt;usecase.GoalStrategyResult&gt; | não |  |
+| version | string | não |  |
+| warnings | array&lt;string&gt; | não |  |
 
-#### v1.imageUploadResponse
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| expires_in | integer | não |  |
-| headers | object | não |  |
-| key | string | não |  |
-| method | string | não |  |
-| url | string | não |  |
-
-#### v1.invoiceResponse
+#### usecase.GoalStrategyResult
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| billing_month | string | não |  |
-| card | entity.Card | não |  |
-| card_chargebacks | array&lt;entity.CardChargeback&gt; | não |  |
-| card_expenses | array&lt;entity.CardExpense&gt; | não |  |
-| card_id | string | não |  |
-| created_at | string | não |  |
-| paid_amount | number | não |  |
-| payment_type | entity.PaymentType | não |  |
-| status | entity.InvoiceStatus | não |  |
-| total_amount | number | não |  |
-| updated_at | string | não |  |
+| allocated | number | não |  |
+| allocations | array&lt;usecase.GoalStrategyLeg&gt; | não |  |
+| comparable | boolean | não |  |
+| effective_end_date | string | não |  |
+| name | string | não |  |
+| net_value | number | não |  |
+| real_net_value | number | não |  |
+| reasons | array&lt;string&gt; | não |  |
+| risk_warnings | array&lt;string&gt; | não |  |
+| unallocated | number | não |  |
 
-#### v1.invoiceTransactionResponse
+#### usecase.OpportunityView
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | account_id | string | não |  |
-| amount | number | não |  |
-| category_id | string | não |  |
-| description | string | não |  |
+| costs_known | boolean | não |  |
+| created_at | string | não |  |
+| external_ref | string | não |  |
 | id | string | não |  |
-| installment_number | integer | não |  |
-| is_final_payment | boolean | não |  |
-| recurring_card_transaction_id | string | não |  |
-| sub_category_id | string | não |  |
-| total_installments | integer | não |  |
-| transaction_date | string | não |  |
-| transaction_status | entity.TransactionStatus | não |  |
-| type | entity.StagedTransactionType | não |  |
-
-#### v1.setInvoicePaymentTypeRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| payment_type | entity.PaymentType | sim |  |
-
-#### v1.updateCardRequest
-
-| Campo | Tipo | Obrigatório | Descrição |
-| --- | --- | --- | --- |
-| assigned_user_id | string | não |  |
-| automatic_debit | boolean | não |  |
-| closing_date | integer | não |  |
-| credit_limit | number | não |  |
-| due_date | integer | não |  |
-| image_key | string | não |  |
-| is_active | boolean | não |  |
+| institution | string | não |  |
+| issuer | string | não |  |
+| liquidity_date | string | não |  |
+| maturity_date | string | não |  |
+| minimum_amount | number | não |  |
+| missing_fields | array&lt;string&gt; | não |  |
 | name | string | não |  |
+| no_intermediate_cashflows | boolean | não |  |
+| notes | string | não |  |
+| offer_date | string | não |  |
+| product_type | string | não |  |
+| rate_percent | number | não | RatePercent is annual nominal percent for prefix, contracted percent of daily DI for cdi (110 = 110% CDI), or annual real percent for ipca. |
+| rate_type | string | não |  |
+| redemption_cost | number | não |  |
+| status | string | não |  |
+| tax_regime | string | não |  |
+| updated_at | string | não |  |
+| upfront_cost | number | não |  |
+| valid_until | string | não |  |
+| workspace_id | string | não |  |
+
+#### usecase.SimulationAssumptions
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| annual_cdi_percent | number | não |  |
+| annual_ipca_percent | number | não |  |
+| horizon_date | string | não |  |
+| principal | number | não |  |
+| start_date | string | não |  |
+
+#### usecase.SimulationResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| as_of_date | string | não |  |
+| assumptions | usecase.SimulationAssumptions | não |  |
+| end_date | string | não |  |
+| estimated_costs | number | não |  |
+| estimated_tax | number | não |  |
+| gross_gain | number | não |  |
+| gross_value | number | não |  |
+| invested | number | não |  |
+| missing_fields | array&lt;string&gt; | não |  |
+| net_value | number | não |  |
+| opportunity_id | string | não |  |
+| real_net_value | number | não |  |
+| warnings | array&lt;string&gt; | não |  |

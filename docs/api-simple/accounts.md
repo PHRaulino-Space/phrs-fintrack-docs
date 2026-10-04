@@ -299,6 +299,7 @@ Sem propriedades.
 | assigned_user_id | string | não |  |
 | currency_code | string | não |  |
 | image_key | string | não |  |
+| include_in_available_balance | boolean | não | IncludeInAvailableBalance includes this account in dashboard and planning indicators. |
 | initial_balance | number | não |  |
 | name | string | sim |  |
 | type | entity.AccountType | sim |  |
@@ -313,6 +314,7 @@ Sem propriedades.
 | id | string | não |  |
 | image_key | string | não |  |
 | image_url | string | não |  |
+| include_in_available_balance | boolean | não | IncludeInAvailableBalance includes this account in dashboard and planning indicators. |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
@@ -327,6 +329,7 @@ Sem propriedades.
 | assigned_user_id | string | não |  |
 | currency_code | string | não |  |
 | image_key | string | não |  |
+| include_in_available_balance | boolean | não | IncludeInAvailableBalance includes this account in dashboard and planning indicators. |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |

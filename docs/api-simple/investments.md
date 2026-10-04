@@ -382,6 +382,7 @@ Create a value history entry for an investment
 | deleted_at | string | não |  |
 | id | string | não |  |
 | image_key | string | não |  |
+| include_in_available_balance | boolean | não |  |
 | initial_balance | number | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
