@@ -6198,6 +6198,83 @@
                 }
             }
         },
+        "/goal-strategies/compare": {
+            "post": {
+                "description": "V1 models one new contribution in simple fixed income only. Explicit choices and rate scenarios are required when used. Does not save a simulation, change a goal or buy an investment.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goal-strategies"
+                ],
+                "summary": "Compare hypothetical distributions for one goal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Explicit goal scenario and up to three editable distributions",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.GoalStrategyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.GoalStrategyResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/goal-strategies/context/{goal_id}": {
+            "get": {
+                "description": "Read one goal, its saved value and linked investments, the current planning suggestion and observed offers. No write occurs.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goal-strategies"
+                ],
+                "summary": "Get goal strategy context",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Goal ID",
+                        "name": "goal_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.GoalStrategyContext"
+                        }
+                    }
+                }
+            }
+        },
         "/goals": {
             "get": {
                 "description": "List all goals for a given workspace",
@@ -10188,6 +10265,352 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/opportunities": {
+            "get": {
+                "description": "List only quoted opportunities in the selected workspace. account_id identifies an existing account where the offer was seen; unlinked older offers remain visible with missing_fields. No portfolio, transaction or goal records are read.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "List investment opportunities",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityListResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Save a draft or complete offer without buying, moving cash or creating an investment. account_id must reference an active BRL CHECKING or INVESTMENT account in the selected workspace for a new available offer; unlinked drafts are allowed. Institution and issuer may differ from the linked account. Omit unreadable terms; never infer values from an image. An optional Idempotency-Key or external_ref safely deduplicates retries within a workspace.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "Save a quoted investment opportunity",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stable caller retry key, up to 200 characters",
+                        "name": "Idempotency-Key",
+                        "in": "header"
+                    },
+                    {
+                        "description": "Offer terms; rate_percent is annual percent for prefix/IPCA+ or contracted percent of CDI",
+                        "name": "opportunity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.OpportunityTerms"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/opportunities/compare": {
+            "post": {
+                "description": "Simulate two to twenty offers in request order under identical user supplied assumptions. No ranking or buy recommendation is produced.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "Compare quoted opportunities",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Opportunity IDs and shared scenario",
+                        "name": "comparison",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityCompareRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityCompareResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/opportunities/simulate": {
+            "post": {
+                "description": "Provide exactly one of opportunity_id or unsaved opportunity. Assumptions are user supplied scenarios, not forecasts. Returns missing_fields and warnings where a reliable output is unavailable.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "Simulate one quoted opportunity",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Opportunity and common scenario",
+                        "name": "simulation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunitySimulationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunitySimulationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/opportunities/{id}": {
+            "get": {
+                "description": "Get a quoted opportunity scoped to the selected workspace, including missing_fields for incomplete drafts.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "Get investment opportunity",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Opportunity UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Partially update offer fields in the selected workspace; null clears optional fields. New account_id values must reference an active BRL CHECKING or INVESTMENT account in the workspace. Legacy unlinked or incompatible offers remain editable for manual correction. external_ref is immutable. No financial account records are changed.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "Edit quoted opportunity",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Opportunity UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Partial offer fields",
+                        "name": "opportunity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.OpportunityTerms"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/opportunities/{id}/unavailable": {
+            "post": {
+                "description": "Mark a quoted offer unavailable. Existing simulations, investments, transactions and balances are not altered.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opportunities"
+                ],
+                "summary": "Mark opportunity unavailable",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Opportunity UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.opportunityResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -14225,6 +14648,9 @@
                 "image_key": {
                     "type": "string"
                 },
+                "include_in_available_balance": {
+                    "type": "boolean"
+                },
                 "initial_balance": {
                     "type": "number"
                 },
@@ -15571,6 +15997,103 @@
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.OpportunityTerms": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "costs_known": {
+                    "type": "boolean"
+                },
+                "external_ref": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string",
+                    "example": "Banco Exemplo"
+                },
+                "issuer": {
+                    "type": "string"
+                },
+                "liquidity_date": {
+                    "type": "string"
+                },
+                "maturity_date": {
+                    "type": "string",
+                    "example": "2028-12-31"
+                },
+                "minimum_amount": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "no_intermediate_cashflows": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "offer_date": {
+                    "type": "string"
+                },
+                "product_type": {
+                    "type": "string",
+                    "enum": [
+                        "cdb",
+                        "lci",
+                        "lca",
+                        "treasury",
+                        "other"
+                    ],
+                    "example": "cdb"
+                },
+                "rate_percent": {
+                    "description": "RatePercent is annual nominal percent for prefix, contracted percent of\ndaily DI for cdi (110 = 110% CDI), or annual real percent for ipca.",
+                    "type": "number",
+                    "example": 110
+                },
+                "rate_type": {
+                    "type": "string",
+                    "enum": [
+                        "prefix",
+                        "cdi",
+                        "ipca"
+                    ],
+                    "example": "cdi"
+                },
+                "redemption_cost": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "draft",
+                        "available",
+                        "unavailable"
+                    ],
+                    "example": "draft"
+                },
+                "tax_regime": {
+                    "type": "string",
+                    "enum": [
+                        "fixed_income",
+                        "exempt",
+                        "unknown"
+                    ],
+                    "example": "fixed_income"
+                },
+                "upfront_cost": {
+                    "type": "number"
+                },
+                "valid_until": {
                     "type": "string"
                 }
             }
@@ -17260,6 +17783,233 @@
                 }
             }
         },
+        "usecase.GoalStrategyAllocation": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "opportunity_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GoalStrategyChoices": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "description": "rigid | flexible",
+                    "type": "string"
+                },
+                "early_liquidity": {
+                    "description": "required | not_required",
+                    "type": "string"
+                },
+                "focus": {
+                    "description": "preserve | purchasing_power | income",
+                    "type": "string"
+                },
+                "loss_tolerance": {
+                    "description": "none | accepts_fluctuation",
+                    "type": "string"
+                },
+                "value_basis": {
+                    "description": "nominal | purchasing_power",
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GoalStrategyContext": {
+            "type": "object",
+            "properties": {
+                "available_today": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "goal": {
+                    "$ref": "#/definitions/entity.Goal"
+                },
+                "offers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.OpportunityView"
+                    }
+                },
+                "remaining": {
+                    "type": "number"
+                },
+                "suggested_today": {
+                    "type": "number"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GoalStrategyLeg": {
+            "type": "object",
+            "properties": {
+                "allocation": {
+                    "$ref": "#/definitions/usecase.GoalStrategyAllocation"
+                },
+                "simulation": {
+                    "$ref": "#/definitions/usecase.SimulationResult"
+                }
+            }
+        },
+        "usecase.GoalStrategyOffer": {
+            "type": "object",
+            "properties": {
+                "can_illustrate": {
+                    "type": "boolean"
+                },
+                "opportunity": {
+                    "$ref": "#/definitions/usecase.OpportunityView"
+                },
+                "reasons": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "risk_warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "usecase.GoalStrategyPlan": {
+            "type": "object",
+            "properties": {
+                "allocations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.GoalStrategyAllocation"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GoalStrategyRequest": {
+            "type": "object",
+            "properties": {
+                "annual_cdi_percent": {
+                    "type": "number"
+                },
+                "annual_ipca_percent": {
+                    "type": "number"
+                },
+                "choices": {
+                    "$ref": "#/definitions/usecase.GoalStrategyChoices"
+                },
+                "goal_id": {
+                    "type": "string"
+                },
+                "horizon_date": {
+                    "type": "string"
+                },
+                "principal": {
+                    "type": "number"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "strategies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.GoalStrategyPlan"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GoalStrategyResponse": {
+            "type": "object",
+            "properties": {
+                "context": {
+                    "$ref": "#/definitions/usecase.GoalStrategyContext"
+                },
+                "missing_fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "offers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.GoalStrategyOffer"
+                    }
+                },
+                "strategies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.GoalStrategyResult"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                },
+                "warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "usecase.GoalStrategyResult": {
+            "type": "object",
+            "properties": {
+                "allocated": {
+                    "type": "number"
+                },
+                "allocations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.GoalStrategyLeg"
+                    }
+                },
+                "comparable": {
+                    "type": "boolean"
+                },
+                "effective_end_date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "net_value": {
+                    "type": "number"
+                },
+                "real_net_value": {
+                    "type": "number"
+                },
+                "reasons": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "risk_warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unallocated": {
+                    "type": "number"
+                }
+            }
+        },
         "usecase.ImpactConfirmation": {
             "type": "object",
             "properties": {
@@ -17605,6 +18355,121 @@
                 },
                 "total_pages": {
                     "type": "integer"
+                }
+            }
+        },
+        "usecase.OpportunityView": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "costs_known": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "external_ref": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string",
+                    "example": "Banco Exemplo"
+                },
+                "issuer": {
+                    "type": "string"
+                },
+                "liquidity_date": {
+                    "type": "string"
+                },
+                "maturity_date": {
+                    "type": "string",
+                    "example": "2028-12-31"
+                },
+                "minimum_amount": {
+                    "type": "number"
+                },
+                "missing_fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "no_intermediate_cashflows": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "offer_date": {
+                    "type": "string"
+                },
+                "product_type": {
+                    "type": "string",
+                    "enum": [
+                        "cdb",
+                        "lci",
+                        "lca",
+                        "treasury",
+                        "other"
+                    ],
+                    "example": "cdb"
+                },
+                "rate_percent": {
+                    "description": "RatePercent is annual nominal percent for prefix, contracted percent of\ndaily DI for cdi (110 = 110% CDI), or annual real percent for ipca.",
+                    "type": "number",
+                    "example": 110
+                },
+                "rate_type": {
+                    "type": "string",
+                    "enum": [
+                        "prefix",
+                        "cdi",
+                        "ipca"
+                    ],
+                    "example": "cdi"
+                },
+                "redemption_cost": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "draft",
+                        "available",
+                        "unavailable"
+                    ],
+                    "example": "draft"
+                },
+                "tax_regime": {
+                    "type": "string",
+                    "enum": [
+                        "fixed_income",
+                        "exempt",
+                        "unknown"
+                    ],
+                    "example": "fixed_income"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "upfront_cost": {
+                    "type": "number"
+                },
+                "valid_until": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
                 }
             }
         },
@@ -18111,6 +18976,81 @@
                 }
             }
         },
+        "usecase.SimulationAssumptions": {
+            "type": "object",
+            "properties": {
+                "annual_cdi_percent": {
+                    "type": "number",
+                    "example": 10
+                },
+                "annual_ipca_percent": {
+                    "type": "number",
+                    "example": 4
+                },
+                "horizon_date": {
+                    "type": "string",
+                    "example": "2028-10-03"
+                },
+                "principal": {
+                    "type": "number",
+                    "example": 10000
+                },
+                "start_date": {
+                    "type": "string",
+                    "example": "2026-10-03"
+                }
+            }
+        },
+        "usecase.SimulationResult": {
+            "type": "object",
+            "properties": {
+                "as_of_date": {
+                    "type": "string"
+                },
+                "assumptions": {
+                    "$ref": "#/definitions/usecase.SimulationAssumptions"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "estimated_costs": {
+                    "type": "number"
+                },
+                "estimated_tax": {
+                    "type": "number"
+                },
+                "gross_gain": {
+                    "type": "number"
+                },
+                "gross_value": {
+                    "type": "number"
+                },
+                "invested": {
+                    "type": "number"
+                },
+                "missing_fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "net_value": {
+                    "type": "number"
+                },
+                "opportunity_id": {
+                    "type": "string"
+                },
+                "real_net_value": {
+                    "type": "number"
+                },
+                "warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "usecase.WorkspaceInviteResult": {
             "type": "object",
             "properties": {
@@ -18138,6 +19078,10 @@
                 "image_key": {
                     "type": "string",
                     "maxLength": 1024
+                },
+                "include_in_available_balance": {
+                    "description": "IncludeInAvailableBalance includes this account in dashboard and planning indicators.",
+                    "type": "boolean"
                 },
                 "initial_balance": {
                     "type": "number"
@@ -18171,6 +19115,10 @@
                 "image_url": {
                     "type": "string"
                 },
+                "include_in_available_balance": {
+                    "description": "IncludeInAvailableBalance includes this account in dashboard and planning indicators.",
+                    "type": "boolean"
+                },
                 "initial_balance": {
                     "type": "number"
                 },
@@ -18203,6 +19151,10 @@
                 "image_key": {
                     "type": "string",
                     "maxLength": 1024
+                },
+                "include_in_available_balance": {
+                    "description": "IncludeInAvailableBalance includes this account in dashboard and planning indicators.",
+                    "type": "boolean"
                 },
                 "initial_balance": {
                     "type": "number"
@@ -20010,6 +20962,72 @@
                     "items": {
                         "$ref": "#/definitions/v1.NotificationResponse"
                     }
+                }
+            }
+        },
+        "v1.opportunityCompareRequest": {
+            "type": "object",
+            "properties": {
+                "assumptions": {
+                    "$ref": "#/definitions/usecase.SimulationAssumptions"
+                },
+                "opportunity_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "v1.opportunityCompareResponse": {
+            "type": "object",
+            "properties": {
+                "simulations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.SimulationResult"
+                    }
+                }
+            }
+        },
+        "v1.opportunityListResponse": {
+            "type": "object",
+            "properties": {
+                "opportunities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.OpportunityView"
+                    }
+                }
+            }
+        },
+        "v1.opportunityResponse": {
+            "type": "object",
+            "properties": {
+                "opportunity": {
+                    "$ref": "#/definitions/usecase.OpportunityView"
+                }
+            }
+        },
+        "v1.opportunitySimulationRequest": {
+            "type": "object",
+            "properties": {
+                "assumptions": {
+                    "$ref": "#/definitions/usecase.SimulationAssumptions"
+                },
+                "opportunity": {
+                    "$ref": "#/definitions/entity.OpportunityTerms"
+                },
+                "opportunity_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.opportunitySimulationResponse": {
+            "type": "object",
+            "properties": {
+                "simulation": {
+                    "$ref": "#/definitions/usecase.SimulationResult"
                 }
             }
         },
