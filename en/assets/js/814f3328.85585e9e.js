@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkgh_docs=globalThis.webpackChunkgh_docs||[]).push([[7472],{5513(s){s.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Boas-vindas","permalink":"/phrs-fintrack-docs/en/blog/welcome","unlisted":false,"date":"2026-01-20T20:04:19.000Z"}]}')}}]);

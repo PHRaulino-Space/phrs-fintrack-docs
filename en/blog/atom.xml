@@ -8,12 +8,12 @@
     <subtitle>FinTrack Blog</subtitle>
     <icon>https://phraulino-space.github.io/phrs-fintrack-docs/en/img/favicon.ico</icon>
     <entry>
-        <title type="html"><![CDATA[Welcome to the Blog]]></title>
+        <title type="html"><![CDATA[Boas-vindas]]></title>
         <id>https://phraulino-space.github.io/phrs-fintrack-docs/en/blog/welcome</id>
         <link href="https://phraulino-space.github.io/phrs-fintrack-docs/en/blog/welcome"/>
         <updated>2026-01-20T20:04:19.000Z</updated>
         <summary type="html"><![CDATA[Este espaço reúne novidades sobre o FinTrack, melhorias na plataforma e dicas de uso.]]></summary>
         <content type="html"><![CDATA[<p>Este espaço reúne novidades sobre o FinTrack, melhorias na plataforma e dicas de uso.</p>
-<p>Em breve teremos mais conteúdos detalhados sobre releases, integrações e melhores práticas.</p>]]></content>
+<p>Para regras em vigor, consulte o <a class="" href="https://phraulino-space.github.io/phrs-fintrack-docs/en/docs/product">índice de produto</a>, a <a class="" href="https://phraulino-space.github.io/phrs-fintrack-docs/en/docs/product/coverage">matriz de cobertura</a> e as <a class="" href="https://phraulino-space.github.io/phrs-fintrack-docs/en/docs/product/known-gaps">lacunas registradas</a>. Este post de abertura não substitui as páginas mantidas com o código e os testes.</p>]]></content>
     </entry>
 </feed>
