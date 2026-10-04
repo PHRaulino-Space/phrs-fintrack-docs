@@ -1,41 +1,5 @@
-# CI/CD
+# Integração contínua
 
-Integração e Entrega Contínua.
+Backend e frontend têm workflows em seus próprios diretórios .github/workflows/check.yml. Eles são a fonte atual de jobs e versões usadas; não há um pipeline único dedutível deste site. O backend documenta make check e testes de integração separados; o frontend documenta pnpm run check e sua suíte Playwright. O site docs usa npm run build para validar geração Docusaurus e links.
 
-## GitHub Actions
-
-O projeto inclui (ou deve incluir) workflows para:
-
-### Pull Requests (`ci.yml`)
-- Roda testes do backend (`go test`).
-- Roda linting (`golangci-lint`).
-- Roda build do frontend (`npm run build`).
-
-### Release (`deploy.yml`)
-- Cria tags Docker.
-- Publica no Docker Hub ou GHCR.
-- Deploy automático (se configurado via SSH ou Kubernetes).
-
-## Pipeline Exemplo
-
-```yaml
-name: CI
-on: [push, pull_request]
-jobs:
-  test-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with: { go-version: '1.22' }
-      - run: go test ./...
-
-  build-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with: { node-version: 20 }
-      - run: npm ci
-      - run: npm run build
-```
+Ao alterar um contrato financeiro, atualize testes e a [matriz de cobertura](../product/coverage.md). Ao mudar rota ou anotação Swagger, siga backend/AGENTS.md para regenerar OpenAPI em tarefa de código. Esta revisão de texto preservou os artefatos gerados.

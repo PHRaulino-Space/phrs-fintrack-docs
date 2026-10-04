@@ -1,47 +1,7 @@
----
-sidebar_position: 1
----
+# Workspaces e membros
 
-# Workspaces
+Um workspace delimita contas, cartões, categorias, transações e planejamento. Selecione o workspace antes de agir; as chamadas financeiras usam o cabeçalho de contexto e o backend valida a participação. Criar, trocar, convidar, alterar papéis e excluir têm regras próprias.
 
-O conceito de **Workspace** é central no FinTrack. Ele permite criar ambientes isolados para gerenciar diferentes contextos financeiros sem misturar dados.
+A jornada atual, incluindo papéis, convite, exclusão e configurações, está em [Acesso, taxonomia e ferramentas](../product/access-categories-tools.md). O [mapa de domínio](../product/domain-map.md) mostra o efeito da troca de workspace nos demais módulos. Exemplo ilustrativo: “Casa” e “Pessoal” são contextos diferentes, mesmo quando a pessoa é membro de ambos.
 
-## O que é um Workspace?
-
-Um Workspace funciona como um "container" lógico para:
-- Contas Bancárias
-- Cartões de Crédito
-- Categorias e Tags
-- Transações
-- Relatórios
-
-Nada é compartilhado entre workspaces. Se você criar uma categoria "Alimentação" no Workspace A, ela não existirá automaticamente no Workspace B.
-
-## Casos de Uso Comuns
-
-1.  **Pessoal vs. Conjunto**:
-    - *Workspace "Pessoal"*: Suas despesas individuais, contas que só você movimenta.
-    - *Workspace "Casa"*: Despesas compartilhadas com cônjuge ou roomates (aluguel, mercado, contas de luz).
-2.  **PF vs. PJ**:
-    - *Workspace "Minha Vida"*: Gastos pessoais.
-    - *Workspace "Freelance/Empresa"*: Entradas de projetos, gastos com servidores, contador, impostos.
-
-## Gerenciando Workspaces
-
-### Criar Workspace
-1.  No menu de navegação, clique no seletor de workspace (geralmente no topo da sidebar).
-2.  Selecione "Criar novo workspace".
-3.  Dê um nome e confirme.
-
-### Alternar Workspaces
-Use o mesmo seletor para trocar instantaneamente de contexto. O dashboard será recarregado com os dados do novo workspace.
-
-### Convidar Membros
-Você pode convidar outros usuários para colaborar em um workspace (ex: seu cônjuge para o workspace "Casa").
-1.  Vá em **Configurações > Membros**.
-2.  Envie um convite por e-mail.
-3.  Defina o nível de permissão (Admin ou Membro).
-
-Cada usuário tem nome, email e um **username** único. Nas listas e filtros de contas e cartões, o app identifica membros pelo username. Cada pessoa pode alterá-lo em **Configurações > Perfil**; ele aceita de 3 a 32 letras minúsculas, números ou `_`.
-
-No perfil, o nome aparece ao lado da foto e o `@username` abaixo. A pessoa pode enviar uma foto JPEG, PNG ou WebP de até 2 MiB; a imagem fica no armazenamento privado configurado para o backend.
+Fonte: backend/internal/controller/http/v1/router.go, workspace.go e workspace_access.go; frontend/src/hooks/use-auth.ts e frontend/src/components/layout/data/sidebar-data.tsx.

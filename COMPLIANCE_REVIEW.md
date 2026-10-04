@@ -1,5 +1,7 @@
 # PHRS FinTrack — Documento de Análise para Compliance
 
+> **Arquivo histórico fechado em fevereiro de 2026.** As afirmações de funcionalidades, integrações, arquitetura e proteção de dados abaixo refletem a avaliação daquela data e podem divergir do código atual. Para comportamento implementado, consulte [o índice de produto](docs/product/index.md), [a matriz de cobertura](docs/product/coverage.md) e [as lacunas](docs/product/known-gaps.md). Esta revisão documental não revalidou conclusões de compliance.
+
 **Versão do Documento:** 1.0
 **Data de Elaboração:** 03 de Fevereiro de 2026
 **Autor:** Paulo Henrique Raulino (Desenvolvedor e Proprietário)

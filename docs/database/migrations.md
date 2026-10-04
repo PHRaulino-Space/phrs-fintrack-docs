@@ -1,20 +1,7 @@
-# Migrações
+# Setup de schema e migrações
 
-O FinTrack utiliza scripts SQL puros ou ferramentas de migração (como `golang-migrate`) para evoluir o esquema do banco.
+O setup é explícito por backend/cmd/dbsetup, não ocorre no startup HTTP. SetupDatabaseSchema cria extensões e tipos necessários; AutoMigrate registra entidades GORM e impõe alguns índices/restrições; SetupDatabaseFunctions instala funções e gatilhos. O alvo make db-setup agrega as etapas; a execução requer ambiente e banco apropriados. Esta revisão documental **não** executou nenhuma delas.
 
-*(Nota: Baseado na estrutura atual, o schema parece ser gerenciado via dump SQL. Em um ambiente de produção evolutivo, recomendamos a adoção de uma ferramenta de migração versionada).*
+O comando e suas flags atuais estão em backend/cmd/dbsetup/main.go, backend/Makefile e backend/AGENTS.md. Antes de mudar um modelo, confira dependências de gatilhos e testes de integração. Arquivos em backend/reports/migrations são registros históricos, não o único esquema canônico em execução.
 
-## Histórico
-
-Atualmente, o estado do banco é definido pelo arquivo `backend/docs/fintrack_schema.sql`.
-
-Para aplicar alterações:
-1.  Modifique o schema localmente.
-2.  Gere um novo dump ou crie um script `ALTER TABLE`.
-3.  Aplique no banco.
-
-## Estratégia Recomendada
-
-Para futuras versões, adotaremos:
-- `000001_init_schema.up.sql`
-- `000002_add_user_preferences.up.sql`
+Fontes: backend/internal/infra/dbsetup/setup.go, migrations.go; backend/cmd/dbsetup/main.go.

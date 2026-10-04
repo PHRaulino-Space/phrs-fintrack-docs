@@ -1,23 +1,7 @@
-# Services (Use Cases)
+# Casos de uso
 
-Os Services contêm a lógica de negócio "pura". Eles orquestram chamadas aos repositórios e validam regras de domínio.
+Regras de negócio e orquestração ficam em backend/internal/usecase, com contratos em interfaces.go e arquivos *_contracts.go. Um caso de uso pode consultar múltiplos repositórios, validar workspace, status e período, ou pedir uma transação atômica. Saldos do extrato são calculados em modelo de leitura; não existe uma única entidade física Transaction que todos os fluxos atualizam.
 
-## Exemplo: Criar Transação
+Veja o [mapa de domínio](../product/domain-map.md) e as [jornadas](../product/index.md) para saber qual caso de uso produz cada efeito. Use testes de unidade e integração para confirmar arredondamentos e falhas, sem copiar pseudocódigo antigo como comportamento implementado.
 
-Ao criar uma transação, o service pode precisar:
-1.  Verificar se a conta existe.
-2.  Verificar se a categoria é válida.
-3.  Salvar a transação.
-4.  Atualizar o saldo da conta (se não for calculado on-the-fly).
-
-```go
-func (uc *TransactionUseCase) Create(ctx context.Context, t *entity.Transaction) error {
-    // Regra de Negócio: Não permitir transação futura se configurado
-    if t.Date.After(time.Now()) && !uc.allowFuture {
-        return ErrFutureTransactionNotAllowed
-    }
-
-    // Persistência
-    return uc.repo.Create(ctx, t)
-}
-```
+Fontes: backend/internal/usecase, backend/internal/entity, backend/internal/infra/postgres/repository.

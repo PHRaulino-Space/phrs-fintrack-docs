@@ -1,27 +1,7 @@
-# Estrutura do Projeto Backend
+# Estrutura do backend
 
-O projeto segue o layout padrão de projetos Go (Standard Go Project Layout).
+O backend é um projeto Go/Gin. cmd/app inicia a API; cmd/dbsetup executa setup explícito de schema, migrações, funções e gatilhos; cmd/mcp-server inicia o serviço MCP separado. internal/app compõe dependências; internal/controller/http/v1 implementa transporte; internal/usecase contém regras e interfaces; internal/entity modela o domínio; internal/infra/postgres/repository persiste com GORM e SQL; pkg reúne infraestrutura compartilhada.
 
-## Diretórios Principais
+A [arquitetura backend](../architecture/backend.md) explica o caminho de uma requisição. O README e o AGENTS.md do backend trazem comandos atuais. Não há migração nem seed automática no startup.
 
-- `cmd/`: Main applications.
-- `internal/`: Código privado da biblioteca.
-    - `controller/`: Camada de transporte HTTP.
-    - `usecase/`: Lógica de negócio.
-    - `entity/`: Modelos de domínio.
-    - `infra/`: Implementações externas (ex: Auth Providers).
-- `pkg/`: Código de biblioteca que pode ser usado por apps externos (OK para importar).
-    - `postgres/`: Configuração de conexão DB.
-    - `logger/`: Log estruturado.
-- `docs/`: Documentação Swagger e SQL.
-- `config/`: Carregamento de configuração (YAML/Env).
-- `migrations/`: Scripts de migração de banco (se aplicável).
-
-## Fluxo de Dependência
-
-A regra de ouro é: **Dependências apontam para dentro**.
-- Controller depende de UseCase.
-- UseCase depende de Entity e Interfaces de Repositório.
-- Repository (implementação) depende de Interfaces.
-
-Nunca importe `controller` dentro de `entity`.
+Fontes: backend/cmd, backend/internal/app, backend/internal/controller/http/v1/router.go, backend/internal/usecase, backend/internal/infra/dbsetup e backend/AGENTS.md.

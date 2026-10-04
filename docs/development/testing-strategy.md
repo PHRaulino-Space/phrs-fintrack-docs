@@ -1,25 +1,7 @@
-# Estratégia de Testes
+# Estratégia de testes
 
-## Backend
+No backend, make check executa lint, typecheck e testes de unidade sem banco e sem segredos. make test-integration é separado, usa arquivos marcados com build tag integration e exige Docker/Testcontainers ou FINTRACK_TEST_PG_URL/DATABASE_URL. Não substitua testes de repositório por mocks quando a regra depende de transação, constraint ou gatilho.
 
-- **Testes Unitários**: Testam a lógica de negócio (`usecase`).
-    - Mockamos repositórios usando `mockgen` ou interfaces manuais.
-    - Ex: Testar se `CreateTransaction` valida saldo negativo.
-- **Testes de Integração**: Testam a camada de dados (`repo`).
-    - Rodam contra um banco de dados real (frequentemente usando Testcontainers ou um DB de teste efêmero).
+No frontend, pnpm run check executa ESLint, TypeScript e Jest/MSW. pnpm run test:e2e usa Playwright com API falsa determinística para jornadas de navegador. O checkout frontend já declara falhas de baseline em AGENTS.md; registre-as separadamente de mudanças documentais.
 
-Comando:
-```bash
-go test ./... -v
-```
-
-## Frontend
-
-- **Testes de Componente**: Usando Jest + React Testing Library.
-    - Testam se o botão clica, se o input aceita texto.
-- **Testes E2E** (Futuro): Playwright ou Cypress para testar fluxos completos (Login -> Dashboard).
-
-Comando:
-```bash
-npm run test
-```
+Para regras financeiras, procure testes junto de backend/internal/usecase, backend/internal/infra/postgres/repository, frontend/src/services/__tests__, frontend/src/hooks/__tests__ e frontend/e2e. A [matriz de cobertura](../product/coverage.md) relaciona jornadas e evidência. A revisão documental não executou testes dependentes de banco.

@@ -20,7 +20,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            Explorar a documentação
           </Link>
         </div>
       </div>
@@ -32,8 +32,8 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title="Produto, fluxos e regras atuais"
+      description="Jornadas, cálculos, arquitetura e contratos da implementação atual do FinTrack.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

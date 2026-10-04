@@ -13,7 +13,7 @@ const skipApiDocs = process.env.DOCS_SKIP_API === '1';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'FinTrack',
-  tagline: 'Gestão Financeira Pessoal com IA e Privacidade',
+  tagline: 'Fluxos, cálculos e arquitetura da implementação atual',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -60,14 +60,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/PHRaulino-Space/fintrack-docs/tree/main/gh-docs/',
+            'https://github.com/PHRaulino-Space/phrs-fintrack-docs/tree/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/PHRaulino-Space/fintrack-docs/tree/main/gh-docs/',
+            'https://github.com/PHRaulino-Space/phrs-fintrack-docs/tree/main/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -97,7 +97,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/PHRaulino-Space/fintrack-docs',
+            href: 'https://github.com/PHRaulino-Space/phrs-fintrack-docs',
             label: 'GitHub',
             position: 'right',
           },

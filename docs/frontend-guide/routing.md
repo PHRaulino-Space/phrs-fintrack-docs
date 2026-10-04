@@ -1,24 +1,7 @@
-# Roteamento
+# Roteamento e proteção
 
-O roteamento é gerenciado pelo **Next.js App Router**.
+As rotas seguem arquivos page.tsx no Next.js App Router. O grupo (auth) contém entrada e recuperação; o grupo (fintrack) usa ProtectedRoute no layout para validar a sessão no cliente antes de mostrar a área de produto. Algumas páginas antigas redirecionam para destinos atuais, como metas dentro de Planejamento e investimentos na carteira. Uma rota existir não significa que apareça no menu lateral.
 
-## Rotas Públicas vs Privadas
+O menu efetivo é definido em frontend/src/components/layout/data/sidebar-data.tsx. A API tem outra fronteira: autenticação, MFA, CSRF e workspace são aplicados em backend/internal/controller/http/v1/router.go. Veja a [jornada de acesso](../product/access-categories-tools.md) e o [inventário de telas](../product/coverage.md).
 
-- **Públicas**: Login, Register, Forgot Password.
-- **Privadas**: Todas dentro de `(dashboard)`.
-
-## Proteção de Rotas
-
-Utilizamos Middleware ou HOCs (Higher Order Components) para proteger rotas. Se um usuário não autenticado tenta acessar `/settings`, ele é redirecionado para `/login`.
-
-## Navegação
-
-Use o componente `Link` do Next.js para navegação interna sem recarregar a página.
-
-```tsx
-import Link from "next/link"
-
-<Link href="/import-sessions">
-  Ir para Importações
-</Link>
-```
+Fontes: frontend/src/app/(fintrack)/layout.tsx, frontend/src/components/protected-route.tsx, frontend/src/components/layout/data/sidebar-data.tsx e backend/internal/controller/http/v1/router.go.

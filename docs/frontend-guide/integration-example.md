@@ -1,48 +1,7 @@
-```typescript
-import axios from "axios"
-import { useAuth } from "@/hooks/use-auth" // Exemplo de hook real do projeto
+# Integração HTTP no frontend
 
-// Criação da instância Axios com baseURL do .env
-const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}${process.env.NEXT_PUBLIC_API_PREFIX || ""}`,
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
-})
+Use a instância existente em frontend/src/lib/api.ts. Ela monta a origem e o prefixo público, envia cookies, acrescenta CSRF a mutações e fixa o X-Workspace-ID da requisição. Em 401, o refresh é coordenado entre abas; retries transitórios seguem as condições de segurança de frontend/src/lib/api-retry.ts. Não crie um Axios paralelo nos componentes.
 
-// Interceptor de Requisição: Injeção do Workspace ID
-// Este padrão é crucial para o sistema multi-tenant funcionar
-api.interceptors.request.use(
-  (config) => {
-    // Acessa o estado global do Zustand fora de componentes React
-    const activeWorkspace = useAuth.getState().activeWorkspace
+Serviços em frontend/src/services encapsulam chamadas por domínio; hooks em frontend/src/hooks fornecem os dados e atualização às páginas. Para uma nova operação, siga um serviço existente do mesmo domínio e verifique os testes de MSW. Consulte o [mapa técnico](../product/domain-map.md) e a [jornada de acesso](../product/access-categories-tools.md).
 
-    if (activeWorkspace) {
-      config.headers["X-Workspace-ID"] = activeWorkspace.id
-    }
-
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// Interceptor de Resposta: Tratamento de Erros Globais
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Redirecionamento automático em caso de token expirado
-    if (error.response && error.response.status === 401) {
-       useAuth.getState().logout()
-       if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
-         window.location.href = "/login"
-       }
-    }
-    return Promise.reject(error)
-  }
-)
-
-export default api
-```
+Fontes: frontend/src/lib/api.ts, frontend/src/lib/api-retry.ts, frontend/src/services/transactions.ts e frontend/src/hooks/use-transaction-queries.ts.

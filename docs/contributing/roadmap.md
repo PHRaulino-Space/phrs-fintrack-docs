@@ -1,23 +1,5 @@
-# Roadmap
+# Roadmap e ideias
 
-O futuro do FinTrack.
+Esta página não representa funcionalidades prontas nem uma lista de compromissos com data. O produto atual já possui orçamentos, Open Finance configurável, investimentos, membros/workspaces e planejamento; tratá-los como tarefas futuras criaria contradição. A classificação automática e a projeção têm limites descritos no código.
 
-## Curto Prazo (Q1/Q2)
-
-- [ ] Melhoria na detecção automática de categorias (IA mais robusta).
-- [ ] Suporte a importação de arquivos OFX.
-- [ ] Dashboard mobile-first aprimorado.
-- [ ] Tema escuro (Dark Mode) completo.
-
-## Médio Prazo
-
-- [ ] App nativo (React Native ou Flutter).
-- [ ] Orçamentos (Budgets) com alertas de teto de gastos.
-- [ ] Integração via Open Finance (automática).
-- [ ] Relatórios PDF customizáveis.
-
-## Longo Prazo
-
-- [ ] Módulo de Investimentos avançado (Ações, FIIs, Cripto).
-- [ ] Previsão de fluxo de caixa futuro baseada em IA.
-- [ ] Multi-usuário real (SaaS mode).
+Para estado implementado, use [Produto e regras atuais](../product/index.md), [matriz de cobertura](../product/coverage.md) e [lacunas/decisões](../product/known-gaps.md). Ideias como novos formatos de importação, exportações ou metodologias de previsão exigem proposta e validação separadas antes de entrar aqui como compromisso.

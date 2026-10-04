@@ -1,0 +1,48 @@
+# Matriz de cobertura e inventário
+
+Esta matriz liga cada jornada ao documento, às fontes de implementação e à verificação disponível no checkout. Caminhos `frontend/` e `backend/` são relativos à raiz do workspace; símbolos nomeados são mais estáveis que números de linha. **Teste citado** quer dizer evidência de um cenário, não prova de todas as combinações. Não executamos integrações que exigem banco neste trabalho documental.
+
+| Fluxo / estado alterado | Documento | Fonte principal | Verificação e limite |
+| --- | --- | --- | --- |
+| Registro, login, cookies, refresh, MFA, passkey, perfil e exclusão de usuário | [Acesso](./access-categories-tools.md) | `backend/internal/controller/http/v1/auth.go`, `user.go`; `backend/internal/usecase/auth_*.go` | `auth_journey_postgres_integration_test.go`, `refresh_token_test.go`; provedores externos dependem de configuração |
+| Seleção, criação, convite, papel, remoção e exclusão de workspace | [Acesso](./access-categories-tools.md) | `workspace.go`, `workspace_access.go`; `usecase/workspace*.go` | `workspace_access_test.go`, `workspace_deletion_test.go`; fronteira de membro precisa do middleware real |
+| Moedas, preferências, notificações e chaves API | [Acesso](./access-categories-tools.md) | `currency.go`, `notifications_user.go`, `api_key.go`, `settings.go` | `currency_test.go`, `api_key_managed_test.go`; câmbio cadastrado não implica conversão em todo relatório |
+| Categorias, subcategorias, tags, arquivamento e confirmação de exclusão | [Taxonomia](./access-categories-tools.md) | `category.go`, `sub_category.go`, `impact_preview.go`; `repository/impact_confirm_postgres.go`; `dbsetup/setup.go` | `category_delete_integration_test.go`, `impact_preview_integration_test.go`; preview deve ser reconfirmado |
+| Contas, atribuição, saldo inicial/atual, arquivo e transferência | [Contas](./accounts-cards.md) | `account.go`, `transfer.go`; `usecase/account.go`, `transfer.go`; `repository/account_postgres.go` | `account_test.go`, `transfer_test.go`, `transfer_postgres_integration_test.go`; moeda por conta |
+| Catálogo de imagens de conta/cartão e URL de upload | [Contas e cartões](./accounts-cards.md) | `image_upload.go`, `account.go`, `card.go`; `frontend/src/hooks/use-presigned-image.ts` | `image_upload_test.go`; formulários atuais só selecionam imagem do catálogo, upload direto é rota de API |
+| Cartão, compras, parcelas, estorno, fatura, pagamento, antecipação, limite | [Cartões](./accounts-cards.md) | `card.go`, `card_transaction.go`, `invoice.go`; `usecase/card*.go`, `invoice.go` | `card_transaction_installment_purchase_test.go`, `card_transaction_invoice_delete_test.go`, `invoice_test.go`; não inferir saldo bancário da compra |
+| Transações, super edição, filtros, resumo, cursor e status | [Transações](./transactions-recurring.md) | `transactions.go`, `transaction_query.go`, `transaction_editor.go`; `repository/transaction_*` | `transaction_pagination_test.go`, `transaction_query_integration_test.go`, `transaction_editor_test.go`; consulta agregada pode ter semântica própria |
+| Recorrência, agenda, pagamento, ignorar slot, vínculo e reconciliação | [Recorrências](./transactions-recurring.md) | `recurring.go`, `recurring_match_rules.go`; `usecase/recurring*.go`; `repository/reconciliation_postgres.go` | `recurring_match_rules_test.go`, `transaction_projection_calendar_integration_test.go`; vínculo não é rateio parcial |
+| Sessão, upload, staging, classificação, revisão, commit, close e deduplicação | [Importação](./imports-open-finance.md) | `import.go`; `usecase/import.go`, `session_enrichment.go`; `repository/import_postgres.go` | `import_commit_postgres_test.go`, `import_commit_failpoint_test.go`; suporte de arquivo depende do parser efetivo |
+| Conexão, link, atualização, sincronização e falhas Open Finance | [Open Finance](./imports-open-finance.md) | `openfinance.go`; `usecase/openfinance.go`; `infra/openfinance/pluggy/client.go` | `openfinance_test.go`, `pluggy/client_test.go`; serviço externo e credenciais necessários |
+| Cadastro, depósitos, retiradas, snapshots e desempenho de investimentos | [Investimentos](./investments-goals.md) | `investment.go`; `usecase/investment*.go`; `repository/investment_postgres.go` | `investment_value_test.go`, `investment_account_invariant_test.go`; depósitos não são retorno |
+| Meta, vínculo a investimentos, ordem, aporte conjunto, histórico e estratégia | [Metas](./investments-goals.md) | `goal.go`, `goal_strategy.go`; `usecase/goal*.go`, `planning_engine.go` | `goal_reorder_test.go`, `goal_history_test.go`, `goal_strategy_test.go`; projeção é cenário |
+| Orçamento manual, geração e duplicação, realizado e projeção | [Orçamentos](./planning-budgets-dashboard.md) | `budget.go`; `usecase/budget*.go`; `repository/budget_projection_postgres.go` | `budget_generation_test.go`, `budget_projection_postgres_test.go`; ver limites de recorrência |
+| Planejamento mensal/anual, ações, agenda, faturas manuais e configurações | [Planejamento](./planning-budgets-dashboard.md) | `planning.go`; `usecase/planning*.go`; `repository/planning_*` | `planning_contract_qa_test.go`, `planning_manual_invoices_postgres_integration_test.go`; visão combina fontes diferentes |
+| Indicadores, cartão, categorias, séries e média | [Dashboard](./planning-budgets-dashboard.md) | `dashboard.go`; `usecase/dashboard.go`; `repository/dashboard_postgres.go` | `dashboard_test.go`, `frontend/e2e/dashboard-budget-radial.spec.ts`; status e janela por métrica |
+| Oportunidades e comparação hipotética | [Ferramentas](./access-categories-tools.md) | `opportunity.go`; `usecase/opportunity_calculation.go`, `goal_strategy.go` | `opportunity_test.go`, `opportunity_postgres_integration_test.go`; simular não compra ativos |
+| MCP, vinculação Cloudflare/serviço, escopo de membro e OCR | [Ferramentas](./access-categories-tools.md) | `mcp_integration.go`, `cmd/mcp-server`; `usecase/mcp_integration.go` | `mcp_integration_test.go`, `cmd/mcp-server/*_test.go`; escopo e autenticação dependem do modo |
+| Vínculo de identidade Cloudflare para MCP | [Ferramentas](./access-categories-tools.md) | `cloudflare_link.go`; `usecase/cloudflare_link.go` | `cloudflare_link_test.go`; vínculo não concede acesso financeiro isoladamente |
+
+## Inventário reproduzível
+
+O menu visível está em `frontend/src/components/layout/data/sidebar-data.tsx`: Dashboard, Planejamento, Transações, Super edição, Importações, Investimentos e Workspace (Contas, Cartões, Categorias, Membros e MCP). Nem toda página tem item no menu. O App Router tem **42** arquivos `page.tsx` neste checkpoint:
+
+| Grupo | Rotas de página encontradas |
+| --- | --- |
+| Autenticação e erro | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`, `/verify-email/confirm`, `/verify-mfa`, `/delete-account/confirm`; `/401`, `/403`, `/404`, `/503`, `/error` |
+| Transações e importação | `/transactions`, `/transactions/editor`, `/import-sessions`, `/import-sessions/[id]` |
+| Patrimônio e metas | `/investments-portfolio`, `/investments-portfolio/[id]`, `/goals`, `/goals/[id]` |
+| Planejamento | `/planning`, `/planning/budgets`, `/planning/goals`, `/budgets`, `/dashboard` |
+| Workspace | `/workspace`, `/workspace/accounts`, `/workspace/cards`, `/workspace/categories`, `/workspace/investments`, `/workspace/members`, `/workspace/tags` |
+| Configuração e integração | `/settings`, `/settings/profile`, `/settings/security`, `/settings/privacy`, `/settings/api-keys`, `/settings/linked-accounts`, `/settings/open-finance`, `/notifications`, `/open-finance/oauth/callback` |
+
+O endpoint raiz `/api/health` e `v1/openapi.json`/`v1/docs/*any` são de infraestrutura. `backend/internal/controller/http/v1/router.go` registra os grupos de auth, perfil, workspace, catálogo, livro financeiro, importação, planejamento e integrações. O prefixo real é configurável (`API_PREFIX`; padrão `/api`). Para conferir uma rota individual, procure `new*Routes` no `router.go` e o método no respectivo handler; **não** suponha que páginas ocultas no menu estejam indisponíveis.
+
+O inventário de lógica cliente inclui `frontend/src/hooks/use-auth.ts`, `use-transaction-queries.ts`, `use-transaction-mutation.ts`, `use-financial-data.ts`, `use-budgets.ts`, `use-goals.ts`, `use-investments-portfolio.ts`, `use-open-finance.ts`, `use-notifications.ts`, `use-sse-notifications.ts` e `use-realtime-refresh.ts`, mais os serviços `transactions.ts`, `transaction-editor.ts`, `transaction-mutations.ts`, `import-sessions.ts`, `planning.ts`, `budget-generator.ts`, `opportunities.ts`, `open-finance.ts`, `goal-order.ts`, `goal-history.ts` e `mcp-integration.ts`. Eles representam **19 arquivos de serviço** e **28 hooks de nível superior** no checkpoint; testes e utilitários auxiliares ficam nas mesmas pastas. Para reencontrá-los: `find frontend/src/app -name page.tsx`, `find frontend/src/services -maxdepth 1 -name '*.ts'`, `find frontend/src/hooks -maxdepth 1 -name '*.ts*'`.
+
+No banco, o modelo é registrado por `dbsetup.AutoMigrate` (`backend/internal/infra/dbsetup/migrations.go`); funções/gatilhos em `setup.go` incluem status de staged transaction, avisos de mudança por SSE e guarda de categoria arquivada. Restrições de username e ordem de metas são instaladas em `migrations.go`. Este inventário é do **código de setup**, não uma inspeção de um banco em execução.
+
+## Critério de atualização
+
+Ao mudar uma tela, endpoint ou fórmula, altere a linha desta matriz, a página de jornada e o [guia de manutenção](./maintenance.md). Registre explicitamente quando um cenário é coberto apenas por teste com mock e quando integrações dependem de um serviço não executado localmente.

@@ -1,20 +1,7 @@
-# Models (Entities)
+# Entidades
 
-As entidades representam os objetos de domínio e estão em `internal/entity`. Elas são structs Go puras, frequentemente mapeadas para JSON.
+As entidades estão em backend/internal/entity. Estruturas como Account, Card/Invoice, Income/Expense/Transfer, ImportSession/StagedTransaction, Investment e Goal modelam persistência e resposta, com campos, tags GORM e relações específicas. Campos financeiros não devem ser inferidos de um exemplo resumido; consulte a struct atual e as validações no caso de uso/handler.
 
-## Exemplo: Account
+O setup GORM registra os modelos em backend/internal/infra/dbsetup/migrations.go. Funções e gatilhos adicionais ficam em setup.go. O [schema](../database/schema.md) e o [mapa de domínio](../product/domain-map.md) orientam a navegação.
 
-```go
-type Account struct {
-    ID             uuid.UUID   `json:"id" db:"id"`
-    WorkspaceID    uuid.UUID   `json:"workspace_id" db:"workspace_id"`
-    Name           string      `json:"name" db:"name"`
-    Type           AccountType `json:"type" db:"type"`
-    InitialBalance float64     `json:"initial_balance" db:"initial_balance"`
-    CurrencyCode   string      `json:"currency_code" db:"currency_code"`
-    CreatedAt      time.Time   `json:"created_at" db:"created_at"`
-    UpdatedAt      time.Time   `json:"updated_at" db:"updated_at"`
-}
-```
-
-Observe as tags `json` (para API) e `db` (para queries SQL).
+Fontes: backend/internal/entity, backend/internal/infra/dbsetup/migrations.go.

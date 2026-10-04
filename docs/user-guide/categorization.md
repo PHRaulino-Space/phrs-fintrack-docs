@@ -1,28 +1,7 @@
-# Categorização
+# Categorias, subcategorias e tags
 
-Uma boa categorização é a chave para relatórios úteis.
+Categorias agrupam receitas, despesas ou metas; subcategorias refinam a classificação e tags são marcadores adicionais. Cores e ícones ajudam a leitura. O arquivamento preserva histórico e restringe novos usos. A exclusão com dependências passa por prévia de impacto e confirmação; nem toda dependência pode ser movida ou eliminada.
 
-## Estrutura Hierárquica
+A [jornada de taxonomia](../product/access-categories-tools.md) traz validações, arquivamento, bloqueios, ações atômicas e o papel do enriquecimento por embeddings. A [jornada de importação](../product/imports-open-finance.md) explica quando uma sugestão de classificação é processada e como revisá-la. Uma sugestão automática não substitui a confirmação do usuário.
 
-O FinTrack usa dois níveis:
-1.  **Categoria** (Macro)
-    - Ex: *Alimentação*
-2.  **Subcategoria** (Micro)
-    - Ex: *Restaurante*, *Supermercado*, *Delivery*
-
-## Tags
-
-Além da hierarquia, você pode usar **Tags** para cruzamentos transversais.
-- Exemplo: Você viajou para a praia.
-    - Jantar fora: Categoria *Alimentação*, Tag `#viagem-praia-2023`.
-    - Gasolina: Categoria *Transporte*, Tag `#viagem-praia-2023`.
-    - Hotel: Categoria *Viagem*, Tag `#viagem-praia-2023`.
-
-Isso permite filtrar, no futuro, quanto custou a viagem inteira, somando alimentação, transporte e hospedagem.
-
-## Gerenciando Categorias
-
-Vá em **Configurações > Categorias**.
-O sistema vem com um padrão sugerido, mas você deve personalizar para sua realidade.
-- Adicione cores e ícones para facilitar a visualização nos gráficos.
-- Desative categorias que não usa.
+Fontes: backend/internal/controller/http/v1/category.go, sub_category.go, impact_preview.go; backend/internal/infra/dbsetup/setup.go; frontend/src/app/(fintrack)/workspace/categories.

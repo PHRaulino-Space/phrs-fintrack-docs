@@ -1,7 +1,7 @@
 ---
-title: Markdown page example
+title: Sobre esta documentação
 ---
 
-# Markdown page example
+# Sobre esta documentação
 
-You don't need React to write simple standalone pages.
+Este site documenta os fluxos e cálculos observados no código atual do FinTrack. Comece pela [introdução](./docs/intro), navegue pelo [índice de produto](./docs/product) e use a [matriz de cobertura](./docs/product/coverage) para reencontrar fontes e testes.

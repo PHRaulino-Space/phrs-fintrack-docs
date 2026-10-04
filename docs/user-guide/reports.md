@@ -1,17 +1,7 @@
-# Relatórios
+# Consultas e relatórios disponíveis
 
-Para análises mais profundas, a seção de Relatórios permite exportar e visualizar dados detalhados.
+O extrato em **Transações** oferece filtros, resumo e paginação; o dashboard mostra indicadores do mês; planejamento e orçamentos oferecem leituras próprias. Consulte [Transações e recorrências](../product/transactions-recurring.md) e [Planejamento, orçamentos e dashboard](../product/planning-budgets-dashboard.md) para a seleção de estados e os cálculos efetivos.
 
-*Nota: Esta funcionalidade está em evolução constante.*
+A descrição antiga desta página prometia uma seção de relatórios e exportações CSV/PDF. Essas rotas não aparecem no menu ou no conjunto de páginas e handlers inventariados nos checkpoints desta revisão. Por isso não as tratamos como funcionalidade entregue. Veja [lacunas e decisões](../product/known-gaps.md).
 
-## Relatório Mensal
-
-Uma visão consolidada do mês, agrupando despesas por categoria pai e detalhando por subcategoria. Ideal para entender se você estourou o orçamento em alguma área.
-
-## Extrato por Período
-
-Gera uma lista linear de todas as transações em um período, similar a um extrato bancário, mas consolidando todas as suas contas e cartões em um único lugar. Útil para conciliação.
-
-## Exportação
-
-É possível exportar os dados filtrados para CSV ou PDF para arquivamento ou manipulação externa (ex: Excel, Google Sheets).
+Fontes: frontend/src/components/layout/data/sidebar-data.tsx, frontend/src/app/(fintrack), backend/internal/controller/http/v1/router.go.

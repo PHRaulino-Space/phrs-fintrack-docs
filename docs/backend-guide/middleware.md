@@ -1,18 +1,7 @@
-# Middleware
+# Middleware HTTP
 
-Os middlewares interceptam requisições HTTP antes de chegarem aos controllers.
+backend/internal/controller/http/v1/router.go compõe CORS, rate limit nas rotas públicas, autenticação, escopo de chave API, CSRF, MFA, step-up, administrador e workspace conforme o grupo. Sessão por cookie usa fintrack_token/fintrack_refresh e header X-CSRF-Token em mutações; X-API-Key e bearer têm tratamento próprio. Rotas financeiras requerem X-Workspace-ID (ou query workspace_id para SSE), mas gerenciamento de workspace e perfil não usa esse mesmo grupo.
 
-## AuthMiddleware
-Valida o JWT no header `Authorization`. Se válido, injeta o `user_id` no contexto da requisição.
+Verifique a combinação efetiva da rota no router, pois nem toda rota autenticada requer as mesmas condições. Veja [acesso e membros](../product/access-categories-tools.md).
 
-## WorkspaceMiddleware
-Verifica o header `X-Workspace-ID`.
-1.  O ID é um UUID válido?
-2.  O usuário autenticado tem permissão de acesso a este workspace?
-Se sim, injeta o `workspace_id` no contexto. Caso contrário, retorna 403 Forbidden.
-
-## LoggerMiddleware
-Loga detalhes da requisição (Método, URL, Duração, Status Code) para monitoramento.
-
-## CORS
-Configura os headers de Cross-Origin Resource Sharing para permitir que o frontend (em outra porta/domínio) acesse a API.
+Fontes: backend/internal/controller/http/v1/router.go, backend/internal/controller/http/middleware e backend/AGENTS.md.

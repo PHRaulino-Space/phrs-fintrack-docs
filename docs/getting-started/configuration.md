@@ -4,38 +4,8 @@ sidebar_position: 2
 
 # Configuração
 
-O FinTrack pode ser configurado através de arquivos de configuração e variáveis de ambiente.
+A configuração canônica do backend está em backend/README.md, backend/config e backend/.env.sample. As variáveis centrais são DATABASE_URL para PostgreSQL, SECRET_KEY para assinatura/cifra, PORT (padrão 8080) e API_PREFIX (padrão /api). PG_URL e AUTH_SECRET são fallbacks legados, não nomes recomendados. Recursos opcionais (mailer, imagens, embeddings, Open Finance, MCP) exigem configuração própria; não presuma que todos estejam ativos.
 
-## Backend
+O frontend documenta variáveis em frontend/.env.example e frontend/README.md. NEXT_PUBLIC_API_BASE_URL contém a origem pública (por exemplo, http://localhost:8080) e NEXT_PUBLIC_API_PREFIX contém /api/v1. NEXT_PUBLIC_MSW_ENABLED controla o worker de mocks no navegador. NEXT_PUBLIC_APP_TIMEZONE afeta instantes e “hoje”, sem deslocar datas civis. Variáveis NEXT_PUBLIC_* entram no build e não devem conter segredos.
 
-O backend em Go utiliza configurações que podem ser sobrescritas por variáveis de ambiente.
-
-| Variável | Descrição | Padrão |
-|----------|-----------|--------|
-| `PORT` | Porta do servidor HTTP | `8080` |
-| `DB_HOST` | Host do PostgreSQL | `localhost` |
-| `DB_PORT` | Porta do PostgreSQL | `5432` |
-| `DB_USER` | Usuário do Banco | `postgres` |
-| `DB_PASSWORD` | Senha do Banco | `postgres` |
-| `DB_NAME` | Nome do Banco | `fintrack` |
-| `JWT_SECRET` | Chave secreta para tokens JWT | (obrigatório em prod) |
-| `LOG_LEVEL` | Nível de log (debug, info, error) | `info` |
-
-## Frontend
-
-O frontend Next.js utiliza variáveis de ambiente prefixadas com `NEXT_PUBLIC_` para configurações expostas ao navegador.
-
-| Variável | Descrição | Exemplo |
-|----------|-----------|---------|
-| `NEXT_PUBLIC_API_BASE_URL` | URL base da API do Backend | `http://localhost:8080` |
-| `NEXT_PUBLIC_API_PREFIX` | Prefixo da API (opcional) | `/api/v1` |
-
-## Banco de Dados
-
-O banco de dados deve ser inicializado com o schema correto. O arquivo de dump inicial está localizado em `backend/docs/fintrack_schema.sql`.
-
-Para restaurar o schema:
-
-```bash
-psql -h localhost -U postgres -d fintrack < backend/docs/fintrack_schema.sql
-```
+Schema, migração, funções e gatilhos são aplicados explicitamente por backend/cmd/dbsetup, segundo [migrações](../database/migrations.md). Esta página não instrui restaurar um dump histórico nem executou setup em banco.

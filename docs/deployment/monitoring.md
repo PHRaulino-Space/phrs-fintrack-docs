@@ -1,22 +1,5 @@
-# Monitoramento
+# Saúde e observabilidade
 
-Como saber se o FinTrack está saudável.
+A rota de saúde atual é GET /api/health com API_PREFIX padrão /api; é registrada em backend/internal/controller/http/v1/router.go antes das rotas v1. O middleware RequestObservability inclui correlação de requisição; logs e eventos de notificação/SSE são implementados no backend. Uma resposta de health confirma o handler HTTP, não a saúde de PostgreSQL, Pluggy, serviço de embeddings ou consumidores de eventos.
 
-## Logs
-
-- **Backend**: Logs estruturados em JSON (stdout). Use ferramentas como `jq` ou agregadores de log (Loki, ELK) para analisar.
-- **Frontend**: Logs de renderização do Next.js (stdout).
-- **Postgres**: Logs de queries lentas e erros de conexão.
-
-## Health Checks
-
-O backend expõe um endpoint `/health` ou `/live`?
-- Recomendamos configurar um uptime monitor (Uptime Kuma) batendo em `http://host:8080/api/v1/health` a cada minuto.
-
-## Métricas (Prometheus)
-
-*(Futuro)*: Instrumentar a aplicação Go com métricas Prometheus para monitorar:
-- Latência de requisições HTTP.
-- Uso de memória/CPU.
-- Número de Goroutines.
-- Taxa de erro 5xx.
+Para configurar monitoramento da implantação, consulte backend/README.md, backend/internal/controller/http/v1/router.go e backend/internal/infra/dbsetup/setup.go. Métricas Prometheus ou uma rota /live não devem ser anunciadas sem implementação. Nenhum serviço foi iniciado para esta revisão.

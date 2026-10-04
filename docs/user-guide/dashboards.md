@@ -1,22 +1,7 @@
-# Dashboards
+# Dashboard
 
-O FinTrack oferece dashboards para visualização rápida da saúde financeira.
+O dashboard reúne indicadores financeiros, cartão e orçamento no mês selecionado. Cada indicador tem sua própria seleção de lançamentos, status, competência e conta; uma projeção não equivale a dinheiro recebido ou pago.
 
-## Visão Geral
+Veja [Planejamento, orçamentos e dashboard](../product/planning-budgets-dashboard.md) para fórmulas de cards, barras, radial, média de três meses e agrupamento das categorias. A [matriz de cobertura](../product/coverage.md) indica fontes e testes. A antiga descrição de filtros arbitrários de período/conta e de patrimônio em linha não representa a tela atual.
 
-O painel principal mostra:
-- **Saldo Total**: Soma de todas as contas (descontando faturas de cartão em aberto, se configurado).
-- **Receita vs Despesa**: Gráfico de barras comparativo do mês atual.
-- **Gastos por Categoria**: Gráfico de rosca (Donut chart) mostrando onde seu dinheiro está indo.
-
-## Filtros
-
-Você pode filtrar o dashboard por:
-- **Período**: Mês atual, Mês passado, Ano, Personalizado.
-- **Conta**: Ver apenas o fluxo de uma conta específica.
-
-## Widgets
-
-- **Últimas Transações**: Lista rápida das últimas movimentações.
-- **Contas a Pagar**: Previsão de faturas de cartão próximas do vencimento.
-- **Evolução de Patrimônio**: Gráfico de linha mostrando o crescimento (ou decrescimento) do seu saldo ao longo do tempo.
+Fontes: frontend/src/app/(fintrack)/dashboard, frontend/src/hooks/use-dashboard.ts, backend/internal/usecase/dashboard.go e backend/internal/infra/postgres/repository/dashboard_postgres.go.

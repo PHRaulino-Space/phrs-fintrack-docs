@@ -1,38 +1,7 @@
-# Componentes Frontend
+# Componentes de interface
 
-O FinTrack utiliza uma biblioteca de componentes baseada em **Shadcn UI**.
+Os componentes estão em frontend/src/components e dentro das rotas de frontend/src/app/(fintrack). O projeto prioriza blocos shadcnblocks, depois shadcn/ui, conforme frontend/AGENTS.md. Tabelas usam configuração compartilhada em frontend/src/lib/table-config.ts; a implementação de filtros e paginação deve ser conferida na tela do domínio, não inferida da aparência.
 
-## Botões (`components/ui/button.tsx`)
+A navegação lateral está em frontend/src/components/layout/data/sidebar-data.tsx. O [inventário de páginas](../product/coverage.md) identifica rotas que não aparecem ali. Exemplos de composição podem ser encontrados nas telas atuais de contas, transações e planejamento; exemplos antigos genéricos não substituem essas fontes.
 
-Botões padronizados com variantes (default, destructive, outline, secondary, ghost, link).
-
-```tsx
-<Button variant="outline" size="sm" onClick={handleClick}>
-  Cancelar
-</Button>
-```
-
-## Formulários (`components/ui/form.tsx`)
-
-Usamos `react-hook-form` com `zod` para validação de esquemas.
-
-```tsx
-const form = useForm<z.infer<typeof formSchema>>({
-  resolver: zodResolver(formSchema),
-})
-
-<Form {...form}>
-  <form onSubmit={form.handleSubmit(onSubmit)}>
-    <FormField control={form.control} name="username" ... />
-  </form>
-</Form>
-```
-
-## Data Tables (`components/ui/table.tsx`)
-
-Tabelas poderosas usando `@tanstack/react-table` para listagens de transações, com suporte a ordenação, filtros e paginação.
-
-## Layout (`components/layout`)
-
-- **Sidebar**: Navegação principal colapsável.
-- **Header**: Barra superior com perfil e troca de tema.
+Fontes: frontend/AGENTS.md, frontend/src/components, frontend/src/app/(fintrack), frontend/src/lib/table-config.ts.

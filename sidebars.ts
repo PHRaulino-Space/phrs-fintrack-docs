@@ -17,6 +17,24 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Produto e regras atuais',
+      items: [
+        'product/index',
+        'product/domain-map',
+        'product/access-categories-tools',
+        'product/accounts-cards',
+        'product/transactions-recurring',
+        'product/imports-open-finance',
+        'product/investments-goals',
+        'product/planning-budgets-dashboard',
+        'product/glossary',
+        'product/coverage',
+        'product/known-gaps',
+        'product/maintenance',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Getting Started',
       items: [
         'getting-started/installation',

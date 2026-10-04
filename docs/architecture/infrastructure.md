@@ -1,30 +1,5 @@
-# Infraestrutura
+# Infraestrutura e integrações
 
-O FinTrack é projetado para ser executado em containers, facilitando o deploy em qualquer ambiente (VPS, Raspberry Pi, Home Server).
+O workspace inclui Compose para backend, frontend, banco e serviços opcionais. A topologia efetiva depende do manifesto escolhido e de suas variáveis, não de um diagrama único. A API pode chamar PostgreSQL, serviço HTTP de embeddings, armazenamento de imagens, mailer e Pluggy para Open Finance; o servidor MCP tem processo/configuração próprios. Uma implantação pode não habilitar todos.
 
-## Stack Tecnológica
-
-- **Container Runtime**: Docker
-- **Orquestração**: Docker Compose (recomendado para uso pessoal)
-- **Banco de Dados**: PostgreSQL 15+ (com extensão `vector` para IA, se necessário)
-- **Proxy Reverso**: Nginx ou Traefik (opcional, para SSL e acesso externo)
-
-## Topologia de Rede (Docker Compose)
-
-```mermaid
-graph LR
-    Internet((Internet)) --> Proxy[Nginx / Traefik]
-
-    subgraph "Docker Network (Private)"
-        Proxy --> Frontend[Frontend Container :3000]
-        Proxy --> Backend[Backend Container :8080]
-        Backend --> DB[Postgres Container :5432]
-        Backend --> AI[AI Service :5000]
-    end
-```
-
-## Persistência de Dados
-
-Para garantir que dados não sejam perdidos ao reiniciar containers, volumes Docker devem ser mapeados:
-- `/var/lib/postgresql/data`: Para persistir o banco de dados.
-- Configurações e logs também podem ser persistidos.
+A rota GET /api/health confirma apenas o handler HTTP. Backend/internal/infra/dbsetup contém funções e gatilhos de eventos, e notificações podem ser entregues por SSE. Para operar serviços, use os arquivos Compose e READMEs do checkout. Veja [arquitetura](./overview.md) e [operação](../deployment/docker.md). Não há garantia geral de IA local ou de ausência de tráfego externo quando integrações estão configuradas.

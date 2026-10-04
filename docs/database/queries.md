@@ -1,32 +1,5 @@
-# Queries Comuns
+# Consultas e modelos de leitura
 
-Exemplos de consultas SQL úteis para manutenção ou análise direta.
+A leitura /transactions combina receitas, despesas, transferências, aportes, resgates e pagamentos de cartão, com projeções opcionais. Não é uma consulta SELECT sobre uma tabela única transactions. O saldo por conta, a fatura, o orçamento e o dashboard usam filtros e regras diferentes; uma query manual genérica pode somar estados ou moedas incorretos.
 
-## Verificar Saldo de Contas
-
-```sql
-SELECT name, initial_balance, type
-FROM accounts
-WHERE workspace_id = 'uuid-aqui';
-```
-
-## Listar Transações por Categoria
-
-```sql
-SELECT
-    c.name as category,
-    SUM(e.amount) as total
-FROM expenses e
-JOIN categories c ON e.category_id = c.id
-WHERE e.transaction_date >= '2023-01-01'
-GROUP BY c.name
-ORDER BY total DESC;
-```
-
-## Encontrar Transações Não Categorizadas (IA Falhou)
-
-```sql
-SELECT description, amount
-FROM expenses
-WHERE category_id IS NULL OR is_trusted = false;
-```
+Antes de analisar um número, use a [matriz de cobertura](../product/coverage.md) para localizar o repositório correto e veja as fórmulas nas páginas de domínio. Por exemplo, backend/internal/infra/postgres/repository/transaction_query_postgres.go constrói o extrato, budget_postgres.go trata orçamento e dashboard_postgres.go agrega indicadores. A documentação não inclui SQL solto sem filtros de workspace, exclusão lógica, status e período.

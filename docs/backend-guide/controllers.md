@@ -1,31 +1,7 @@
-# Controllers (Handlers)
+# Handlers HTTP
 
-Os controllers (ou handlers HTTP) são a porta de entrada da API. Eles residem em `internal/controller/http/v1`.
+backend/internal/controller/http/v1/router.go registra handlers por domínio e compõe os grupos de middleware. Arquivos como account.go, import.go, planning.go e transactions.go validam parâmetros, chamam casos de uso e traduzem erros em resposta HTTP. Cada arquivo new*Routes define o caminho e o verbo; os contratos gerados estão em [API](../api-simple/index.md).
 
-## Responsabilidades
-1.  **Parse Request**: Ler JSON do body, Query Params ou Path Variables.
-2.  **Validação**: Verificar se os dados obrigatórios estão presentes.
-3.  **Chamada do UseCase**: Invocar a lógica de negócio.
-4.  **Response**: Formatar a resposta (JSON) e o código HTTP adequado (200, 201, 400, 500).
+Ao alterar rota ou anotação Swagger em tarefa de código, siga backend/AGENTS.md para atualizar OpenAPI. Para entender autorização, confira o grupo real em router.go e o [guia de acesso](../product/access-categories-tools.md). Exemplos antigos de CreateAccount com campos/assinaturas inventados foram removidos.
 
-## Exemplo (`account.go`)
-
-```go
-func (r *accountRoutes) create(c *gin.Context) {
-    var request entity.Account
-    if err := c.ShouldBindJSON(&request); err != nil {
-        r.l.Error(err, "http - v1 - createAccount")
-        errorResponse(c, http.StatusBadRequest, "invalid request body")
-        return
-    }
-
-    account, err := r.u.Create(c.Request.Context(), request)
-    if err != nil {
-        r.l.Error(err, "http - v1 - createAccount")
-        errorResponse(c, http.StatusInternalServerError, "database problem")
-        return
-    }
-
-    c.JSON(http.StatusCreated, account)
-}
-```
+Fontes: backend/internal/controller/http/v1/router.go, account.go, import.go e backend/AGENTS.md.

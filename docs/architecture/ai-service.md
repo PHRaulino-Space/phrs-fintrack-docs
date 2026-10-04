@@ -1,21 +1,7 @@
-# Serviço de IA (Categorização)
+# Classificação por embeddings
 
-Um dos diferenciais do FinTrack é o uso de Inteligência Artificial Local para categorização automática.
+O backend possui um cliente HTTP para um serviço configurável de embeddings. Uma descrição pode ser transformada em vetor para buscar sugestão de categoria/subcategoria; o processo de enriquecimento de sessão é disparado separadamente e pode falhar ou deixar o item pendente. Jobs de embeddings de taxonomia também têm fila e tentativas. A disponibilidade do provedor e o destino dos textos dependem da implantação: o código não garante execução local nem proíbe um provedor externo.
 
-## Fluxo de Processamento
+A jornada de [importação](../product/imports-open-finance.md) explica revisão, estados e confirmação. A jornada de [categorias](../product/access-categories-tools.md) explica como o catálogo e o arquivamento interferem na classificação. Uma sugestão não é um lançamento definitivo.
 
-1.  **Ingestão**: Quando uma transação é importada (ex: "UBER *TRIP SAO PAULO"), o sistema a recebe.
-2.  **Geração de Embedding**: O texto da descrição é convertido em um vetor numérico (embedding) que representa seu significado semântico.
-3.  **Busca Vetorial**: O sistema consulta no banco de dados (`category_embeddings`) por transações passadas com vetores similares (distância de cosseno ou similar).
-4.  **Classificação**:
-    - Se encontrar alta similaridade, sugere a mesma categoria/subcategoria.
-    - O sistema calcula um "score de confiança".
-5.  **Aprendizado**: Quando o usuário confirma ou corrige uma categorização, essa nova associação (Descrição -> Categoria) é salva e vetorizada, refinando o modelo para o futuro.
-
-## Privacidade
-
-Todo esse processo ocorre localmente ou em um container dedicado dentro da sua infraestrutura. Nenhuma descrição de transação é enviada para APIs públicas como OpenAI ou Google Gemini, garantindo que seus hábitos de consumo permaneçam privados.
-
-## Integração Técnica
-
-No backend (Go), a lógica reside tipicamente em um serviço (`internal/service/embedding_service.go`) que pode chamar uma biblioteca local ou um microserviço Python lateral para gerar os vetores, dependendo da implementação específica do modelo escolhido (ex: BERT, Sentence Transformers).
+Fontes: backend/internal/service/embedding_service.go, backend/internal/usecase/transaction_enrichment.go, session_enrichment.go, taxonomy_embedding_worker.go e backend/internal/infra/postgres/repository/category_embedding_postgres.go.

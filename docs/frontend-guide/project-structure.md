@@ -1,33 +1,7 @@
-# Estrutura do Projeto Frontend
+# Estrutura do frontend
 
-Entenda como o código do frontend está organizado.
+O App Router do Next.js 16 está em frontend/src/app. (auth) contém login, registro, verificação de email/MFA e recuperação; (fintrack) contém dashboard, planejamento, transações, importação, carteira, metas, workspace, notificações e configurações; (errors) contém páginas de erro. O [inventário](../product/coverage.md) lista as 42 páginas observadas e distingue menu de rota.
 
-## `src/app` (Rotas)
+frontend/src/components reúne componentes de domínio e UI, src/hooks reúne consultas e estado reutilizável, src/services contém clientes e transformações, e src/lib/api.ts centraliza chamadas HTTP. Os testes de interface estão em frontend/e2e e os unitários junto aos módulos. O README e o AGENTS.md do frontend são os guias de instalação e convenções atuais.
 
-O Next.js 14 usa o sistema de arquivos para roteamento.
-
-- `(auth)`: Grupo de rotas de autenticação (sem layout de dashboard).
-    - `login/page.tsx` -> `/login`
-    - `register/page.tsx` -> `/register`
-- `(dashboard)`: Grupo de rotas da área logada (com Sidebar e Header).
-    - `layout.tsx`: Define a estrutura comum (Sidebar + Conteúdo).
-    - `page.tsx` -> `/` (Home/Dashboard)
-    - `import-sessions/page.tsx` -> `/import-sessions`
-    - `settings/` -> Configurações.
-
-## `src/components`
-
-- `ui`: Componentes primitivos (Shadcn).
-- `layout`: Componentes estruturais globais.
-- `dashboard`: Componentes específicos de gráficos e widgets.
-
-## `src/lib`
-
-- `api.ts`: Instância configurada do Axios.
-- `utils.ts`: Funções auxiliares (cn para classes Tailwind, formatação de moeda).
-
-## `src/hooks`
-
-Hooks customizados para lógica reutilizável.
-- `useAuth`: Estado de autenticação.
-- `useToast`: Feedback visual.
+Fonte: frontend/src/app, frontend/src/components/layout/data/sidebar-data.tsx, frontend/src/hooks, frontend/src/services e frontend/package.json.

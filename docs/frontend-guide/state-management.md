@@ -1,24 +1,7 @@
-# Gerenciamento de Estado
+# Estado no frontend
 
-O FinTrack equilibra estado local e global.
+frontend/src/hooks/use-auth.ts usa Zustand para usuário, workspaces e workspace ativo; a persistência guarda apenas a seleção do workspace. Tokens de sessão ficam em cookies HttpOnly do backend, não em uma store JWT. frontend/src/services/data-cache.ts e hooks por domínio administram cache/invalidação de dados de servidor. Formulários usam os componentes e validadores existentes do respectivo domínio.
 
-## Estado Global (Zustand)
+O layout de produto é cliente porque ProtectedRoute usa hooks. Não presuma que toda leitura ocorre em Server Component. A seleção do workspace é fixada em cada requisição HTTP e validada pelo backend. Veja [arquitetura frontend](../architecture/frontend.md) e [acesso](../product/access-categories-tools.md).
 
-Usamos **Zustand** para dados que precisam ser acessados em qualquer lugar da aplicação.
-
-### Auth Store (`useAuth`)
-Armazena:
-- Usuário logado.
-- Token JWT (opcional, pode estar apenas em cookie).
-- Workspace Ativo (`activeWorkspace`).
-- Métodos: `login`, `logout`, `setWorkspace`.
-
-## Estado de Servidor (React Query / SWR / useEffect)
-
-Para dados vindos da API (lista de transações, saldo), preferimos fetching direto nos componentes ou usando bibliotecas de cache como **TanStack Query** (se instalado) ou `useEffect` simples com estados locais.
-
-O Next.js Server Components (RSC) também é usado para buscar dados no lado do servidor quando possível, passando como props para componentes cliente.
-
-## Estado de Formulário
-
-**React Hook Form** gerencia o estado de inputs, validação e submissão, evitando re-renderizações desnecessárias.
+Fontes: frontend/src/hooks/use-auth.ts, frontend/src/services/data-cache.ts, frontend/src/app/(fintrack)/layout.tsx, frontend/src/lib/api.ts.

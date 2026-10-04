@@ -1,30 +1,7 @@
-# Repositories
+# Repositórios PostgreSQL
 
-A camada de repositório (`internal/usecase/repo`) é responsável pela persistência de dados. Ela implementa as interfaces definidas na camada de UseCase.
+As implementações concretas estão em backend/internal/infra/postgres/repository, e os contratos consumidos pelos casos de uso ficam em backend/internal/usecase. O projeto usa GORM e SQL específico quando uma consulta exige filtros, agregações, locks ou transações. Consulte o código de cada repositório para status, moeda e período: a consulta agregada de transações, por exemplo, combina tabelas físicas diferentes.
 
-## PostgreSQL
+Operações que precisam ser atômicas, como commit de importação e confirmação de exclusão com dependências, usam transações e testes de falha. Não copie exemplos antigos de pgx/Squirrel; eles não representam a implementação atual.
 
-Usamos drivers padrão (`pgx` ou `lib/pq`) para conectar ao Postgres. Frequentemente usamos um Builder de SQL (como `Squirrel`) para construir queries dinâmicas de forma segura.
-
-## Exemplo de Implementação
-
-```go
-func (r *AccountRepo) Create(ctx context.Context, a *entity.Account) error {
-    sql, args, err := r.Builder.
-        Insert("accounts").
-        Columns("id", "workspace_id", "name", ...).
-        Values(a.ID, a.WorkspaceID, a.Name, ...).
-        ToSql()
-
-    if err != nil {
-        return fmt.Errorf("AccountRepo - Create - r.Builder: %w", err)
-    }
-
-    _, err = r.Pool.Exec(ctx, sql, args...)
-    if err != nil {
-        return fmt.Errorf("AccountRepo - Create - r.Pool.Exec: %w", err)
-    }
-
-    return nil
-}
-```
+Fontes: backend/internal/infra/postgres/repository/import_postgres.go, transaction_query_postgres.go, impact_confirm_postgres.go e backend/internal/usecase/interfaces.go.

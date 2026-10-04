@@ -1,46 +1,7 @@
-# Contas e Cartões
+# Contas e cartões
 
-Para começar a registrar transações, você precisa configurar onde o dinheiro está (Contas) e como você gasta (Cartões).
+Cadastre contas em **Workspace → Contas** e cartões em **Workspace → Cartões**. Verifique o usuário atribuído, a moeda, o saldo inicial e, para cartões, a conta de pagamento, o limite, o fechamento e o vencimento. Uma compra de cartão forma saldo de fatura; o débito da conta ocorre por pagamento registrado.
 
-## Contas (Accounts)
+A [jornada de contas e cartões](../product/accounts-cards.md) explica saldo atual, status, arquivamento, transferência, competência de compra, parcelas, antecipações, pagamento parcial e efeitos de exclusão com fórmulas e exemplos fictícios. Leia as [lacunas](../product/known-gaps.md) antes de comparar saldo de tela com caixa disponível no planejamento.
 
-Representam qualquer lugar onde há saldo financeiro.
-
-### Tipos de Conta
-- **Conta Corrente (Checking)**: Contas bancárias tradicionais.
-- **Carteira (Wallet)**: Dinheiro em espécie.
-- **Investimentos**: Corretoras.
-- **Poupança**: Reservas financeiras.
-- **Vale Refeição**: Saldo destinado a refeições.
-- **Vale Alimentação**: Saldo destinado a compras de alimentos.
-
-### Como Cadastrar
-1.  Vá para **Configurações > Contas**.
-2.  Clique em "Nova Conta".
-3.  Preencha:
-    - **Nome**: Ex: "Nubank", "Itaú".
-    - **Tipo**: Selecione na lista.
-    - **Usuário marcado**: Obrigatório para identificar a conta nos filtros. O criador é selecionado inicialmente; a marcação não altera permissões.
-    - **Saldo Inicial**: O valor que existe na conta hoje. Isso servirá de base para o cálculo de saldo futuro.
-
-## Cartões de Crédito (Cards)
-
-Cartões têm um comportamento diferente pois geram uma fatura (Invoice) e possuem datas de corte.
-
-### Como Cadastrar
-1.  Vá para **Configurações > Cartões**.
-2.  Clique em "Novo Cartão".
-3.  Preencha:
-    - **Nome**: Ex: "Visa Platinum".
-    - **Usuário marcado**: Obrigatório para identificar o cartão nos filtros. O criador é selecionado inicialmente; a marcação não altera permissões.
-    - **Conta de Pagamento**: De qual conta (já cadastrada) o dinheiro sairá para pagar a fatura?
-    - **Limite**: Seu limite de crédito.
-    - **Dia de Fechamento**: O dia que a fatura "vira". Compras após esse dia caem no mês seguinte.
-    - **Dia de Vencimento**: O dia que você paga a fatura.
-
-### Ciclo do Cartão
-O FinTrack gerencia automaticamente as faturas. Ao importar despesas de cartão:
-1.  A despesa é registrada no cartão.
-2.  O saldo da sua conta bancária **não** muda imediatamente.
-3.  Uma "Fatura" mensal acumula essas despesas.
-4.  Quando você paga a fatura, uma transação de "Pagamento" sai da sua Conta Corrente e zera a dívida do cartão.
+Fontes: frontend/src/app/(fintrack)/workspace/accounts e cards; backend/internal/usecase/account.go, card.go e invoice.go.

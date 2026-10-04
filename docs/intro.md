@@ -2,37 +2,22 @@
 sidebar_position: 1
 ---
 
-# Introdução
+# FinTrack
 
-## Visão Geral
+FinTrack reúne contas, cartões, transações, recorrências, importações, investimentos, metas e planejamento em workspaces com membros e permissões. A interface atual usa Next.js 16; a API usa Go/Gin e PostgreSQL. Há integrações opcionais de embeddings e Open Finance que dependem de serviços e credenciais configurados pela implantação.
 
-O **FinTrack** é uma solução completa de gestão de finanças pessoais, projetada para quem busca controle total sobre seus dados financeiros com privacidade e automação. Diferente das planilhas tradicionais ou apps comerciais que exigem compartilhamento de credenciais bancárias, o FinTrack opera em um modelo **auto-hospedado (self-hosted)**, garantindo que suas informações sensíveis nunca saiam do seu controle.
+Comece por [Produto e regras atuais](./product/index.md) para acompanhar jornadas e cálculos. A [matriz de cobertura](./product/coverage.md) indica as fontes no código e os testes; a [referência de API](./api-simple/index.md) detalha os endpoints. Consulte as [lacunas conhecidas](./product/known-gaps.md) antes de interpretar projeções e simulações como movimentos financeiros efetivos.
 
-O projeto combina uma interface moderna e intuitiva com o poder da **Inteligência Artificial** para automatizar a categorização de transações, transformando a tediosa tarefa de registrar gastos em um processo rápido e inteligente.
+## Para quem usa
 
-## Principais Funcionalidades
+1. Entre e selecione um workspace; contas, cartões, categorias e movimentos são ligados a esse contexto.
+2. Cadastre contas e cartões; confira saldo inicial, moeda, usuário atribuído, fechamento e vencimento.
+3. Registre lançamentos diretamente ou crie uma sessão de importação para revisar dados antes de confirmar. Uma conexão Open Finance pode fornecer transações por um provedor externo configurado.
+4. Leia transações, faturas, recorrências e planejamento distinguindo **pago**, **pendente**, **projetado** e **simulado**.
+5. Acompanhe investimentos e metas com atenção às moedas e ao fato de que uma ligação entre entidades não movimenta dinheiro por si só.
 
-- **Categorização Inteligente via IA**: Utiliza modelos de linguagem (LLMs) rodando localmente para entender e categorizar suas transações automaticamente.
-- **Importação de Extratos**: Suporte robusto para importação de arquivos CSV de diversos bancos, com fluxo de revisão e aprendizado.
-- **Multi-Workspace**: Gerencie múltiplos contextos financeiros (ex: "Pessoal", "Casa", "Freelance") de forma totalmente isolada.
-- **Dashboards Interativos**: Visualize sua saúde financeira através de gráficos claros de receitas, despesas e tendências.
-- **Gestão de Recorrências**: Controle automático de assinaturas e contas fixas.
-- **Privacidade Total**: Todo o sistema roda na sua infraestrutura, sem dependência de nuvens de terceiros para processamento de dados.
+As páginas de [acesso e configurações](./product/access-categories-tools.md), [contas e cartões](./product/accounts-cards.md), [transações e recorrências](./product/transactions-recurring.md), [importações](./product/imports-open-finance.md), [investimentos e metas](./product/investments-goals.md) e [planejamento](./product/planning-budgets-dashboard.md) explicam o caminho completo e mostram exemplos **fictícios**.
 
-## Diferenciais Competitivos
+## Para quem desenvolve
 
-1.  **Soberania dos Dados**: Seus dados financeiros são seus. O FinTrack não envia nada para servidores externos.
-2.  **IA Local**: A inteligência de categorização roda junto com a aplicação, garantindo performance e privacidade.
-3.  **Flexibilidade**: Código aberto e extensível, permitindo adaptações para necessidades específicas.
-4.  **Custo Zero de Licença**: Livre de mensalidades de SaaS (Software as a Service).
-
-## Público-Alvo
-
-- Entusiastas de tecnologia e *self-hosting*.
-- Pessoas preocupadas com privacidade de dados financeiros.
-- Quem gerencia finanças de múltiplos contextos (família, pequenos negócios).
-- Usuários insatisfeitos com a falta de flexibilidade dos apps financeiros tradicionais.
-
----
-
-Comece agora mesmo explorando o [Guia de Instalação](./getting-started/installation.md) ou entenda a [Arquitetura do Sistema](./architecture/overview.md).
+Leia o [mapa do domínio](./product/domain-map.md), o [guia de manutenção](./product/maintenance.md) e os `AGENTS.md` de backend e frontend antes de alterar regras. O conteúdo desta seção foi conferido contra checkpoints identificados no índice do produto; não substitui testes nem a implementação atual quando o código evoluir.

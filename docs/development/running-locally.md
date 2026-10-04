@@ -1,46 +1,7 @@
-# Rodando Localmente
+# Execução local
 
-Como iniciar todos os serviços para desenvolvimento.
+O caminho operacional atual está nos READMEs de backend e frontend. O backend usa DATABASE_URL e SECRET_KEY; a aplicação HTTP não aplica migrations/seed no startup. Um operador prepara banco com backend/cmd/dbsetup ou make db-setup após configurar o ambiente. O frontend instala com pnpm install --frozen-lockfile e usa pnpm run dev na porta 7201. A API usa PORT 8080 por padrão.
 
-## 1. Banco de Dados
+Para inspeção sem serviços: execute make check no backend e pnpm run check no frontend, dentro de cada repositório. Os testes de integração do backend são alvo separado e requerem Docker/Testcontainers ou DSN de teste. O frontend pode usar MSW com NEXT_PUBLIC_MSW_ENABLED=true, conforme frontend/README.md; isso não testa o banco.
 
-Suba o Postgres via Docker:
-
-```bash
-docker run --name fintrack-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=fintrack -p 5432:5432 -d postgres:15
-```
-
-Rode o script de criação de tabelas:
-```bash
-psql -h localhost -U postgres -d fintrack < backend/docs/fintrack_schema.sql
-```
-
-## 2. Backend
-
-Abra um terminal na pasta `backend/`:
-
-```bash
-# Baixar dependências
-go mod tidy
-
-# Rodar servidor
-go run cmd/app/main.go
-```
-O backend rodará em `localhost:8080`.
-
-## 3. Frontend
-
-Abra outro terminal na pasta `frontend/`:
-
-```bash
-# Instalar dependências
-npm install
-
-# Rodar servidor de desenvolvimento
-npm run dev
-```
-O frontend rodará em `localhost:3000`.
-
-## 4. Testando
-
-Acesse `http://localhost:3000`. O frontend deve carregar e tentar conectar ao backend. Se houver erro de conexão, verifique o console do browser e do backend.
+Não há schema canônico em backend/docs/fintrack_schema.sql nem instrução atual para restaurar esse arquivo. Veja [migrações](../database/migrations.md) e [configuração](../getting-started/configuration.md).

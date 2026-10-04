@@ -1,29 +1,7 @@
-# Testes Backend
+# Testes backend
 
-## Unit Tests
+make check reúne lint, typecheck e testes de unidade sem .env, 1Password, API ou banco. make test-integration executa testes marcados integration; requer Docker/Testcontainers ou FINTRACK_TEST_PG_URL/DATABASE_URL. Testes adjacentes aos casos de uso usam mocks manuais quando apropriado; repositórios com locks, constraints e gatilhos precisam de integração.
 
-Testamos a lógica de negócio isolando as dependências externas (DB).
+Não execute testes de integração contra banco de produção. A [matriz de cobertura](../product/coverage.md) aponta cenários relevantes e seus limites. Consulte backend/AGENTS.md e backend/README.md para os alvos reais.
 
-```go
-func TestCreateAccount(t *testing.T) {
-    // Setup Mock Controller
-    ctrl := gomock.NewController(t)
-    defer ctrl.Finish()
-
-    mockRepo := mocks.NewMockAccountRepo(ctrl)
-    useCase := NewAccountUseCase(mockRepo)
-
-    // Expectations
-    mockRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
-
-    // Execute
-    err := useCase.Create(context.Background(), &entity.Account{Name: "Test"})
-
-    // Assert
-    assert.NoError(t, err)
-}
-```
-
-## Integration Tests
-
-Testes que batem no banco real (frequentemente usando Docker containers efêmeros para o teste). Verificam se o SQL está correto.
+Fontes: backend/Makefile, backend/AGENTS.md, backend/internal/usecase/*_test.go e backend/internal/infra/postgres/repository/*_integration_test.go.

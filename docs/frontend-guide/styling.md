@@ -1,20 +1,7 @@
-# Estilização
+# Estilo
 
-O estilo visual é 100% **Tailwind CSS**.
+O frontend usa Tailwind CSS 4, tokens em frontend/src/app/globals.css, shadcnblocks/shadcn e next-themes. Consulte frontend/AGENTS.md para prioridade de componentes e regras de estilo antes de alterar UI. Não procure tailwind.config.ts como mapa principal de tokens neste checkout: as definições atuais estão no CSS.
 
-## Princípios
+A interface é responsiva; cenários de navegador estão em frontend/e2e/responsive.spec.ts. Esta página descreve o stack, não impõe um desenho novo.
 
-- **Utility-First**: Escreva classes diretamente no JSX.
-- **Theming**: As cores (primary, secondary, accent) são definidas em variáveis CSS no `globals.css` e mapeadas no `tailwind.config.ts`. Isso facilita a troca entre Light e Dark Mode.
-- **Responsividade**: Use prefixos `md:`, `lg:` para adaptar layouts.
-
-Exemplo:
-```tsx
-<div className="flex flex-col md:flex-row gap-4 p-4 bg-muted/50 rounded-xl">
-  ...
-</div>
-```
-
-## Dark Mode
-
-O suporte a tema escuro é nativo via `next-themes`. A classe `dark` é aplicada ao elemento `html`, e as variáveis CSS ajustam as cores automaticamente.
+Fontes: frontend/package.json, frontend/src/app/globals.css, frontend/AGENTS.md e frontend/e2e/responsive.spec.ts.
