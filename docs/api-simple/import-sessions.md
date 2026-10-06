@@ -25,6 +25,23 @@ Delete an import session and all its staged transactions
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## DELETE `/import-sessions/{id}/knowledge/{item_id}`
+
+**Resumo:** Delete a knowledge item
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| item_id | path | string | sim | Item ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
 ## DELETE `/import-sessions/{id}/recurring-bindings/{binding_id}`
 
 **Resumo:** Delete a recurring transaction binding
@@ -120,6 +137,24 @@ Get detailed import session with enriched data including initial balance, contex
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## GET `/import-sessions/{id}/knowledge`
+
+**Resumo:** List knowledge items in an import session
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;entity.ImportKnowledge&gt; |
+
 ## GET `/import-sessions/{id}/staged-transactions`
 
 **Resumo:** List staged transactions in session
@@ -143,6 +178,28 @@ Get all staged transactions for a specific import session
 | 200 | OK | array&lt;entity.StagedTransaction&gt; |
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
+
+## PATCH `/import-sessions/{id}/knowledge/{item_id}/check`
+
+**Resumo:** Set knowledge item checkbox
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| item_id | path | string | sim | Item ID |
+| body | body | v1.knowledgeCheckBody | sim | Checkbox |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ImportKnowledge |
 
 ## POST `/import-sessions`
 
@@ -292,6 +349,43 @@ Promote VALIDATING transactions in this import session's account or card context
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## POST `/import-sessions/{id}/knowledge`
+
+**Resumo:** Create a knowledge item in an import session
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| body | body | v1.knowledgeBody | sim | Item |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.ImportKnowledge |
+
+## POST `/import-sessions/{id}/knowledge/clear-checks`
+
+**Resumo:** Clear checkboxes in an import session
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
 ## POST `/import-sessions/{id}/recurring-bindings/{binding_id}/confirm`
 
 **Resumo:** Confirm a recurring transaction binding
@@ -392,7 +486,62 @@ Update editable fields of an import session (description, billing_month, target_
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## PUT `/import-sessions/{id}/knowledge/{item_id}`
+
+**Resumo:** Update a knowledge item
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| item_id | path | string | sim | Item ID |
+| body | body | v1.knowledgeBody | sim | Item |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ImportKnowledge |
+
+## PUT `/import-sessions/{id}/knowledge/order`
+
+**Resumo:** Reorder all knowledge items in a session
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| body | body | v1.knowledgeOrderBody | sim | Ordered item IDs |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
 ### Schemas
+
+#### entity.ImportKnowledge
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| checked | boolean | não |  |
+| content_html | string | não |  |
+| created_at | string | não |  |
+| id | string | não |  |
+| position | integer | não |  |
+| session_id | string | não |  |
+| title | string | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
 
 #### entity.ImportSession
 
@@ -541,6 +690,26 @@ Sem propriedades.
 | line_number | integer | não |  |
 | transaction_date | string | sim |  |
 | type | entity.StagedTransactionType | sim |  |
+
+#### v1.knowledgeBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| checked | boolean | não |  |
+| content_html | string | não |  |
+| title | string | sim |  |
+
+#### v1.knowledgeCheckBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| checked | boolean | sim |  |
+
+#### v1.knowledgeOrderBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| ids | array&lt;string&gt; | sim |  |
 
 #### v1.updateImportSessionRequest
 

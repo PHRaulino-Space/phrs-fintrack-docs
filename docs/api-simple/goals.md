@@ -58,7 +58,7 @@ Remove an investment from an invest goal
 
 **Resumo:** List goals
 
-List all goals for a given workspace
+List workspace goals with saved completion values, tagged spending and remaining savings
 
 **Consumes:** application/json
 
@@ -82,7 +82,7 @@ List all goals for a given workspace
 
 **Resumo:** Get a single goal
 
-Get a single goal by its ID
+Get a goal with saved completion value (when recorded), tagged spending and remaining savings
 
 **Consumes:** application/json
 
@@ -159,6 +159,8 @@ Update a goal
 
 **Resumo:** Create a new goal
 
+Create an investment-backed goal and its dedicated tag atomically; name must fit 100 characters
+
 **Consumes:** application/json
 
 **Produces:** application/json
@@ -182,7 +184,7 @@ Update a goal
 
 **Resumo:** Complete goal
 
-Mark a goal as completed
+Save the investment value at completion; repeated calls preserve the original snapshot
 
 **Consumes:** application/json
 
@@ -235,7 +237,7 @@ Add an investment to an invest goal
 
 **Resumo:** Reopen goal
 
-Mark a goal as not completed
+Reopen a goal and clear its prior completion snapshot
 
 **Consumes:** application/json
 
@@ -338,9 +340,18 @@ Sem propriedades.
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.CardChargebackTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.CardChargebackTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card_chargeback_id | string | não |  |
+| tag_id | string | não |  |
 
 #### entity.CardExpense
 
@@ -358,6 +369,7 @@ Sem propriedades.
 | recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.CardExpenseTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -399,9 +411,18 @@ Sem propriedades.
 | created_at | string | não |  |
 | id | string | não |  |
 | is_final_payment | boolean | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.CardPaymentTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.CardPaymentTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card_payment_id | string | não |  |
+| tag_id | string | não |  |
 
 #### entity.Category
 
@@ -446,6 +467,7 @@ Sem propriedades.
 | recurring_expense_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.ExpenseTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -467,6 +489,7 @@ Sem propriedades.
 | category | string | não |  |
 | color | string | não |  |
 | completed_at | string | não |  |
+| completed_value | number | não | CompletedValue is written only when a goal is completed. Legacy completions remain nil. |
 | created_at | string | não |  |
 | current_value | number | não |  |
 | due_date | string | não |  |
@@ -477,10 +500,13 @@ Sem propriedades.
 | priority | entity.GoalPriority | não |  |
 | priority_rank | integer | não | PriorityRank allows more than three levels; nil preserves legacy priority semantics. |
 | purpose | entity.GoalPurpose | não |  |
+| remaining_value | number | não |  |
 | reserve_kind | string | não |  |
+| tag_id | string | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
+| used_value | number | não |  |
 | workspace_id | string | não |  |
 
 #### entity.GoalInvestment
@@ -546,6 +572,7 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.IncomeTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -580,6 +607,7 @@ Sem propriedades.
 | investment_withdrawals | array&lt;entity.InvestmentWithdrawal&gt; | não |  |
 | is_rescued | boolean | não |  |
 | liquidity | entity.LiquidityType | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.InvestmentTag&gt; | não |  |
 | type | entity.InvestmentType | não |  |
 | updated_at | string | não |  |
@@ -600,9 +628,19 @@ Sem propriedades.
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
 | recurring_transaction_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.InvestmentDepositTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.InvestmentDepositTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| investment_deposit_id | string | não |  |
+| tag | entity.Tag | não |  |
+| tag_id | string | não |  |
 
 #### entity.InvestmentTag
 
@@ -643,9 +681,19 @@ Sem propriedades.
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
 | recurring_transaction_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.InvestmentWithdrawalTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.InvestmentWithdrawalTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| investment_withdrawal_id | string | não |  |
+| tag | entity.Tag | não |  |
+| tag_id | string | não |  |
 
 #### entity.Invoice
 
@@ -699,6 +747,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringCardTransactionTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -736,6 +785,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringExpenseTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -773,6 +823,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringIncomeTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -933,6 +984,7 @@ Sem propriedades.
 | category | string | não |  |
 | color | string | não |  |
 | completed_at | string | não |  |
+| completed_value | number | não |  |
 | created_at | string | não |  |
 | current_value | number | não |  |
 | due_date | string | não |  |
@@ -943,10 +995,13 @@ Sem propriedades.
 | priority | entity.GoalPriority | não |  |
 | priority_rank | integer | não |  |
 | purpose | entity.GoalPurpose | não |  |
+| remaining_value | number | não |  |
 | reserve_kind | string | não |  |
+| tag_id | string | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
 | updated_at | string | não |  |
+| used_value | number | não |  |
 | workspace_id | string | não |  |
 
 #### v1.investmentAccountSummary
@@ -971,6 +1026,7 @@ Sem propriedades.
 | index_value | string | não |  |
 | is_rescued | boolean | não |  |
 | liquidity | entity.LiquidityType | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | type | entity.InvestmentType | não |  |
 | updated_at | string | não |  |
 | validity | string | não |  |

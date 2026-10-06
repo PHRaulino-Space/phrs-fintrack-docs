@@ -147,10 +147,17 @@ Workspace-scoped search across account and card transactions. Totals cover all m
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| search | query | string | não | Description substring |
+| search | query | string | não | Comma-separated terms matched against description, civil date and BRL amount |
 | type | query | string | não | Transaction type |
 | date_from | query | string | não | Start date (YYYY-MM-DD) |
 | date_to | query | string | não | End date (YYYY-MM-DD) |
+| account_id | query | string | não | Account UUID (transfers also match destination) |
+| card_id | query | string | não | Card UUID |
+| assigned_user_id | query | string | não | User assigned to account or card |
+| category_id | query | string | não | Category UUID |
+| tag_ids | query | string | não | Comma-separated tag UUIDs (any match) |
+| amount_min | query | string | não | Minimum absolute amount (decimal, inclusive) |
+| amount_max | query | string | não | Maximum absolute amount (decimal, inclusive) |
 | limit | query | integer | não | Page size (1-100, default 20) |
 | offset | query | integer | não | Row offset |
 
@@ -325,9 +332,9 @@ Create a new investment withdrawal
 
 ## POST `/transactions/editor/batch`
 
-**Resumo:** Edit descriptions, categories or recurring links in a transaction selection
+**Resumo:** Edit descriptions, categories, recurring links or add tags in a transaction selection
 
-Only explicitly allowed metadata changes. On non-open card invoices only description and category can change. Each target returns an independent result.
+Tags are added without removing existing links and duplicates are ignored. Each target returns an independent result.
 
 **Consumes:** application/json
 
@@ -483,9 +490,18 @@ Sem propriedades.
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.CardChargebackTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.CardChargebackTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card_chargeback_id | string | não |  |
+| tag_id | string | não |  |
 
 #### entity.CardExpense
 
@@ -503,6 +519,7 @@ Sem propriedades.
 | recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.CardExpenseTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -544,9 +561,18 @@ Sem propriedades.
 | created_at | string | não |  |
 | id | string | não |  |
 | is_final_payment | boolean | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.CardPaymentTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.CardPaymentTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card_payment_id | string | não |  |
+| tag_id | string | não |  |
 
 #### entity.Category
 
@@ -591,6 +617,7 @@ Sem propriedades.
 | recurring_expense_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.ExpenseTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -647,6 +674,7 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.IncomeTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -681,6 +709,7 @@ Sem propriedades.
 | investment_withdrawals | array&lt;entity.InvestmentWithdrawal&gt; | não |  |
 | is_rescued | boolean | não |  |
 | liquidity | entity.LiquidityType | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.InvestmentTag&gt; | não |  |
 | type | entity.InvestmentType | não |  |
 | updated_at | string | não |  |
@@ -701,9 +730,19 @@ Sem propriedades.
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
 | recurring_transaction_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.InvestmentDepositTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.InvestmentDepositTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| investment_deposit_id | string | não |  |
+| tag | entity.Tag | não |  |
+| tag_id | string | não |  |
 
 #### entity.InvestmentTag
 
@@ -744,9 +783,19 @@ Sem propriedades.
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
 | recurring_transaction_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.InvestmentWithdrawalTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.InvestmentWithdrawalTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| investment_withdrawal_id | string | não |  |
+| tag | entity.Tag | não |  |
+| tag_id | string | não |  |
 
 #### entity.Invoice
 
@@ -800,6 +849,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringCardTransactionTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -837,6 +887,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringExpenseTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -874,6 +925,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringIncomeTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -1006,6 +1058,7 @@ Sem propriedades.
 | source_account_name | string | não |  |
 | sub_category_id | string | não |  |
 | sub_category_name | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | string | não |  |
 | type | string | não |  |
@@ -1084,6 +1137,7 @@ Sem propriedades.
 | billing_month | string | sim |  |
 | card_id | string | sim |  |
 | description | string | sim |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1100,6 +1154,7 @@ Sem propriedades.
 | installments | integer | não |  |
 | recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1110,6 +1165,7 @@ Sem propriedades.
 | account_id | string | sim |  |
 | amount | number | sim |  |
 | is_final_payment | boolean | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1120,6 +1176,7 @@ Sem propriedades.
 | account_id | string | sim |  |
 | amount | number | sim |  |
 | description | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1131,6 +1188,7 @@ Sem propriedades.
 | amount | number | sim |  |
 | description | string | não |  |
 | rescued | boolean | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1141,6 +1199,7 @@ Sem propriedades.
 | category_id | string | não |  |
 | description | string | não |  |
 | recurring_transaction_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | targets | array&lt;usecase.EditorTarget&gt; | não |  |
 
 #### v1.installmentAmountType
@@ -1153,6 +1212,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | amount | number | não |  |
 | description | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1165,6 +1225,7 @@ Sem propriedades.
 | description | string | não |  |
 | recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -1175,5 +1236,6 @@ Sem propriedades.
 | account_id | string | não |  |
 | amount | number | não |  |
 | is_final_payment | boolean | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |

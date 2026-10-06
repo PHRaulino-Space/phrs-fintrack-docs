@@ -180,9 +180,18 @@ Sem propriedades.
 | recurring_transfer_id | string | não |  |
 | source_account | object | não | Relationships |
 | source_account_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.TransferTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.TransferTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| tag_id | string | não |  |
+| transfer_id | string | não |  |
 
 #### v1.createTransferRequest
 
@@ -193,6 +202,7 @@ Sem propriedades.
 | destination_account_id | string | sim |  |
 | recurring_transfer_id | string | não |  |
 | source_account_id | string | sim |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -209,6 +219,7 @@ Sem propriedades.
 | recurring_transfer_id | string | não |  |
 | source_account_id | string | não |  |
 | source_account_name | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
@@ -222,5 +233,6 @@ Sem propriedades.
 | destination_account_id | string | não | Destination account ID. Omitted preserves the current value. |
 | recurring_transaction_id | string | não | Recurring transfer ID. Omitted preserves the current link; null unsets it. |
 | source_account_id | string | não | Source account ID. Omitted preserves the current value. |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não | Transaction date (YYYY-MM-DD). Omitted preserves the current value. |
 | transaction_status | object | não | Transaction status. Omitted preserves the current value. |

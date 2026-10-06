@@ -10,6 +10,14 @@ Em **Transações**, a página `frontend/src/app/(fintrack)/transactions/page.ts
 
 O frontend só busca dados dessas abas com usuário e workspace ativos. `useTransactionReferences` carrega contas, cartões, categorias e investimentos em paralelo; `useAccountTransactions` consulta páginas do extrato e resumo separadamente; `useRecurringTransactions` consulta lista e resumo de recorrências em paralelo. Mutações invalidam as consultas para atualizar a tela. Fontes: `frontend/src/hooks/use-transaction-queries.ts`, `frontend/src/services/transactions.ts`, `frontend/src/services/transaction-mutations.ts`, `frontend/src/app/(fintrack)/transactions/components/{contas-tab,recorrencias-tab}.tsx`.
 
+## Tags nos lançamentos
+
+Os formulários de conta, cartão, investimentos, recorrências e sessões de importação aceitam `tag_ids` (UUIDs de tags do workspace). Em criação, a lista estabelece os vínculos; em edição, omitir o campo preserva os vínculos e enviar `[]` os remove. IDs repetidos são deduplicados e IDs de outro workspace são rejeitados. A API devolve `tag_ids` nas leituras de movimentos persistidos para reabrir a edição sem perder as escolhas. Receitas, despesas, transferências, compras e estornos de cartão, pagamentos de fatura, investimentos, aportes e resgates têm vínculos próprios. A presença de uma tag não altera o valor nem cria outro lançamento financeiro.
+
+Recorrências de receita, despesa, transferência e cartão guardam suas tags; transações geradas herdam a lista vigente no momento da geração. Itens preparados na importação validam suas tags antes do commit e as aplicam ao lançamento resultante. Na superedição, `POST /transactions/editor/batch` com `tag_ids` **adiciona** essas tags aos movimentos selecionados: preserva as existentes e ignora duplicatas. Erros são devolvidos por item. O extrato não persiste tags em linhas apenas projetadas.
+
+Tags de aportes importados anteriormente foram gravadas no investimento, não no aporte. Não há backfill automático seguro: uma tag já vinculada ao investimento pode ter sido escolhida intencionalmente e a origem histórica não é inequívoca.
+
 ## Extrato de contas: da entrada ao resultado
 
 1. O usuário escolhe mês, conta, responsável, tipo e se deseja incluir projetados. A busca textual da tabela é feita na interface; mês, conta, responsável, tipo e projetados compõem a consulta à API. O período do mês vai do primeiro ao último dia civil, inclusive.

@@ -143,6 +143,7 @@ Sem propriedades.
 | description | string | sim |  |
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
 
@@ -161,6 +162,7 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
 | sub_category_name | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
@@ -174,5 +176,6 @@ Sem propriedades.
 | description | string | não |  |
 | recurring_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |

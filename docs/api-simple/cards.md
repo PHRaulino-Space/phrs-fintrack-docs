@@ -445,9 +445,18 @@ Sem propriedades.
 | created_at | string | não |  |
 | description | string | não |  |
 | id | string | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.CardChargebackTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.CardChargebackTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card_chargeback_id | string | não |  |
+| tag_id | string | não |  |
 
 #### entity.CardExpense
 
@@ -465,6 +474,7 @@ Sem propriedades.
 | recurring_card_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.CardExpenseTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -506,9 +516,18 @@ Sem propriedades.
 | created_at | string | não |  |
 | id | string | não |  |
 | is_final_payment | boolean | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
+| tags | array&lt;entity.CardPaymentTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
 | updated_at | string | não |  |
+
+#### entity.CardPaymentTag
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card_payment_id | string | não |  |
+| tag_id | string | não |  |
 
 #### entity.Category
 
@@ -553,6 +572,7 @@ Sem propriedades.
 | recurring_expense_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.ExpenseTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -609,6 +629,7 @@ Sem propriedades.
 | recurring_income_id | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.IncomeTag&gt; | não |  |
 | transaction_date | string | não |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -671,6 +692,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringCardTransactionTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -708,6 +730,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringExpenseTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |
@@ -745,6 +768,7 @@ Sem propriedades.
 | start_date | string | não |  |
 | sub_category_id | string | não |  |
 | subcategory | entity.SubCategory | não |  |
+| tag_ids | array&lt;string&gt; | não |  |
 | tags | array&lt;entity.RecurringIncomeTag&gt; | não |  |
 | type | entity.RecurringType | não |  |
 | updated_at | string | não |  |

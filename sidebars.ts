@@ -26,6 +26,7 @@ const sidebars: SidebarsConfig = {
         'product/transactions-recurring',
         'product/imports-open-finance',
         'product/investments-goals',
+        'product/assets',
         'product/planning-budgets-dashboard',
         'product/glossary',
         'product/coverage',
