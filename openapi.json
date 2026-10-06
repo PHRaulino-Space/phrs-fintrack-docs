@@ -1236,6 +1236,407 @@
                 }
             }
         },
+        "/assets": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "List assets with tagged expenses and valuations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/usecase.AssetDetail"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Create an asset and its dedicated workspace tag atomically",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Asset",
+                        "name": "asset",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Get an asset's expenses and valuation history",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Delete an asset and its non-financial metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Edit an asset and optionally correct its initial acquisition valuation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Asset update",
+                        "name": "asset",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetUpdateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/expenses/{kind}/{source_id}/payment": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Inform or clear principal and known charges of one classified installment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "expense or card_expense",
+                        "name": "kind",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tagged expense ID",
+                        "name": "source_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nullable informed principal and known charges",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetPaymentBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/expenses/{kind}/{source_id}/purpose": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Classify a tagged expense in the asset's local acquisition or costs group",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "expense or card_expense",
+                        "name": "kind",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expense ID",
+                        "name": "source_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Purpose",
+                        "name": "purpose",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetPurposeBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/financing": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Save optional financing tracking metadata without creating financial transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Full financing configuration; omitted optional fields are cleared",
+                        "name": "financing",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetFinancingBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/valuations": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Record a dated sale-value estimate without a financial transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Valuation",
+                        "name": "valuation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetValuationBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/forgot-password": {
             "post": {
                 "description": "Queue a password reset request for asynchronous processing. Links are valid for 15 minutes. Always returns the same accepted response for valid requests without waiting for account lookup or email delivery.",
@@ -6277,7 +6678,7 @@
         },
         "/goals": {
             "get": {
-                "description": "List all goals for a given workspace",
+                "description": "List workspace goals with saved completion values, tagged spending and remaining savings",
                 "consumes": [
                     "application/json"
                 ],
@@ -6328,7 +6729,7 @@
                 }
             },
             "post": {
-                "description": "Create a new goal",
+                "description": "Create an investment-backed goal and its dedicated tag atomically; name must fit 100 characters",
                 "consumes": [
                     "application/json"
                 ],
@@ -6449,7 +6850,7 @@
         },
         "/goals/{goal_id}": {
             "get": {
-                "description": "Get a single goal by its ID",
+                "description": "Get a goal with saved completion value (when recorded), tagged spending and remaining savings",
                 "consumes": [
                     "application/json"
                 ],
@@ -6655,7 +7056,7 @@
         },
         "/goals/{goal_id}/complete": {
             "post": {
-                "description": "Mark a goal as completed",
+                "description": "Save the investment value at completion; repeated calls preserve the original snapshot",
                 "consumes": [
                     "application/json"
                 ],
@@ -6938,7 +7339,7 @@
         },
         "/goals/{goal_id}/reopen": {
             "post": {
-                "description": "Mark a goal as not completed",
+                "description": "Reopen a goal and clear its prior completion snapshot",
                 "consumes": [
                     "application/json"
                 ],
@@ -7544,6 +7945,252 @@
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/knowledge": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "List knowledge items in an import session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.ImportKnowledge"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Create a knowledge item in an import session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Item",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.knowledgeBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ImportKnowledge"
+                        }
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/knowledge/clear-checks": {
+            "post": {
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Clear checkboxes in an import session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/knowledge/order": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Reorder all knowledge items in a session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Ordered item IDs",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.knowledgeOrderBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/knowledge/{item_id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Update a knowledge item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Item ID",
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Item",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.knowledgeBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ImportKnowledge"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Delete a knowledge item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Item ID",
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/import-sessions/{id}/knowledge/{item_id}/check": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Set knowledge item checkbox",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Item ID",
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Checkbox",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.knowledgeCheckBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ImportKnowledge"
                         }
                     }
                 }
@@ -12086,6 +12733,15 @@
                             }
                         }
                     },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -12152,6 +12808,15 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -12327,7 +12992,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "Description substring",
+                        "description": "Comma-separated terms matched against description, civil date and BRL amount",
                         "name": "search",
                         "in": "query"
                     },
@@ -12347,6 +13012,48 @@
                         "type": "string",
                         "description": "End date (YYYY-MM-DD)",
                         "name": "date_to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account UUID (transfers also match destination)",
+                        "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card UUID",
+                        "name": "card_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User assigned to account or card",
+                        "name": "assigned_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category UUID",
+                        "name": "category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated tag UUIDs (any match)",
+                        "name": "tag_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Minimum absolute amount (decimal, inclusive)",
+                        "name": "amount_min",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Maximum absolute amount (decimal, inclusive)",
+                        "name": "amount_max",
                         "in": "query"
                     },
                     {
@@ -12374,7 +13081,7 @@
         },
         "/transactions/editor/batch": {
             "post": {
-                "description": "Only explicitly allowed metadata changes. On non-open card invoices only description and category can change. Each target returns an independent result.",
+                "description": "Tags are added without removing existing links and duplicates are ignored. Each target returns an independent result.",
                 "consumes": [
                     "application/json"
                 ],
@@ -12384,7 +13091,7 @@
                 "tags": [
                     "transactions"
                 ],
-                "summary": "Edit descriptions, categories or recurring links in a transaction selection",
+                "summary": "Edit descriptions, categories, recurring links or add tags in a transaction selection",
                 "parameters": [
                     {
                         "type": "string",
@@ -14739,6 +15446,58 @@
                 }
             }
         },
+        "entity.AssetFinancing": {
+            "type": "object",
+            "properties": {
+                "asset_id": {
+                    "type": "string"
+                },
+                "default_principal": {
+                    "type": "number"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "original_principal": {
+                    "type": "number"
+                },
+                "rate_percent": {
+                    "type": "number"
+                },
+                "rate_period": {
+                    "type": "string"
+                },
+                "rate_type": {
+                    "type": "string"
+                },
+                "reference_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetValuation": {
+            "type": "object",
+            "properties": {
+                "asset_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "valuation_date": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
         "entity.Budget": {
             "type": "object",
             "properties": {
@@ -14896,6 +15655,18 @@
                 "id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CardChargebackTag"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -14903,6 +15674,17 @@
                     "$ref": "#/definitions/entity.TransactionStatus"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.CardChargebackTag": {
+            "type": "object",
+            "properties": {
+                "card_chargeback_id": {
+                    "type": "string"
+                },
+                "tag_id": {
                     "type": "string"
                 }
             }
@@ -14950,6 +15732,12 @@
                 },
                 "subcategory": {
                     "$ref": "#/definitions/entity.SubCategory"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tags": {
                     "type": "array",
@@ -15052,6 +15840,18 @@
                 "is_final_payment": {
                     "type": "boolean"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CardPaymentTag"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -15059,6 +15859,17 @@
                     "$ref": "#/definitions/entity.TransactionStatus"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.CardPaymentTag": {
+            "type": "object",
+            "properties": {
+                "card_payment_id": {
+                    "type": "string"
+                },
+                "tag_id": {
                     "type": "string"
                 }
             }
@@ -15201,6 +16012,12 @@
                 "subcategory": {
                     "$ref": "#/definitions/entity.SubCategory"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "tags": {
                     "type": "array",
                     "items": {
@@ -15247,6 +16064,10 @@
                 "completed_at": {
                     "type": "string"
                 },
+                "completed_value": {
+                    "description": "CompletedValue is written only when a goal is completed. Legacy completions remain nil.",
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -15282,7 +16103,13 @@
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
                 },
+                "remaining_value": {
+                    "type": "number"
+                },
                 "reserve_kind": {
+                    "type": "string"
+                },
+                "tag_id": {
                     "type": "string"
                 },
                 "target_value": {
@@ -15293,6 +16120,9 @@
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "used_value": {
+                    "type": "number"
                 },
                 "workspace_id": {
                     "type": "string"
@@ -15348,6 +16178,38 @@
             "x-enum-varnames": [
                 "GoalTypeInvest"
             ]
+        },
+        "entity.ImportKnowledge": {
+            "type": "object",
+            "properties": {
+                "checked": {
+                    "type": "boolean"
+                },
+                "content_html": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "session_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
         },
         "entity.ImportSession": {
             "type": "object",
@@ -15473,6 +16335,12 @@
                 "subcategory": {
                     "$ref": "#/definitions/entity.SubCategory"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "tags": {
                     "type": "array",
                     "items": {
@@ -15572,6 +16440,12 @@
                 "liquidity": {
                     "$ref": "#/definitions/entity.LiquidityType"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "tags": {
                     "type": "array",
                     "items": {
@@ -15633,6 +16507,18 @@
                 "recurring_transaction_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.InvestmentDepositTag"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -15640,6 +16526,20 @@
                     "$ref": "#/definitions/entity.TransactionStatus"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.InvestmentDepositTag": {
+            "type": "object",
+            "properties": {
+                "investment_deposit_id": {
+                    "type": "string"
+                },
+                "tag": {
+                    "$ref": "#/definitions/entity.Tag"
+                },
+                "tag_id": {
                     "type": "string"
                 }
             }
@@ -15759,6 +16659,18 @@
                 "recurring_transaction_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.InvestmentWithdrawalTag"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -15766,6 +16678,20 @@
                     "$ref": "#/definitions/entity.TransactionStatus"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.InvestmentWithdrawalTag": {
+            "type": "object",
+            "properties": {
+                "investment_withdrawal_id": {
+                    "type": "string"
+                },
+                "tag": {
+                    "$ref": "#/definitions/entity.Tag"
+                },
+                "tag_id": {
                     "type": "string"
                 }
             }
@@ -16270,6 +17196,12 @@
                 "subcategory": {
                     "$ref": "#/definitions/entity.SubCategory"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "tags": {
                     "type": "array",
                     "items": {
@@ -16372,6 +17304,12 @@
                 "subcategory": {
                     "$ref": "#/definitions/entity.SubCategory"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "tags": {
                     "type": "array",
                     "items": {
@@ -16473,6 +17411,12 @@
                 },
                 "subcategory": {
                     "$ref": "#/definitions/entity.SubCategory"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tags": {
                     "type": "array",
@@ -16915,6 +17859,18 @@
                 "source_account_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.TransferTag"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -16922,6 +17878,17 @@
                     "$ref": "#/definitions/entity.TransactionStatus"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.TransferTag": {
+            "type": "object",
+            "properties": {
+                "tag_id": {
+                    "type": "string"
+                },
+                "transfer_id": {
                     "type": "string"
                 }
             }
@@ -17166,6 +18133,12 @@
                 "sub_category_name": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -17221,6 +18194,165 @@
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "usecase.AssetDetail": {
+            "type": "object",
+            "properties": {
+                "acquisition": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expenses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AssetExpense"
+                    }
+                },
+                "financing": {
+                    "$ref": "#/definitions/entity.AssetFinancing"
+                },
+                "financing_summary": {
+                    "$ref": "#/definitions/usecase.AssetFinancingSummary"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "maintenance": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "purpose_totals": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "number",
+                        "format": "float64"
+                    }
+                },
+                "tag_id": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "valuations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetValuation"
+                    }
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AssetExpense": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "breakdown": {
+                    "$ref": "#/definitions/usecase.AssetPaymentBreakdown"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "fees_amount": {
+                    "type": "number"
+                },
+                "principal_amount": {
+                    "type": "number"
+                },
+                "purpose": {
+                    "type": "string"
+                },
+                "source_id": {
+                    "type": "string"
+                },
+                "source_kind": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AssetFinancingSummary": {
+            "type": "object",
+            "properties": {
+                "estimated_principal": {
+                    "type": "number"
+                },
+                "estimated_remaining": {
+                    "type": "number"
+                },
+                "excess_principal": {
+                    "type": "number"
+                },
+                "excluded_before_reference": {
+                    "type": "integer"
+                },
+                "extra_principal": {
+                    "type": "number"
+                },
+                "identified_remaining": {
+                    "type": "number"
+                },
+                "informed_principal": {
+                    "type": "number"
+                },
+                "invalid_allocations": {
+                    "type": "integer"
+                },
+                "paid": {
+                    "type": "number"
+                },
+                "pending_amount": {
+                    "type": "number"
+                },
+                "unspecified_installments": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AssetPaymentBreakdown": {
+            "type": "object",
+            "properties": {
+                "fees": {
+                    "type": "number"
+                },
+                "interest": {
+                    "description": "difference after fees; estimated when principal uses the default",
+                    "type": "number"
+                },
+                "paid": {
+                    "type": "number"
+                },
+                "principal": {
+                    "type": "number"
+                },
+                "principal_source": {
+                    "description": "INFORMED, DEFAULT_ESTIMATE, UNSPECIFIED, INVALID",
+                    "type": "string"
+                },
+                "residual": {
+                    "description": "interest plus unspecified insurance/fees",
+                    "type": "number"
                 }
             }
         },
@@ -19327,6 +20459,109 @@
                 }
             }
         },
+        "v1.assetBody": {
+            "type": "object",
+            "required": [
+                "acquisition_date",
+                "kind",
+                "name"
+            ],
+            "properties": {
+                "acquisition_date": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.assetFinancingBody": {
+            "type": "object",
+            "properties": {
+                "default_principal": {
+                    "type": "number"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "original_principal": {
+                    "type": "number"
+                },
+                "rate_percent": {
+                    "type": "number"
+                },
+                "rate_period": {
+                    "type": "string"
+                },
+                "rate_type": {
+                    "type": "string"
+                },
+                "reference_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.assetPaymentBody": {
+            "type": "object",
+            "properties": {
+                "fees_amount": {
+                    "type": "number"
+                },
+                "principal_amount": {
+                    "type": "number"
+                }
+            }
+        },
+        "v1.assetPurposeBody": {
+            "type": "object",
+            "required": [
+                "purpose"
+            ],
+            "properties": {
+                "purpose": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.assetUpdateBody": {
+            "type": "object",
+            "required": [
+                "kind",
+                "name"
+            ],
+            "properties": {
+                "acquisition_date": {
+                    "type": "string"
+                },
+                "initial_value": {
+                    "type": "number"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.assetValuationBody": {
+            "type": "object",
+            "required": [
+                "date"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number",
+                    "minimum": 0
+                }
+            }
+        },
         "v1.attachConnectionRequest": {
             "type": "object",
             "required": [
@@ -19571,6 +20806,12 @@
                 "description": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -19617,6 +20858,12 @@
                 "sub_category_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -19641,6 +20888,12 @@
                 },
                 "is_final_payment": {
                     "type": "boolean"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -19741,6 +20994,12 @@
                 "sub_category_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -19835,6 +21094,12 @@
                 "sub_category_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -19859,6 +21124,12 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -19891,6 +21162,12 @@
                 },
                 "liquidity": {
                     "$ref": "#/definitions/entity.LiquidityType"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "type": {
                     "$ref": "#/definitions/entity.InvestmentType"
@@ -19935,6 +21212,12 @@
                 },
                 "rescued": {
                     "type": "boolean"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -20038,6 +21321,12 @@
                 },
                 "source_account_id": {
                     "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -20150,6 +21439,12 @@
                     "format": "uuid",
                     "x-nullable": true
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "targets": {
                     "type": "array",
                     "items": {
@@ -20227,6 +21522,12 @@
                 "sub_category_name": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -20297,6 +21598,9 @@
                 "completed_at": {
                     "type": "string"
                 },
+                "completed_value": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -20330,7 +21634,13 @@
                 "purpose": {
                     "$ref": "#/definitions/entity.GoalPurpose"
                 },
+                "remaining_value": {
+                    "type": "number"
+                },
                 "reserve_kind": {
+                    "type": "string"
+                },
+                "tag_id": {
                     "type": "string"
                 },
                 "target_value": {
@@ -20341,6 +21651,9 @@
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "used_value": {
+                    "type": "number"
                 },
                 "workspace_id": {
                     "type": "string"
@@ -20442,6 +21755,12 @@
                 "sub_category_name": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -20521,6 +21840,12 @@
                 },
                 "liquidity": {
                     "$ref": "#/definitions/entity.LiquidityType"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "type": {
                     "$ref": "#/definitions/entity.InvestmentType"
@@ -20831,6 +22156,48 @@
                 },
                 "type": {
                     "$ref": "#/definitions/entity.StagedTransactionType"
+                }
+            }
+        },
+        "v1.knowledgeBody": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "checked": {
+                    "type": "boolean"
+                },
+                "content_html": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.knowledgeCheckBody": {
+            "type": "object",
+            "required": [
+                "checked"
+            ],
+            "properties": {
+                "checked": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.knowledgeOrderBody": {
+            "type": "object",
+            "required": [
+                "ids"
+            ],
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -21286,6 +22653,12 @@
                 "source_account_name": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -21351,6 +22724,12 @@
                 "description": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -21379,6 +22758,12 @@
                 "sub_category_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -21398,6 +22783,12 @@
                 },
                 "is_final_payment": {
                     "type": "boolean"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -21474,6 +22865,12 @@
                 },
                 "sub_category_id": {
                     "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -21559,6 +22956,12 @@
                 "sub_category_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "transaction_date": {
                     "type": "string"
                 },
@@ -21578,6 +22981,12 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -21602,6 +23011,12 @@
                 "liquidity": {
                     "$ref": "#/definitions/entity.LiquidityType"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "type": {
                     "$ref": "#/definitions/entity.InvestmentType"
                 },
@@ -21621,6 +23036,12 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "type": "string"
@@ -21706,6 +23127,12 @@
                 "sub_category_id": {
                     "type": "string"
                 },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "type": {
                     "$ref": "#/definitions/entity.RecurringType"
                 }
@@ -21782,6 +23209,12 @@
                 "source_account_id": {
                     "description": "Source account ID. Omitted preserves the current value.",
                     "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "transaction_date": {
                     "description": "Transaction date (YYYY-MM-DD). Omitted preserves the current value.",
