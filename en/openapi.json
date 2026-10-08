@@ -1590,6 +1590,98 @@
                 }
             }
         },
+        "/assets/{id}/financing/events": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "List dated bank statement rows and calculated financing differences",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/usecase.AssetFinancingEventView"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/financing/events/{external_key}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Upsert one dated external financing statement row without changing transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stable statement row key",
+                        "name": "external_key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Known bank amounts; omitted values stay unknown; expense_refs must be tagged to this asset",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetFinancingEventBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
         "/assets/{id}/valuations": {
             "post": {
                 "consumes": [
@@ -15475,6 +15567,17 @@
                 }
             }
         },
+        "entity.AssetFinancingExpenseRef": {
+            "type": "object",
+            "properties": {
+                "source_id": {
+                    "type": "string"
+                },
+                "source_kind": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.AssetValuation": {
             "type": "object",
             "properties": {
@@ -18215,6 +18318,12 @@
                 "financing": {
                     "$ref": "#/definitions/entity.AssetFinancing"
                 },
+                "financing_events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AssetFinancingEventView"
+                    }
+                },
                 "financing_summary": {
                     "$ref": "#/definitions/usecase.AssetFinancingSummary"
                 },
@@ -18292,9 +18401,143 @@
                 }
             }
         },
+        "usecase.AssetFinancingEventView": {
+            "type": "object",
+            "properties": {
+                "actual_paid_amount": {
+                    "type": "number"
+                },
+                "allocation_difference": {
+                    "type": "number"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "balance_difference": {
+                    "type": "number"
+                },
+                "bank_paid_amount": {
+                    "type": "number"
+                },
+                "calculated_balance": {
+                    "type": "number"
+                },
+                "charges_amount": {
+                    "type": "number"
+                },
+                "components_total": {
+                    "type": "number"
+                },
+                "correction_amount": {
+                    "type": "number"
+                },
+                "correction_factor": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "dfi_amount": {
+                    "type": "number"
+                },
+                "due_amount": {
+                    "type": "number"
+                },
+                "due_difference": {
+                    "type": "number"
+                },
+                "event_date": {
+                    "type": "string"
+                },
+                "expense_refs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetFinancingExpenseRef"
+                    }
+                },
+                "external_key": {
+                    "type": "string"
+                },
+                "financial_adjustment": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "installment_number": {
+                    "type": "integer"
+                },
+                "interest_amount": {
+                    "type": "number"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "mip_amount": {
+                    "type": "number"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "opening_balance": {
+                    "type": "number"
+                },
+                "origin": {
+                    "type": "string"
+                },
+                "other_charges_amount": {
+                    "type": "number"
+                },
+                "outlay_minus_principal": {
+                    "type": "number"
+                },
+                "payment_difference": {
+                    "type": "number"
+                },
+                "payment_status": {
+                    "type": "string"
+                },
+                "principal_amount": {
+                    "type": "number"
+                },
+                "raw_payment_difference": {
+                    "type": "number"
+                },
+                "reference_date": {
+                    "type": "string"
+                },
+                "reported_balance": {
+                    "type": "number"
+                },
+                "source_type": {
+                    "type": "string"
+                },
+                "tca_amount": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "usecase.AssetFinancingSummary": {
             "type": "object",
             "properties": {
+                "bank_adjustments": {
+                    "type": "number"
+                },
+                "bank_balance": {
+                    "type": "number"
+                },
+                "bank_charges": {
+                    "type": "number"
+                },
+                "bank_correction": {
+                    "type": "number"
+                },
+                "bank_interest": {
+                    "type": "number"
+                },
                 "estimated_principal": {
                     "type": "number"
                 },
@@ -18306,6 +18549,9 @@
                 },
                 "excluded_before_reference": {
                     "type": "integer"
+                },
+                "extra_non_principal_paid": {
+                    "type": "number"
                 },
                 "extra_principal": {
                     "type": "number"
@@ -18323,6 +18569,9 @@
                     "type": "number"
                 },
                 "pending_amount": {
+                    "type": "number"
+                },
+                "unallocated_extra_paid": {
                     "type": "number"
                 },
                 "unspecified_installments": {
@@ -20501,6 +20750,83 @@
                 },
                 "reference_date": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.assetFinancingEventBody": {
+            "type": "object",
+            "properties": {
+                "bank_paid_amount": {
+                    "type": "number"
+                },
+                "charges_amount": {
+                    "type": "number"
+                },
+                "correction_amount": {
+                    "type": "number"
+                },
+                "correction_factor": {
+                    "type": "number"
+                },
+                "dfi_amount": {
+                    "type": "number"
+                },
+                "due_amount": {
+                    "type": "number"
+                },
+                "event_date": {
+                    "type": "string"
+                },
+                "expense_refs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetFinancingExpenseRef"
+                    }
+                },
+                "external_key": {
+                    "type": "string"
+                },
+                "financial_adjustment": {
+                    "type": "number"
+                },
+                "installment_number": {
+                    "type": "integer"
+                },
+                "interest_amount": {
+                    "type": "number"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "mip_amount": {
+                    "type": "number"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "opening_balance": {
+                    "type": "number"
+                },
+                "origin": {
+                    "type": "string"
+                },
+                "other_charges_amount": {
+                    "type": "number"
+                },
+                "principal_amount": {
+                    "type": "number"
+                },
+                "reference_date": {
+                    "type": "string"
+                },
+                "reported_balance": {
+                    "type": "number"
+                },
+                "source_type": {
+                    "type": "string"
+                },
+                "tca_amount": {
+                    "type": "number"
                 }
             }
         },
