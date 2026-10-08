@@ -1376,7 +1376,7 @@
                 "tags": [
                     "assets"
                 ],
-                "summary": "Edit an asset and optionally correct its initial acquisition valuation",
+                "summary": "Edit an asset, its initial valuation and financing choice atomically",
                 "parameters": [
                     {
                         "type": "string",
@@ -1669,6 +1669,53 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/v1.assetFinancingEventBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/sale": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Record or clear an actual asset sale without posting financial transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Sale date and price, optional confirmed acquisition cost; all null to clear",
+                        "name": "sale",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetSaleBody"
                         }
                     }
                 ],
@@ -18329,6 +18376,9 @@
                 "acquisition": {
                     "type": "number"
                 },
+                "acquisition_cost": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -18359,6 +18409,9 @@
                 "maintenance": {
                     "type": "number"
                 },
+                "mixed_currency": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -18368,6 +18421,12 @@
                         "type": "number",
                         "format": "float64"
                     }
+                },
+                "sale_price": {
+                    "type": "number"
+                },
+                "sold_at": {
+                    "type": "string"
                 },
                 "tag_id": {
                     "type": "string"
@@ -18397,6 +18456,9 @@
                 },
                 "breakdown": {
                     "$ref": "#/definitions/usecase.AssetPaymentBreakdown"
+                },
+                "currency_code": {
+                    "type": "string"
                 },
                 "date": {
                     "type": "string"
@@ -18532,6 +18594,12 @@
                 "reported_balance": {
                     "type": "number"
                 },
+                "running_balance": {
+                    "type": "number"
+                },
+                "running_balance_status": {
+                    "type": "string"
+                },
                 "source_type": {
                     "type": "string"
                 },
@@ -18546,6 +18614,16 @@
         "usecase.AssetFinancingSummary": {
             "type": "object",
             "properties": {
+                "balance_issues": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "balance_status": {
+                    "description": "COMPLETE, PARTIAL, UNAVAILABLE",
+                    "type": "string"
+                },
                 "bank_adjustments": {
                     "type": "number"
                 },
@@ -18559,6 +18637,9 @@
                     "type": "number"
                 },
                 "bank_interest": {
+                    "type": "number"
+                },
+                "calculated_balance": {
                     "type": "number"
                 },
                 "estimated_principal": {
@@ -20815,6 +20896,20 @@
                 }
             }
         },
+        "v1.assetFinancingEditBody": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "original_principal": {
+                    "type": "number"
+                },
+                "reference_date": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.assetFinancingEventBody": {
             "type": "object",
             "properties": {
@@ -20914,6 +21009,20 @@
                 }
             }
         },
+        "v1.assetSaleBody": {
+            "type": "object",
+            "properties": {
+                "acquisition_cost": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
         "v1.assetUpdateBody": {
             "type": "object",
             "required": [
@@ -20923,6 +21032,9 @@
             "properties": {
                 "acquisition_date": {
                     "type": "string"
+                },
+                "financing": {
+                    "$ref": "#/definitions/v1.assetFinancingEditBody"
                 },
                 "initial_value": {
                     "type": "number"
