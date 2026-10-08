@@ -55,6 +55,25 @@ title: Assets
 | --- | --- | --- |
 | 200 | OK | usecase.AssetDetail |
 
+## GET `/assets/{id}/financing/events`
+
+**Resumo:** List dated bank statement rows and calculated financing differences
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Asset ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;usecase.AssetFinancingEventView&gt; |
+
 ## PATCH `/assets/{id}`
 
 **Resumo:** Edit an asset and optionally correct its initial acquisition valuation
@@ -191,6 +210,29 @@ title: Assets
 | --- | --- | --- |
 | 200 | OK | usecase.AssetDetail |
 
+## PUT `/assets/{id}/financing/events/{external_key}`
+
+**Resumo:** Upsert one dated external financing statement row without changing transactions
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Asset ID |
+| external_key | path | string | sim | Stable statement row key |
+| event | body | v1.assetFinancingEventBody | sim | Known bank amounts; omitted values stay unknown; expense_refs must be tagged to this asset |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AssetDetail |
+
 ### Schemas
 
 #### entity.AssetFinancing
@@ -205,6 +247,13 @@ title: Assets
 | rate_period | string | não |  |
 | rate_type | string | não |  |
 | reference_date | string | não |  |
+
+#### entity.AssetFinancingExpenseRef
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| source_id | string | não |  |
+| source_kind | string | não |  |
 
 #### entity.AssetValuation
 
@@ -225,6 +274,7 @@ title: Assets
 | created_at | string | não |  |
 | expenses | array&lt;usecase.AssetExpense&gt; | não |  |
 | financing | entity.AssetFinancing | não |  |
+| financing_events | array&lt;usecase.AssetFinancingEventView&gt; | não |  |
 | financing_summary | usecase.AssetFinancingSummary | não |  |
 | id | string | não |  |
 | kind | string | não |  |
@@ -252,20 +302,69 @@ title: Assets
 | source_kind | string | não |  |
 | transaction_status | string | não |  |
 
+#### usecase.AssetFinancingEventView
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| actual_paid_amount | number | não |  |
+| allocation_difference | number | não |  |
+| asset_id | string | não |  |
+| balance_difference | number | não |  |
+| bank_paid_amount | number | não |  |
+| calculated_balance | number | não |  |
+| charges_amount | number | não |  |
+| components_total | number | não |  |
+| correction_amount | number | não |  |
+| correction_factor | number | não |  |
+| created_at | string | não |  |
+| dfi_amount | number | não |  |
+| due_amount | number | não |  |
+| due_difference | number | não |  |
+| event_date | string | não |  |
+| expense_refs | array&lt;entity.AssetFinancingExpenseRef&gt; | não |  |
+| external_key | string | não |  |
+| financial_adjustment | number | não |  |
+| id | string | não |  |
+| installment_number | integer | não |  |
+| interest_amount | number | não |  |
+| kind | string | não |  |
+| mip_amount | number | não |  |
+| note | string | não |  |
+| opening_balance | number | não |  |
+| origin | string | não |  |
+| other_charges_amount | number | não |  |
+| outlay_minus_principal | number | não |  |
+| payment_difference | number | não |  |
+| payment_status | string | não |  |
+| principal_amount | number | não |  |
+| raw_payment_difference | number | não |  |
+| reference_date | string | não |  |
+| reported_balance | number | não |  |
+| source_type | string | não |  |
+| tca_amount | number | não |  |
+| updated_at | string | não |  |
+
 #### usecase.AssetFinancingSummary
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| bank_adjustments | number | não |  |
+| bank_balance | number | não |  |
+| bank_charges | number | não |  |
+| bank_correction | number | não |  |
+| bank_interest | number | não |  |
 | estimated_principal | number | não |  |
 | estimated_remaining | number | não |  |
 | excess_principal | number | não |  |
 | excluded_before_reference | integer | não |  |
+| extra_non_principal_paid | number | não |  |
 | extra_principal | number | não |  |
 | identified_remaining | number | não |  |
 | informed_principal | number | não |  |
 | invalid_allocations | integer | não |  |
 | paid | number | não |  |
 | pending_amount | number | não |  |
+| unallocated_extra_paid | number | não |  |
 | unspecified_installments | integer | não |  |
 
 #### usecase.AssetPaymentBreakdown
@@ -298,6 +397,34 @@ title: Assets
 | rate_period | string | não |  |
 | rate_type | string | não |  |
 | reference_date | string | não |  |
+
+#### v1.assetFinancingEventBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| bank_paid_amount | number | não |  |
+| charges_amount | number | não |  |
+| correction_amount | number | não |  |
+| correction_factor | number | não |  |
+| dfi_amount | number | não |  |
+| due_amount | number | não |  |
+| event_date | string | não |  |
+| expense_refs | array&lt;entity.AssetFinancingExpenseRef&gt; | não |  |
+| external_key | string | não |  |
+| financial_adjustment | number | não |  |
+| installment_number | integer | não |  |
+| interest_amount | number | não |  |
+| kind | string | não |  |
+| mip_amount | number | não |  |
+| note | string | não |  |
+| opening_balance | number | não |  |
+| origin | string | não |  |
+| other_charges_amount | number | não |  |
+| principal_amount | number | não |  |
+| reference_date | string | não |  |
+| reported_balance | number | não |  |
+| source_type | string | não |  |
+| tca_amount | number | não |  |
 
 #### v1.assetPaymentBody
 
