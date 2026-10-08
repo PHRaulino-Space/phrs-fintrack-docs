@@ -1376,7 +1376,7 @@
                 "tags": [
                     "assets"
                 ],
-                "summary": "Edit an asset and optionally correct its initial acquisition valuation",
+                "summary": "Edit an asset, its initial valuation and financing choice atomically",
                 "parameters": [
                     {
                         "type": "string",
@@ -1669,6 +1669,53 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/v1.assetFinancingEventBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/sale": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Record or clear an actual asset sale without posting financial transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Sale date and price, optional confirmed acquisition cost; all null to clear",
+                        "name": "sale",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetSaleBody"
                         }
                     }
                 ],
@@ -3189,7 +3236,7 @@
                 }
             },
             "post": {
-                "description": "Create a new budget for a category (expense only)",
+                "description": "Create an expense-category budget for extras outside recurring commitments. scope defaults to EXTRA; older total budgets remain LEGACY_TOTAL until explicitly adopted.",
                 "consumes": [
                     "application/json"
                 ],
@@ -3248,7 +3295,7 @@
         },
         "/budgets/duplicate": {
             "post": {
-                "description": "Duplicate budgets from a source month/year to a target month/year, keeping existing target budgets",
+                "description": "Duplicate budgets and their scope from a source month/year to a target month/year, keeping existing target budgets",
                 "consumes": [
                     "application/json"
                 ],
@@ -3307,7 +3354,7 @@
         },
         "/budgets/generate/apply": {
             "post": {
-                "description": "Create absent category budgets and replace only explicitly selected existing budget IDs",
+                "description": "Create EXTRA budgets from the reviewed margin proposal. Only explicitly selected existing EXTRA budgets may be updated; legacy budgets are preserved. A zero proposal creates no row and cannot overwrite a positive budget.",
                 "consumes": [
                     "application/json"
                 ],
@@ -3357,7 +3404,7 @@
         },
         "/budgets/generate/preview": {
             "post": {
-                "description": "Group expected recurring expense slots by category and apply a percentage margin; existing budgets are preserved",
+                "description": "Propose EXTRA budgets only: registered recurring total per category times margin_percent / 100. Recurrences remain separate commitments. Zero margin proposes no new budget; existing budgets stay preserved unless an EXTRA replacement is explicitly selected.",
                 "consumes": [
                     "application/json"
                 ],
@@ -3593,7 +3640,7 @@
                 }
             },
             "patch": {
-                "description": "Update an existing budget",
+                "description": "Update an existing budget. Set scope=EXTRA explicitly after reviewing a LEGACY_TOTAL amount; EXTRA means spending outside recurring commitments.",
                 "consumes": [
                     "application/json"
                 ],
@@ -11362,7 +11409,7 @@
         },
         "/planning/actions": {
             "get": {
-                "description": "Uses current eligible cash minus the entire active budget; lists unpaid manual recurring expenses, outstanding invoices on manually paid cards, and informative goal contributions. No payment is executed.",
+                "description": "Reserves unresolved expenses and invoices through month end, including overdue obligations, plus remaining extra budgets. Future income enters projected cash only on its expected date. Any active LEGACY_TOTAL budget sets review_required and suppresses numeric contribution suggestions until reviewed or removed. No payment is executed.",
                 "produces": [
                     "application/json"
                 ],
@@ -15644,8 +15691,20 @@
                 "projected_amount": {
                     "type": "number"
                 },
+                "recurring_amount": {
+                    "type": "number"
+                },
+                "recurring_projected_amount": {
+                    "type": "number"
+                },
+                "recurring_spent_amount": {
+                    "type": "number"
+                },
                 "remaining_amount": {
                     "type": "number"
+                },
+                "scope": {
+                    "$ref": "#/definitions/entity.BudgetScope"
                 },
                 "spent_amount": {
                     "type": "number"
@@ -15672,6 +15731,17 @@
                 "BudgetHealthHealthy",
                 "BudgetHealthWarning",
                 "BudgetHealthOverBudget"
+            ]
+        },
+        "entity.BudgetScope": {
+            "type": "string",
+            "enum": [
+                "LEGACY_TOTAL",
+                "EXTRA"
+            ],
+            "x-enum-varnames": [
+                "BudgetScopeLegacyTotal",
+                "BudgetScopeExtra"
             ]
         },
         "entity.Card": {
@@ -18306,6 +18376,9 @@
                 "acquisition": {
                     "type": "number"
                 },
+                "acquisition_cost": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -18336,6 +18409,9 @@
                 "maintenance": {
                     "type": "number"
                 },
+                "mixed_currency": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -18345,6 +18421,12 @@
                         "type": "number",
                         "format": "float64"
                     }
+                },
+                "sale_price": {
+                    "type": "number"
+                },
+                "sold_at": {
+                    "type": "string"
                 },
                 "tag_id": {
                     "type": "string"
@@ -18374,6 +18456,9 @@
                 },
                 "breakdown": {
                     "$ref": "#/definitions/usecase.AssetPaymentBreakdown"
+                },
+                "currency_code": {
+                    "type": "string"
                 },
                 "date": {
                     "type": "string"
@@ -18509,6 +18594,12 @@
                 "reported_balance": {
                     "type": "number"
                 },
+                "running_balance": {
+                    "type": "number"
+                },
+                "running_balance_status": {
+                    "type": "string"
+                },
                 "source_type": {
                     "type": "string"
                 },
@@ -18523,6 +18614,16 @@
         "usecase.AssetFinancingSummary": {
             "type": "object",
             "properties": {
+                "balance_issues": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "balance_status": {
+                    "description": "COMPLETE, PARTIAL, UNAVAILABLE",
+                    "type": "string"
+                },
                 "bank_adjustments": {
                     "type": "number"
                 },
@@ -18536,6 +18637,9 @@
                     "type": "number"
                 },
                 "bank_interest": {
+                    "type": "number"
+                },
+                "calculated_balance": {
                     "type": "number"
                 },
                 "estimated_principal": {
@@ -18631,6 +18735,9 @@
                 "existing_is_active": {
                     "type": "boolean"
                 },
+                "existing_scope": {
+                    "$ref": "#/definitions/entity.BudgetScope"
+                },
                 "proposed_amount": {
                     "type": "number"
                 }
@@ -18648,6 +18755,9 @@
                 "category_name": {
                     "type": "string"
                 },
+                "difference": {
+                    "type": "number"
+                },
                 "existing_amount": {
                     "type": "number"
                 },
@@ -18656,6 +18766,9 @@
                 },
                 "existing_is_active": {
                     "type": "boolean"
+                },
+                "existing_scope": {
+                    "$ref": "#/definitions/entity.BudgetScope"
                 },
                 "proposed_amount": {
                     "type": "number"
@@ -18682,6 +18795,9 @@
                 },
                 "month": {
                     "type": "integer"
+                },
+                "scope": {
+                    "$ref": "#/definitions/entity.BudgetScope"
                 },
                 "year": {
                     "type": "integer"
@@ -19220,6 +19336,12 @@
                 },
                 "remaining": {
                     "type": "number"
+                },
+                "review_reason": {
+                    "type": "string"
+                },
+                "review_required": {
+                    "type": "boolean"
                 },
                 "suggested_today": {
                     "type": "number"
@@ -19949,6 +20071,9 @@
                 "cash_balance": {
                     "type": "number"
                 },
+                "committed": {
+                    "type": "number"
+                },
                 "currency_code": {
                     "type": "string"
                 },
@@ -19961,6 +20086,12 @@
                         "$ref": "#/definitions/usecase.PlanningForecastGoal"
                     }
                 },
+                "legacy_budget_total": {
+                    "type": "number"
+                },
+                "lowest_cash_before_income": {
+                    "type": "number"
+                },
                 "month": {
                     "type": "string"
                 },
@@ -19969,6 +20100,15 @@
                     "items": {
                         "$ref": "#/definitions/usecase.PlanningForecastMonth"
                     }
+                },
+                "pending_income": {
+                    "type": "number"
+                },
+                "review_reason": {
+                    "type": "string"
+                },
+                "review_required": {
+                    "type": "boolean"
                 }
             }
         },
@@ -20029,6 +20169,9 @@
                     "type": "number"
                 },
                 "deficit": {
+                    "type": "number"
+                },
+                "expenses": {
                     "type": "number"
                 },
                 "income": {
@@ -20753,6 +20896,20 @@
                 }
             }
         },
+        "v1.assetFinancingEditBody": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "original_principal": {
+                    "type": "number"
+                },
+                "reference_date": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.assetFinancingEventBody": {
             "type": "object",
             "properties": {
@@ -20852,6 +21009,20 @@
                 }
             }
         },
+        "v1.assetSaleBody": {
+            "type": "object",
+            "properties": {
+                "acquisition_cost": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
         "v1.assetUpdateBody": {
             "type": "object",
             "required": [
@@ -20861,6 +21032,9 @@
             "properties": {
                 "acquisition_date": {
                     "type": "string"
+                },
+                "financing": {
+                    "$ref": "#/definitions/v1.assetFinancingEditBody"
                 },
                 "initial_value": {
                     "type": "number"
@@ -21103,6 +21277,9 @@
                 },
                 "planned_amount": {
                     "type": "number"
+                },
+                "scope": {
+                    "$ref": "#/definitions/entity.BudgetScope"
                 },
                 "year": {
                     "type": "integer",
@@ -23034,6 +23211,9 @@
                 },
                 "planned_amount": {
                     "type": "number"
+                },
+                "scope": {
+                    "$ref": "#/definitions/entity.BudgetScope"
                 },
                 "year": {
                     "type": "integer",
