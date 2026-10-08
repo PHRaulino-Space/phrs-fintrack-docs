@@ -336,9 +336,7 @@ title: Assets
 | actual_paid_amount | number | não |  |
 | allocation_difference | number | não |  |
 | asset_id | string | não |  |
-| balance_difference | number | não |  |
 | bank_paid_amount | number | não |  |
-| calculated_balance | number | não |  |
 | charges_amount | number | não |  |
 | components_total | number | não |  |
 | correction_amount | number | não |  |
@@ -366,7 +364,6 @@ title: Assets
 | principal_amount | number | não |  |
 | raw_payment_difference | number | não |  |
 | reference_date | string | não |  |
-| reported_balance | number | não |  |
 | running_balance | number | não |  |
 | running_balance_status | string | não |  |
 | source_type | string | não |  |
@@ -380,7 +377,6 @@ title: Assets
 | balance_issues | array&lt;string&gt; | não |  |
 | balance_status | string | não | COMPLETE, PARTIAL, UNAVAILABLE |
 | bank_adjustments | number | não |  |
-| bank_balance | number | não |  |
 | bank_charges | number | não |  |
 | bank_correction | number | não |  |
 | bank_interest | number | não |  |
@@ -462,7 +458,6 @@ title: Assets
 | other_charges_amount | number | não |  |
 | principal_amount | number | não |  |
 | reference_date | string | não |  |
-| reported_balance | number | não |  |
 | source_type | string | não |  |
 | tca_amount | number | não |  |
 

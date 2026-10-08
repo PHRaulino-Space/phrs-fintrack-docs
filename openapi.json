@@ -18498,13 +18498,7 @@
                 "asset_id": {
                     "type": "string"
                 },
-                "balance_difference": {
-                    "type": "number"
-                },
                 "bank_paid_amount": {
-                    "type": "number"
-                },
-                "calculated_balance": {
                     "type": "number"
                 },
                 "charges_amount": {
@@ -18591,9 +18585,6 @@
                 "reference_date": {
                     "type": "string"
                 },
-                "reported_balance": {
-                    "type": "number"
-                },
                 "running_balance": {
                     "type": "number"
                 },
@@ -18625,9 +18616,6 @@
                     "type": "string"
                 },
                 "bank_adjustments": {
-                    "type": "number"
-                },
-                "bank_balance": {
                     "type": "number"
                 },
                 "bank_charges": {
@@ -20975,9 +20963,6 @@
                 },
                 "reference_date": {
                     "type": "string"
-                },
-                "reported_balance": {
-                    "type": "number"
                 },
                 "source_type": {
                     "type": "string"
