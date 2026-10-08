@@ -76,7 +76,7 @@ title: Assets
 
 ## PATCH `/assets/{id}`
 
-**Resumo:** Edit an asset and optionally correct its initial acquisition valuation
+**Resumo:** Edit an asset, its initial valuation and financing choice atomically
 
 **Consumes:** application/json
 
@@ -233,6 +233,28 @@ title: Assets
 | --- | --- | --- |
 | 200 | OK | usecase.AssetDetail |
 
+## PUT `/assets/{id}/sale`
+
+**Resumo:** Record or clear an actual asset sale without posting financial transactions
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Asset ID |
+| sale | body | v1.assetSaleBody | sim | Sale date and price, optional confirmed acquisition cost; all null to clear |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AssetDetail |
+
 ### Schemas
 
 #### entity.AssetFinancing
@@ -271,6 +293,7 @@ title: Assets
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | acquisition | number | não |  |
+| acquisition_cost | number | não |  |
 | created_at | string | não |  |
 | expenses | array&lt;usecase.AssetExpense&gt; | não |  |
 | financing | entity.AssetFinancing | não |  |
@@ -279,8 +302,11 @@ title: Assets
 | id | string | não |  |
 | kind | string | não |  |
 | maintenance | number | não |  |
+| mixed_currency | boolean | não |  |
 | name | string | não |  |
 | purpose_totals | object | não |  |
+| sale_price | number | não |  |
+| sold_at | string | não |  |
 | tag_id | string | não |  |
 | total | number | não |  |
 | updated_at | string | não |  |
@@ -293,6 +319,7 @@ title: Assets
 | --- | --- | --- | --- |
 | amount | number | não |  |
 | breakdown | usecase.AssetPaymentBreakdown | não |  |
+| currency_code | string | não |  |
 | date | string | não |  |
 | description | string | não |  |
 | fees_amount | number | não |  |
@@ -340,6 +367,8 @@ title: Assets
 | raw_payment_difference | number | não |  |
 | reference_date | string | não |  |
 | reported_balance | number | não |  |
+| running_balance | number | não |  |
+| running_balance_status | string | não |  |
 | source_type | string | não |  |
 | tca_amount | number | não |  |
 | updated_at | string | não |  |
@@ -348,11 +377,14 @@ title: Assets
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| balance_issues | array&lt;string&gt; | não |  |
+| balance_status | string | não | COMPLETE, PARTIAL, UNAVAILABLE |
 | bank_adjustments | number | não |  |
 | bank_balance | number | não |  |
 | bank_charges | number | não |  |
 | bank_correction | number | não |  |
 | bank_interest | number | não |  |
+| calculated_balance | number | não |  |
 | estimated_principal | number | não |  |
 | estimated_remaining | number | não |  |
 | excess_principal | number | não |  |
@@ -398,6 +430,14 @@ title: Assets
 | rate_type | string | não |  |
 | reference_date | string | não |  |
 
+#### v1.assetFinancingEditBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| enabled | boolean | não |  |
+| original_principal | number | não |  |
+| reference_date | string | não |  |
+
 #### v1.assetFinancingEventBody
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -439,11 +479,20 @@ title: Assets
 | --- | --- | --- | --- |
 | purpose | string | sim |  |
 
+#### v1.assetSaleBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| acquisition_cost | number | não |  |
+| date | string | não |  |
+| price | number | não |  |
+
 #### v1.assetUpdateBody
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | acquisition_date | string | não |  |
+| financing | v1.assetFinancingEditBody | não |  |
 | initial_value | number | não |  |
 | kind | string | sim |  |
 | name | string | sim |  |
