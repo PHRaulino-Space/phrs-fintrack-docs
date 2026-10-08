@@ -5,7 +5,7 @@ title: Planning
 
 **Resumo:** Get current month's planning actions and goal forecast
 
-Uses current eligible cash minus the entire active budget; lists unpaid manual recurring expenses, outstanding invoices on manually paid cards, and informative goal contributions. No payment is executed.
+Reserves unresolved expenses and invoices through month end, including overdue obligations, plus remaining extra budgets. Future income enters projected cash only on its expected date. Any active LEGACY_TOTAL budget sets review_required and suppresses numeric contribution suggestions until reviewed or removed. No payment is executed.
 
 **Produces:** application/json
 
@@ -181,11 +181,17 @@ Sem propriedades.
 | available_today | number | não |  |
 | budget_total | number | não |  |
 | cash_balance | number | não |  |
+| committed | number | não |  |
 | currency_code | string | não |  |
 | current_deficit | number | não |  |
 | goals | array&lt;usecase.PlanningForecastGoal&gt; | não |  |
+| legacy_budget_total | number | não |  |
+| lowest_cash_before_income | number | não |  |
 | month | string | não |  |
 | months | array&lt;usecase.PlanningForecastMonth&gt; | não |  |
+| pending_income | number | não |  |
+| review_reason | string | não |  |
+| review_required | boolean | não |  |
 
 #### usecase.PlanningForecastGoal
 
@@ -212,6 +218,7 @@ Sem propriedades.
 | available | number | não |  |
 | budget | number | não |  |
 | deficit | number | não |  |
+| expenses | number | não |  |
 | income | number | não |  |
 | month | string | não |  |
 | unallocated | number | não |  |

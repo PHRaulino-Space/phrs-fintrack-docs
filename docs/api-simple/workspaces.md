@@ -172,13 +172,21 @@ Sem propriedades.
 | percentage_used | number | não |  |
 | planned_amount | number | não |  |
 | projected_amount | number | não |  |
+| recurring_amount | number | não |  |
+| recurring_projected_amount | number | não |  |
+| recurring_spent_amount | number | não |  |
 | remaining_amount | number | não |  |
+| scope | entity.BudgetScope | não |  |
 | spent_amount | number | não |  |
 | updated_at | string | não |  |
 | workspace_id | string | não |  |
 | year | integer | não |  |
 
 #### entity.BudgetHealth
+
+Sem propriedades.
+
+#### entity.BudgetScope
 
 Sem propriedades.
 

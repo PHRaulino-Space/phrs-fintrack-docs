@@ -107,7 +107,7 @@ Get budgets summary for a given workspace and month/year
 
 **Resumo:** Update a budget
 
-Update an existing budget
+Update an existing budget. Set scope=EXTRA explicitly after reviewing a LEGACY_TOTAL amount; EXTRA means spending outside recurring commitments.
 
 **Consumes:** application/json
 
@@ -134,7 +134,7 @@ Update an existing budget
 
 **Resumo:** Create a new budget
 
-Create a new budget for a category (expense only)
+Create an expense-category budget for extras outside recurring commitments. scope defaults to EXTRA; older total budgets remain LEGACY_TOTAL until explicitly adopted.
 
 **Consumes:** application/json
 
@@ -159,7 +159,7 @@ Create a new budget for a category (expense only)
 
 **Resumo:** Duplicate budgets
 
-Duplicate budgets from a source month/year to a target month/year, keeping existing target budgets
+Duplicate budgets and their scope from a source month/year to a target month/year, keeping existing target budgets
 
 **Consumes:** application/json
 
@@ -184,7 +184,7 @@ Duplicate budgets from a source month/year to a target month/year, keeping exist
 
 **Resumo:** Apply recurring expense budget proposal
 
-Create absent category budgets and replace only explicitly selected existing budget IDs
+Create EXTRA budgets from the reviewed margin proposal. Only explicitly selected existing EXTRA budgets may be updated; legacy budgets are preserved. A zero proposal creates no row and cannot overwrite a positive budget.
 
 **Consumes:** application/json
 
@@ -208,7 +208,7 @@ Create absent category budgets and replace only explicitly selected existing bud
 
 **Resumo:** Preview monthly budgets from registered recurring expenses
 
-Group expected recurring expense slots by category and apply a percentage margin; existing budgets are preserved
+Propose EXTRA budgets only: registered recurring total per category times margin_percent / 100. Recurrences remain separate commitments. Zero margin proposes no new budget; existing budgets stay preserved unless an EXTRA replacement is explicitly selected.
 
 **Consumes:** application/json
 
@@ -246,13 +246,21 @@ Group expected recurring expense slots by category and apply a percentage margin
 | percentage_used | number | não |  |
 | planned_amount | number | não |  |
 | projected_amount | number | não |  |
+| recurring_amount | number | não |  |
+| recurring_projected_amount | number | não |  |
+| recurring_spent_amount | number | não |  |
 | remaining_amount | number | não |  |
+| scope | entity.BudgetScope | não |  |
 | spent_amount | number | não |  |
 | updated_at | string | não |  |
 | workspace_id | string | não |  |
 | year | integer | não |  |
 
 #### entity.BudgetHealth
+
+Sem propriedades.
+
+#### entity.BudgetScope
 
 Sem propriedades.
 
@@ -271,6 +279,7 @@ Sem propriedades.
 | existing_amount | number | não |  |
 | existing_budget_id | string | não |  |
 | existing_is_active | boolean | não |  |
+| existing_scope | entity.BudgetScope | não |  |
 | proposed_amount | number | não |  |
 
 #### usecase.BudgetGenerationItem
@@ -280,9 +289,11 @@ Sem propriedades.
 | action | string | não |  |
 | category_id | string | não |  |
 | category_name | string | não |  |
+| difference | number | não |  |
 | existing_amount | number | não |  |
 | existing_budget_id | string | não |  |
 | existing_is_active | boolean | não |  |
+| existing_scope | entity.BudgetScope | não |  |
 | proposed_amount | number | não |  |
 | recurring_total | number | não |  |
 
@@ -294,6 +305,7 @@ Sem propriedades.
 | items | array&lt;usecase.BudgetGenerationItem&gt; | não |  |
 | margin_percent | number | não |  |
 | month | integer | não |  |
+| scope | entity.BudgetScope | não |  |
 | year | integer | não |  |
 
 #### usecase.BudgetGenerationResult
@@ -325,6 +337,7 @@ Sem propriedades.
 | is_active | boolean | não |  |
 | month | integer | sim |  |
 | planned_amount | number | sim |  |
+| scope | entity.BudgetScope | não |  |
 | year | integer | sim |  |
 
 #### v1.duplicateBudgetRequest
@@ -356,4 +369,5 @@ Sem propriedades.
 | is_active | boolean | não |  |
 | month | integer | não |  |
 | planned_amount | number | não |  |
+| scope | entity.BudgetScope | não |  |
 | year | integer | não |  |

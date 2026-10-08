@@ -720,6 +720,8 @@ Sem propriedades.
 | goal | entity.Goal | não |  |
 | offers | array&lt;usecase.OpportunityView&gt; | não |  |
 | remaining | number | não |  |
+| review_reason | string | não |  |
+| review_required | boolean | não |  |
 | suggested_today | number | não |  |
 | version | string | não |  |
 
