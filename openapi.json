@@ -1236,6 +1236,149 @@
                 }
             }
         },
+        "/asset-classifications": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "List asset natures and purposes, including archived entries",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.AssetClassification"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Create a workspace asset nature or purpose",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "A nature needs a bucket; a purpose needs a parent and role",
+                        "name": "classification",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetClassificationCreateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AssetClassification"
+                        }
+                    }
+                }
+            }
+        },
+        "/asset-classifications/{id}": {
+            "delete": {
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Delete an unused custom asset classification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Classification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Rename, change icon, archive or reactivate an asset classification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Classification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Editable presentation fields",
+                        "name": "classification",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetClassificationUpdateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AssetClassification"
+                        }
+                    }
+                }
+            }
+        },
         "/assets": {
             "get": {
                 "produces": [
@@ -1524,7 +1667,7 @@
                         "required": true
                     },
                     {
-                        "description": "Purpose",
+                        "description": "Exactly one of legacy purpose or classification_id",
                         "name": "purpose",
                         "in": "body",
                         "required": true,
@@ -13220,7 +13363,7 @@
         },
         "/transactions/editor/batch": {
             "post": {
-                "description": "Tags are added without removing existing links and duplicates are ignored. Each target returns an independent result.",
+                "description": "When category_id is set and sub_category_id is omitted, each current subcategory is kept if compatible with the new category, otherwise cleared in the same item update. Without a category change, omission preserves the current subcategory. A UUID sets a subcategory and null explicitly clears it. A newly selected subcategory must be active in the workspace and belong to the resulting category. Clearing under an archived current category requires selecting an active category too. Tags are added without removing existing links and duplicates are ignored. Each target returns an independent result.",
                 "consumes": [
                     "application/json"
                 ],
@@ -13230,7 +13373,7 @@
                 "tags": [
                     "transactions"
                 ],
-                "summary": "Edit descriptions, categories, recurring links or add tags in a transaction selection",
+                "summary": "Edit descriptions, categories, subcategories, recurring links or add tags in a transaction selection",
                 "parameters": [
                     {
                         "type": "string",
@@ -15578,6 +15721,50 @@
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetClassification": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "system": {
+                    "type": "boolean"
+                },
+                "updated_at": {
                     "type": "string"
                 },
                 "workspace_id": {
@@ -18457,6 +18644,9 @@
                 "breakdown": {
                     "$ref": "#/definitions/usecase.AssetPaymentBreakdown"
                 },
+                "classification_id": {
+                    "type": "string"
+                },
                 "currency_code": {
                     "type": "string"
                 },
@@ -19030,6 +19220,12 @@
                     "type": "string"
                 },
                 "recurring_transaction_id": {
+                    "type": "string"
+                },
+                "sub_category_id": {
+                    "type": "string"
+                },
+                "sub_category_name": {
                     "type": "string"
                 },
                 "transaction_date": {
@@ -20858,6 +21054,48 @@
                 }
             }
         },
+        "v1.assetClassificationCreateBody": {
+            "type": "object",
+            "required": [
+                "icon",
+                "kind",
+                "name"
+            ],
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.assetClassificationUpdateBody": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.assetFinancingBody": {
             "type": "object",
             "properties": {
@@ -20985,10 +21223,10 @@
         },
         "v1.assetPurposeBody": {
             "type": "object",
-            "required": [
-                "purpose"
-            ],
             "properties": {
+                "classification_id": {
+                    "type": "string"
+                },
                 "purpose": {
                     "type": "string"
                 }
@@ -21923,6 +22161,11 @@
                     "type": "string"
                 },
                 "recurring_transaction_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "x-nullable": true
+                },
+                "sub_category_id": {
                     "type": "string",
                     "format": "uuid",
                     "x-nullable": true

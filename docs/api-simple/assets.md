@@ -1,6 +1,23 @@
 ---
 title: Assets
 ---
+## DELETE `/asset-classifications/{id}`
+
+**Resumo:** Delete an unused custom asset classification
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Classification ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+
 ## DELETE `/assets/{id}`
 
 **Resumo:** Delete an asset and its non-financial metadata
@@ -17,6 +34,24 @@ title: Assets
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 204 | No Content |  |
+
+## GET `/asset-classifications`
+
+**Resumo:** List asset natures and purposes, including archived entries
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | array&lt;entity.AssetClassification&gt; |
 
 ## GET `/assets`
 
@@ -74,6 +109,28 @@ title: Assets
 | --- | --- | --- |
 | 200 | OK | array&lt;usecase.AssetFinancingEventView&gt; |
 
+## PATCH `/asset-classifications/{id}`
+
+**Resumo:** Rename, change icon, archive or reactivate an asset classification
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Classification ID |
+| classification | body | v1.assetClassificationUpdateBody | sim | Editable presentation fields |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AssetClassification |
+
 ## PATCH `/assets/{id}`
 
 **Resumo:** Edit an asset, its initial valuation and financing choice atomically
@@ -96,6 +153,27 @@ title: Assets
 | --- | --- | --- |
 | 200 | OK | usecase.AssetDetail |
 | 409 | Conflict | object |
+
+## POST `/asset-classifications`
+
+**Resumo:** Create a workspace asset nature or purpose
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| classification | body | v1.assetClassificationCreateBody | sim | A nature needs a bucket; a purpose needs a parent and role |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.AssetClassification |
 
 ## POST `/assets`
 
@@ -180,7 +258,7 @@ title: Assets
 | id | path | string | sim | Asset ID |
 | kind | path | string | sim | expense or card_expense |
 | source_id | path | string | sim | Expense ID |
-| purpose | body | v1.assetPurposeBody | sim | Purpose |
+| purpose | body | v1.assetPurposeBody | sim | Exactly one of legacy purpose or classification_id |
 
 ### Respostas
 
@@ -257,6 +335,24 @@ title: Assets
 
 ### Schemas
 
+#### entity.AssetClassification
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| bucket | string | não |  |
+| code | string | não |  |
+| created_at | string | não |  |
+| icon | string | não |  |
+| id | string | não |  |
+| is_active | boolean | não |  |
+| kind | string | não |  |
+| name | string | não |  |
+| parent_id | string | não |  |
+| role | string | não |  |
+| system | boolean | não |  |
+| updated_at | string | não |  |
+| workspace_id | string | não |  |
+
 #### entity.AssetFinancing
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -319,6 +415,7 @@ title: Assets
 | --- | --- | --- | --- |
 | amount | number | não |  |
 | breakdown | usecase.AssetPaymentBreakdown | não |  |
+| classification_id | string | não |  |
 | currency_code | string | não |  |
 | date | string | não |  |
 | description | string | não |  |
@@ -414,6 +511,25 @@ title: Assets
 | kind | string | sim |  |
 | name | string | sim |  |
 
+#### v1.assetClassificationCreateBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| bucket | string | não |  |
+| icon | string | sim |  |
+| kind | string | sim |  |
+| name | string | sim |  |
+| parent_id | string | não |  |
+| role | string | não |  |
+
+#### v1.assetClassificationUpdateBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| icon | string | não |  |
+| is_active | boolean | não |  |
+| name | string | não |  |
+
 #### v1.assetFinancingBody
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -472,7 +588,8 @@ title: Assets
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| purpose | string | sim |  |
+| classification_id | string | não |  |
+| purpose | string | não |  |
 
 #### v1.assetSaleBody
 

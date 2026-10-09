@@ -332,9 +332,9 @@ Create a new investment withdrawal
 
 ## POST `/transactions/editor/batch`
 
-**Resumo:** Edit descriptions, categories, recurring links or add tags in a transaction selection
+**Resumo:** Edit descriptions, categories, subcategories, recurring links or add tags in a transaction selection
 
-Tags are added without removing existing links and duplicates are ignored. Each target returns an independent result.
+When category_id is set and sub_category_id is omitted, each current subcategory is kept if compatible with the new category, otherwise cleared in the same item update. Without a category change, omission preserves the current subcategory. A UUID sets a subcategory and null explicitly clears it. A newly selected subcategory must be active in the workspace and belong to the resulting category. Clearing under an archived current category requires selecting an active category too. Tags are added without removing existing links and duplicates are ignored. Each target returns an independent result.
 
 **Consumes:** application/json
 
@@ -1102,6 +1102,8 @@ Sem propriedades.
 | id | string | não |  |
 | invoice_status | string | não |  |
 | recurring_transaction_id | string | não |  |
+| sub_category_id | string | não |  |
+| sub_category_name | string | não |  |
 | transaction_date | string | não |  |
 | type | string | não |  |
 
@@ -1199,6 +1201,7 @@ Sem propriedades.
 | category_id | string | não |  |
 | description | string | não |  |
 | recurring_transaction_id | string | não |  |
+| sub_category_id | string | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | targets | array&lt;usecase.EditorTarget&gt; | não |  |
 
