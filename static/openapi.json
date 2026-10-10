@@ -2951,7 +2951,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Validate authentication token and return user information with workspaces. Requires verified MFA when enabled.",
+                "description": "Validate authentication token and return user information with workspaces. Requires verified MFA when enabled. API keys see only their bound workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2971,6 +2971,9 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -14642,7 +14645,7 @@
         },
         "/workspaces": {
             "get": {
-                "description": "List all workspaces for the authenticated user",
+                "description": "List all workspaces for the authenticated user. API keys see only their bound workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14665,6 +14668,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -14753,7 +14765,7 @@
         },
         "/workspaces/{workspace_id}": {
             "get": {
-                "description": "Get a single workspace by its ID",
+                "description": "Get a workspace by ID. Only current workspace members may view it; API keys are limited to their bound workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14786,6 +14798,18 @@
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -14801,7 +14825,7 @@
                 }
             },
             "delete": {
-                "description": "Delete a workspace and all its data atomically. User must be ADMIN; every member must retain at least one workspace.",
+                "description": "Delete a workspace and all its data atomically. User must be ADMIN; every member must retain at least one workspace. API keys are limited to their bound workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14864,7 +14888,7 @@
                 }
             },
             "patch": {
-                "description": "Update a workspace",
+                "description": "Update only supplied workspace identity fields. ADMIN required; API keys are limited to their bound workspace. Name is trimmed and must be 1–100 characters. Icon accepts identifiers from the category icon picker and the previous workspace picker (building-2, briefcase-business, house, landmark, wallet, chart-no-axes-combined); an empty icon restores the Spaces fallback. Currency must be active. Changing the primary currency changes planning filters and how existing numeric goal and budget amounts are interpreted; it does not convert or rewrite accounts, transactions, investments, goals, or budgets.",
                 "consumes": [
                     "application/json"
                 ],
@@ -18280,6 +18304,9 @@
                 "default_currency_code": {
                     "type": "string"
                 },
+                "icon": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -20966,6 +20993,9 @@
             "type": "object",
             "properties": {
                 "created_at": {
+                    "type": "string"
+                },
+                "icon": {
                     "type": "string"
                 },
                 "id": {
@@ -23979,6 +24009,9 @@
             "type": "object",
             "properties": {
                 "default_currency_code": {
+                    "type": "string"
+                },
+                "icon": {
                     "type": "string"
                 },
                 "name": {

@@ -5,7 +5,7 @@ title: Workspaces
 
 **Resumo:** Delete a workspace
 
-Delete a workspace and all its data atomically. User must be ADMIN; every member must retain at least one workspace.
+Delete a workspace and all its data atomically. User must be ADMIN; every member must retain at least one workspace. API keys are limited to their bound workspace.
 
 **Consumes:** application/json
 
@@ -31,7 +31,7 @@ Delete a workspace and all its data atomically. User must be ADMIN; every member
 
 **Resumo:** List user's workspaces
 
-List all workspaces for the authenticated user
+List all workspaces for the authenticated user. API keys see only their bound workspace.
 
 **Consumes:** application/json
 
@@ -47,13 +47,14 @@ Sem parâmetros.
 | --- | --- | --- |
 | 200 | OK | array&lt;entity.Workspace&gt; |
 | 400 | Bad Request | object |
+| 403 | Forbidden | object |
 | 500 | Internal Server Error | object |
 
 ## GET `/workspaces/{workspace_id}`
 
 **Resumo:** Get a single workspace
 
-Get a single workspace by its ID
+Get a workspace by ID. Only current workspace members may view it; API keys are limited to their bound workspace.
 
 **Consumes:** application/json
 
@@ -71,6 +72,8 @@ Get a single workspace by its ID
 | --- | --- | --- |
 | 200 | OK | entity.Workspace |
 | 400 | Bad Request | v1.ErrorResponse |
+| 401 | Unauthorized | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
 | 404 | Not Found | v1.ErrorResponse |
 | 500 | Internal Server Error | v1.ErrorResponse |
 
@@ -78,7 +81,7 @@ Get a single workspace by its ID
 
 **Resumo:** Update workspace
 
-Update a workspace
+Update only supplied workspace identity fields. ADMIN required; API keys are limited to their bound workspace. Name is trimmed and must be 1–100 characters. Icon accepts identifiers from the category icon picker and the previous workspace picker (building-2, briefcase-business, house, landmark, wallet, chart-no-axes-combined); an empty icon restores the Spaces fallback. Currency must be active. Changing the primary currency changes planning filters and how existing numeric goal and budget amounts are interpreted; it does not convert or rewrite accounts, transactions, investments, goals, or budgets.
 
 **Consumes:** application/json
 
@@ -663,6 +666,7 @@ Sem propriedades.
 | categories | array&lt;entity.Category&gt; | não |  |
 | created_at | string | não |  |
 | default_currency_code | string | não |  |
+| icon | string | não |  |
 | id | string | não |  |
 | import_sessions | array&lt;entity.ImportSession&gt; | não |  |
 | invites | array&lt;entity.WorkspaceInvite&gt; | não |  |
@@ -718,4 +722,5 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | default_currency_code | string | não |  |
+| icon | string | não |  |
 | name | string | não |  |

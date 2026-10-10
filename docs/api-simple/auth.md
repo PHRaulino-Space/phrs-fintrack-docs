@@ -130,7 +130,7 @@ Initiate OAuth login flow with the specified provider (e.g., github)
 
 **Resumo:** Validate token
 
-Validate authentication token and return user information with workspaces. Requires verified MFA when enabled.
+Validate authentication token and return user information with workspaces. Requires verified MFA when enabled. API keys see only their bound workspace.
 
 **Consumes:** application/json
 
@@ -146,6 +146,7 @@ Sem parâmetros.
 | --- | --- | --- |
 | 200 | OK | v1.ValidateResponse |
 | 401 | Unauthorized |  |
+| 403 | Forbidden |  |
 | 500 | Internal Server Error |  |
 
 ## POST `/auth/forgot-password`
@@ -737,6 +738,7 @@ Sem parâmetros.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | created_at | string | não |  |
+| icon | string | não |  |
 | id | string | não |  |
 | name | string | não |  |
 | role | string | não |  |
