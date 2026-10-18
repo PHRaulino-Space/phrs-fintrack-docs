@@ -13325,6 +13325,12 @@
                     },
                     {
                         "type": "string",
+                        "description": "Subcategory UUID (combined with category when supplied)",
+                        "name": "sub_category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Comma-separated tag UUIDs (any match)",
                         "name": "tag_ids",
                         "in": "query"
