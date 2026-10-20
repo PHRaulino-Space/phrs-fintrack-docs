@@ -2,9 +2,9 @@
 
 ## Fonte de verdade e checkout
 
-Este site Docusaurus é o repositório `phrs-fintrack-docs`, incluído como submódulo tanto em `backend/docs` quanto em `frontend/docs`. Nesta revisão a árvore editada é **`backend/docs`**. No início, ambas apontavam ao commit `e3f78176a5ad8dfc355e28d659e415bf6af62060`, sem alterações locais, mas são diretórios de trabalho diferentes. Um commit posterior no submódulo não atualiza automaticamente o checkout irmão nem deve ser confundido com alteração de código em um dos pais. O autor decidirá quando registrar o commit do docs e, se desejar, os ponteiros nos projetos pais.
+Este site Docusaurus é o repositório `phrs-fintrack-docs`, incluído como submódulo tanto em `backend/docs` quanto em `frontend/docs`. A árvore canônica de edição é **`backend/docs`**; as fontes alteradas são espelhadas em `frontend/docs`. Ambos começaram em `9e35dbed4f5aa056d317d6a6697beeadc38a7c3c` na revisão de 20/10/2026. São checkouts separados: um commit de docs não atualiza automaticamente o irmão nem os ponteiros dos repositórios pais. Sem commit solicitado, as mudanças permanecem locais.
 
-Os checkpoints de leitura do aplicativo são backend `cc862284112cd171e145895b2fb83fa576e5befc` e frontend `fbb75d06862c324b5e5a0fc2076498d634c6e627`. Antes de editar de novo, leia `AGENTS.md` dos projetos e verifique `git status` dos três repositórios, sem descartar arquivos dirty ou untracked.
+Bases de aplicativo: backend `8e68227cc642bb60e90db5dba313000e7f45e798` e frontend `bd33f1c8a6e2de962d1bb1d9f2248fcc97bc46f4`, com refatorações locais posteriores. Antes de editar, leia AGENTS e confira Git em cada árvore, preservando alterações existentes. Resultado transitório de check pertence a revisão/histórico, não ao contrato vivo.
 
 ## Sequência de atualização
 
@@ -12,8 +12,8 @@ Os checkpoints de leitura do aplicativo são backend `cc862284112cd171e145895b2f
 2. Siga uma jornada completa: entrada da UI → cliente HTTP → middleware/handler → caso de uso → persistência → resposta → representação na tela e efeito em outros módulos. Distinga chamadas existentes de ações visíveis para o usuário.
 3. Para cada cálculo, anote fórmula, fonte de dados, status incluídos e excluídos, período e data civil, moeda, precisão/arredondamento, hipóteses e um exemplo com dados **fictícios** verificado contra código ou teste. Se a UI reformatar ou filtrar o resultado do backend, registre os dois comportamentos.
 4. Atualize a [matriz](./coverage.md), a página do domínio e as [lacunas](./known-gaps.md). Nunca apresente uma intenção de roadmap como funcionalidade entregue, nem silencie uma divergência frontend/backend. Use caminho e símbolo como evidência; linha isolada é frágil.
-5. Preserve `docs/api-simple` e `static/openapi.json` quando a mudança for apenas textual. Ao mudar rota/anotação no backend, siga o processo `make swagger` descrito em `backend/AGENTS.md` em uma tarefa de código própria. Não regere OpenAPI apenas para revisar texto.
-6. Execute o build Docusaurus (`npm ci` se as dependências estiverem ausentes, depois `npm run build`), confira links relativos e a navegação, e revise as páginas antigas do guia. O build detecta links que quebram a compilação, mas não prova que uma fórmula está correta.
+5. Preserve `docs/api-simple` e `static/openapi.json` quando a mudança for apenas textual. Ao mudar rota/anotação no backend, siga `make swagger` conforme `backend/AGENTS.md`: gere `openapi`, sincronize `docs/static/openapi.json` e `docs/openapi.json`, rode `scripts/generate-openapi-md.js`, espelhe as mesmas fontes no checkout irmão e execute o teste de drift. Não regere OpenAPI apenas para revisar texto.
+6. Execute o build Docusaurus (`node_modules/.bin/docusaurus build` com dependências já disponíveis; se ausentes e instalação estiver restrita, registre o bloqueio), confira links relativos e a navegação, e revise as páginas antigas do guia. O build detecta links que quebram a compilação, mas não prova que uma fórmula está correta.
 
 O build gera `build/` local ignorado. Este repositório também contém HTML e assets estáticos versionados na raiz e em `en/` de uma publicação anterior; eles não são fonte editorial e **não** foram substituídos nesta revisão, que não publicou o site. Planeje a atualização desses artefatos pelo fluxo de publicação quando autorizada.
 

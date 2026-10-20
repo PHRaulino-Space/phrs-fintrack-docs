@@ -1,6 +1,6 @@
 # Produto FinTrack: comportamento observado
 
-Esta seção descreve **o código neste checkout**, não uma proposta de produto. Os exemplos monetários são fictícios. Os checkpoints usados na leitura são backend `cc862284112cd171e145895b2fb83fa576e5befc`, frontend `fbb75d06862c324b5e5a0fc2076498d634c6e627` e documentação-base `e3f78176a5ad8dfc355e28d659e415bf6af62060` (4 de outubro de 2026). Mudanças sem commit feitas depois desses pontos devem ser conferidas de novo antes de usar as fórmulas como contrato.
+Esta seção descreve **o código neste checkout**, não uma proposta de produto. Os exemplos monetários são fictícios. A revisão de 20/10/2026 conferiu os commits base backend `8e68227cc642bb60e90db5dba313000e7f45e798`, frontend `bd33f1c8a6e2de962d1bb1d9f2248fcc97bc46f4` e docs `9e35dbed4f5aa056d317d6a6697beeadc38a7c3c`, incluindo alterações locais de implementação descritas na matriz e nas lacunas. Fontes e testes prevalecem sobre um resultado histórico de check.
 
 ## Comece pelo fluxo
 
@@ -10,6 +10,7 @@ Esta seção descreve **o código neste checkout**, não uma proposta de produto
 | Contas e cartões | Configura contas, transferências, compras e faturas | [Contas e cartões](./accounts-cards.md) |
 | Livro de transações e recorrências | Consulta lançamentos, agenda, paga e concilia | [Transações e recorrências](./transactions-recurring.md) |
 | Importação e Open Finance | Revê linhas, confirma importação e sincroniza instituições | [Importações e Open Finance](./imports-open-finance.md) |
+| Patrimônio | Cadastra bens, avaliações, financiamento e classifica gastos | [Patrimônio](./assets.md) |
 | Investimentos e metas | Lança posições, acompanha valor e vincula metas | [Investimentos e metas](./investments-goals.md) |
 | Planejamento, orçamentos e dashboard | Examina mês, projeções, realizado e indicadores | [Planejamento, orçamentos e dashboard](./planning-budgets-dashboard.md) |
 
@@ -21,4 +22,4 @@ Uma data civil como `2026-05-31` é um dia de calendário e uma competência com
 
 ## Escopo desta revisão
 
-O inventário foi feito em `frontend/src/app/**/page.tsx`, `frontend/src/components/layout/data/sidebar-data.tsx`, `frontend/src/hooks`, `frontend/src/services`, `frontend/e2e`, `backend/internal/controller/http/v1/router.go` e handlers do mesmo diretório, `backend/internal/usecase`, `backend/internal/entity`, `backend/internal/infra/postgres/repository`, `backend/internal/infra/dbsetup` e testes adjacentes. A árvore canônica de edição é **`backend/docs`**; `frontend/docs` é outro checkout limpo do mesmo repositório e commit, mantido intacto nesta tarefa. Não houve consulta a dados financeiros reais.
+O inventário foi feito em `frontend/src/app/**/page.tsx`, `frontend/src/components/layout/data/sidebar-data.tsx`, `frontend/src/hooks`, `frontend/src/services`, `frontend/e2e`, `backend/internal/controller/http/v1/router.go` e handlers do mesmo diretório, `backend/internal/usecase`, `backend/internal/entity`, `backend/internal/infra/postgres/repository`, `backend/internal/infra/dbsetup` e testes adjacentes. A árvore canônica de edição é **`backend/docs`**; `frontend/docs` é outro checkout do mesmo repositório e recebeu as mesmas fontes/OpenAPI nesta atualização, sem commit nem mudança de ponteiros. Não houve consulta a dados financeiros reais.

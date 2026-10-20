@@ -55,7 +55,7 @@ List all categories for a given workspace
 
 **Resumo:** Get a single category
 
-Get a single category by its ID
+Get a category in the selected workspace. Missing and foreign IDs return 404.
 
 **Consumes:** application/json
 
@@ -74,6 +74,7 @@ Get a single category by its ID
 | --- | --- | --- |
 | 200 | OK | entity.Category |
 | 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ## GET `/categories/{category_id}/deletion-preview`

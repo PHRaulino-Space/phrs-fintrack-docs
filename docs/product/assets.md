@@ -80,3 +80,9 @@ Todas as rotas exigem autenticação, MFA, `X-Workspace-ID` autorizado e CSRF em
 `GET` retorna `acquisition`, `maintenance` (grupo Custos e melhorias, nome de campo legado), `total`, `purpose_totals`, `expenses[]`, `valuations[]`, `financing`, `financing_summary` e `financing_events[]`. Cada despesa informa `transaction_status`; a soma `pending_amount` é separada de `paid`. Cada parcela pode ter `breakdown` com origem `INFORMED`, `DEFAULT_ESTIMATE`, `UNSPECIFIED` ou `INVALID`. As somas monetárias são arredondadas em centavos; despesas não são duplicadas ao decompor principal, juros e encargos. A ordenação e a paginação da tabela de lançamentos são locais na interface. A API não altera as transações durante leitura, classificação, avaliação ou acompanhamento.
 
 **Ativação:** aplicar a migration pelo procedimento normal do backend (`go run cmd/dbsetup/main.go -migrate`) depois de revisar o esquema. Não executar no banco do usuário durante desenvolvimento.
+
+## Lista resumida e detalhe
+
+A lista do frontend solicita `GET /assets?view=summary`: identidade, totais por finalidade/moeda, última avaliação, gasto/ganho disponível e resumo do financiamento, sem arrays de despesas, avaliações ou eventos. O detalhe usa `GET /assets/{id}` completo. O parâmetro é opcional: a view padrão continua completa para clientes anteriores. Consultas das associações são feitas em lote por workspace/conjunto de IDs; avaliações do resumo carregam só a última por bem, com desempate estável. Ambos os caminhos compartilham cálculo e indisponibilidade, sem conversão implícita entre moedas.
+
+A lista mantém o conjunto inteiro para os KPIs e filtros atuais; não é uma API paginada. Testes de fixture SQL verificam cinco consultas constantes para 1/20/100 bens e equivalência com o detalhe, sem banco real ou alegação de latência de produção. Os gastos móveis preservam descrição, valor, data e resumo da classificação, com detalhes/controles expansíveis na mesma DataTable.

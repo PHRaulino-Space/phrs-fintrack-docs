@@ -58,7 +58,7 @@ List all accounts for a given workspace
 
 **Resumo:** Get a single account
 
-Get a single account by its ID
+Get an account in the selected workspace. Missing and foreign IDs return 404.
 
 **Consumes:** application/json
 
@@ -77,6 +77,7 @@ Get a single account by its ID
 | --- | --- | --- |
 | 200 | OK | v1.AccountResponse |
 | 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 | 503 | Service Unavailable | object |
 

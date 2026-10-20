@@ -252,7 +252,7 @@
         },
         "/accounts/{account_id}": {
             "get": {
-                "description": "Get a single account by its ID",
+                "description": "Get an account in the selected workspace. Missing and foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -288,6 +288,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1381,13 +1390,14 @@
         },
         "/assets": {
             "get": {
+                "description": "Default response is AssetDetail with histories. view=summary omits expenses, valuations and financing_events; returns latest_valuation, nullable spent/realized_gain and mixed_financing_currency alongside the identity, totals and financing summary. All assets are included for workspace-wide collection KPIs.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "assets"
                 ],
-                "summary": "List assets with tagged expenses and valuations",
+                "summary": "List assets with an optional collection summary view",
                 "parameters": [
                     {
                         "type": "string",
@@ -1395,15 +1405,42 @@
                         "name": "X-Workspace-ID",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "enum": [
+                            "summary"
+                        ],
+                        "type": "string",
+                        "description": "Use summary for a compact collection without histories; omit for the compatible full detail list",
+                        "name": "view",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "AssetDetail by default; AssetSummary without histories when view=summary",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/usecase.AssetDetail"
+                                "$ref": "#/definitions/v1.assetCollectionItem"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
@@ -5586,7 +5623,7 @@
         },
         "/categories/{category_id}": {
             "get": {
-                "description": "Get a single category by its ID",
+                "description": "Get a category in the selected workspace. Missing and foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -5622,6 +5659,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -6010,6 +6056,15 @@
                             }
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -6024,7 +6079,7 @@
         },
         "/categories/{category_id}/sub-categories/{id}": {
             "get": {
-                "description": "Get a single sub-category by its ID",
+                "description": "Get a sub-category in the selected workspace and category. Missing and foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -6067,6 +6122,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -12914,7 +12978,7 @@
         },
         "/tags/{id}": {
             "get": {
-                "description": "Get a single tag by its ID",
+                "description": "Get a tag in the selected workspace. Missing and foreign IDs return 404.",
                 "consumes": [
                     "application/json"
                 ],
@@ -12950,6 +13014,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -21128,6 +21201,96 @@
                     "type": "boolean"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.assetCollectionItem": {
+            "type": "object",
+            "properties": {
+                "acquisition": {
+                    "type": "number"
+                },
+                "acquisition_cost": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expenses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AssetExpense"
+                    }
+                },
+                "financing": {
+                    "$ref": "#/definitions/entity.AssetFinancing"
+                },
+                "financing_events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AssetFinancingEventView"
+                    }
+                },
+                "financing_summary": {
+                    "$ref": "#/definitions/usecase.AssetFinancingSummary"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "latest_valuation": {
+                    "$ref": "#/definitions/entity.AssetValuation"
+                },
+                "maintenance": {
+                    "type": "number"
+                },
+                "mixed_currency": {
+                    "type": "boolean"
+                },
+                "mixed_financing_currency": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "purpose_totals": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "number",
+                        "format": "float64"
+                    }
+                },
+                "realized_gain": {
+                    "type": "number"
+                },
+                "sale_price": {
+                    "type": "number"
+                },
+                "sold_at": {
+                    "type": "string"
+                },
+                "spent": {
+                    "type": "number"
+                },
+                "tag_id": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "valuations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetValuation"
+                    }
+                },
+                "workspace_id": {
                     "type": "string"
                 }
             }

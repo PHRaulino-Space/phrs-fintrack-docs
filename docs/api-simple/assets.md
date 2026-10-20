@@ -55,7 +55,9 @@ title: Assets
 
 ## GET `/assets`
 
-**Resumo:** List assets with tagged expenses and valuations
+**Resumo:** List assets with an optional collection summary view
+
+Default response is AssetDetail with histories. view=summary omits expenses, valuations and financing_events; returns latest_valuation, nullable spent/realized_gain and mixed_financing_currency alongside the identity, totals and financing summary. All assets are included for workspace-wide collection KPIs.
 
 **Produces:** application/json
 
@@ -64,12 +66,15 @@ title: Assets
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| view | query | string | não | Use summary for a compact collection without histories; omit for the compatible full detail list |
 
 ### Respostas
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | array&lt;usecase.AssetDetail&gt; |
+| 200 | AssetDetail by default; AssetSummary without histories when view=summary | array&lt;v1.assetCollectionItem&gt; |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
 
 ## GET `/assets/{id}`
 
@@ -529,6 +534,35 @@ title: Assets
 | icon | string | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |
+
+#### v1.assetCollectionItem
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| acquisition | number | não |  |
+| acquisition_cost | number | não |  |
+| created_at | string | não |  |
+| expenses | array&lt;usecase.AssetExpense&gt; | não |  |
+| financing | entity.AssetFinancing | não |  |
+| financing_events | array&lt;usecase.AssetFinancingEventView&gt; | não |  |
+| financing_summary | usecase.AssetFinancingSummary | não |  |
+| id | string | não |  |
+| kind | string | não |  |
+| latest_valuation | entity.AssetValuation | não |  |
+| maintenance | number | não |  |
+| mixed_currency | boolean | não |  |
+| mixed_financing_currency | boolean | não |  |
+| name | string | não |  |
+| purpose_totals | object | não |  |
+| realized_gain | number | não |  |
+| sale_price | number | não |  |
+| sold_at | string | não |  |
+| spent | number | não |  |
+| tag_id | string | não |  |
+| total | number | não |  |
+| updated_at | string | não |  |
+| valuations | array&lt;entity.AssetValuation&gt; | não |  |
+| workspace_id | string | não |  |
 
 #### v1.assetFinancingBody
 

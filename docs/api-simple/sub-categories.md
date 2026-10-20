@@ -57,7 +57,7 @@ List all sub-categories for a given category
 
 **Resumo:** Get a single sub-category
 
-Get a single sub-category by its ID
+Get a sub-category in the selected workspace and category. Missing and foreign IDs return 404.
 
 **Consumes:** application/json
 
@@ -77,6 +77,7 @@ Get a single sub-category by its ID
 | --- | --- | --- |
 | 200 | OK | entity.SubCategory |
 | 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ## GET `/categories/{category_id}/sub-categories/{id}/deletion-preview`
@@ -154,6 +155,7 @@ Update a sub-category
 | --- | --- | --- |
 | 201 | Created | entity.SubCategory |
 | 400 | Bad Request | object |
+| 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
 ## POST `/categories/{category_id}/sub-categories/{id}/deletion-confirmation`
