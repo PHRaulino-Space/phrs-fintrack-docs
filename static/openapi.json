@@ -21127,6 +21127,10 @@
                 "created_at": {
                     "type": "string"
                 },
+                "default_currency_code": {
+                    "type": "string",
+                    "example": "BRL"
+                },
                 "icon": {
                     "type": "string"
                 },

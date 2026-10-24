@@ -740,6 +740,7 @@ Sem parâmetros.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | created_at | string | não |  |
+| default_currency_code | string | não |  |
 | icon | string | não |  |
 | id | string | não |  |
 | name | string | não |  |

@@ -17,6 +17,13 @@ Contas de moedas diferentes podem coexistir em um workspace. Isso permite consul
 
 A moeda de uma conta e a moeda padrão de um workspace são imutáveis após o cadastro. Alterar apenas o código reinterpretaria saldos iniciais, compras, limites, metas e lançamentos históricos. A API rejeita essa troca; corrigir um cadastro antigo exige uma decisão e um procedimento específicos, não a edição comum do campo.
 
+`GET /auth/validate` inclui `default_currency_code` em cada workspace autorizado.
+O resumo financeiro do Dashboard inclui sua própria `currency_code`, usada na
+formatação dos valores e gráficos desse resumo. A revalidação de sessão renova
+também os metadados do workspace selecionado. Código ausente ou inválido mantém
+a indicação de moeda indisponível, sem assumir BRL; isso não substitui a
+validação do backend nem permite consolidar moedas incompatíveis.
+
 ## Operações monetárias
 
 - **Transferência e transferência recorrente:** origem e destino devem ter a mesma moeda. A regra também se aplica à execução de ocorrências, aos workers e aos caminhos internos que materializam movimentos.
