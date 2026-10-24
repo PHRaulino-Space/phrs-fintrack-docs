@@ -440,7 +440,7 @@ Create one or more staged transactions for an import session
 
 **Resumo:** Upload CSV file
 
-Upload a CSV file to import transactions into the session. The file is parsed and transactions are created as staged.
+Upload semicolon CSV (max 5 MiB, 50000 records). Valid rows are staged atomically; invalid rows are reported by line/code. Structural or limit errors persist nothing.
 
 **Consumes:** multipart/form-data
 
@@ -457,8 +457,9 @@ Upload a CSV file to import transactions into the session. The file is parsed an
 
 | Status | Descrição | Schema |
 | --- | --- | --- |
-| 200 | OK | object |
-| 400 | Bad Request | object |
+| 201 | Created | v1.importCSVUploadResponse |
+| 400 | Bad Request | v1.importCSVUploadResponse |
+| 413 | Request Entity Too Large | object |
 | 500 | Internal Server Error | object |
 
 ## PUT `/import-sessions/{id}`
@@ -624,6 +625,13 @@ Sem propriedades.
 
 Sem propriedades.
 
+#### parser.RowRejection
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| code | string | não |  |
+| line | integer | não |  |
+
 #### usecase.ImportSessionResponse
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -690,6 +698,16 @@ Sem propriedades.
 | line_number | integer | não |  |
 | transaction_date | string | sim |  |
 | type | entity.StagedTransactionType | sim |  |
+
+#### v1.importCSVUploadResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| accepted | integer | não |  |
+| error | string | não |  |
+| message | string | não |  |
+| rejected | integer | não |  |
+| rejections | array&lt;parser.RowRejection&gt; | não |  |
 
 #### v1.knowledgeBody
 

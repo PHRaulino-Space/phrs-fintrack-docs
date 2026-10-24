@@ -142,6 +142,7 @@ Sem propriedades.
 | category_id | string | sim |  |
 | description | string | sim |  |
 | recurring_income_id | string | não |  |
+| recurring_transaction_id | string | não |  |
 | sub_category_id | string | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |

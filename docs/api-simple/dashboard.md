@@ -154,6 +154,7 @@ Returns summary metrics for goals
 | budgets | array&lt;usecase.BudgetSummaryItem&gt; | não |  |
 | cardExpenses | number | não |  |
 | categoryComparison | array&lt;usecase.CategoryComparison&gt; | não |  |
+| currency_code | string | não |  |
 | currentBalance | number | não |  |
 | expensesByCategory | array&lt;usecase.ExpenseByCategory&gt; | não |  |
 | goalsContribution | number | não |  |
@@ -216,6 +217,7 @@ Returns summary metrics for goals
 | --- | --- | --- | --- |
 | active_count | integer | não |  |
 | completed_count | integer | não |  |
+| currency_code | string | não |  |
 | progress_pct | number | não |  |
 | remaining | number | não |  |
 | total_accumulated | number | não |  |

@@ -19,6 +19,8 @@ Esta página descreve o comportamento observado no código dos checkouts `backen
 
 Em `/workspace/members`, qualquer membro pode ver membros; um administrador pode convidar por e-mail com função `admin` ou `member`, listar/revogar convites, alterar função e remover membros. Convite tem validade de **7 dias**, token aleatório armazenado como hash e é aceito pela conta autenticada que corresponde ao e-mail convidado. A interface mostra controles de gestão somente para administrador. Um administrador não deve supor que mudar a função altera propriedade de lançamentos já atribuídos. **Fontes:** `backend/internal/usecase/workspace_access.go` (`InviteMember`, `AcceptInvite`), `backend/internal/infra/postgres/repository/workspace_access_postgres.go`, `backend/internal/controller/http/v1/workspace_access.go`; `frontend/src/app/(fintrack)/workspace/members/page.tsx`; testes `workspace_access_test.go` nas camadas de uso e HTTP.
 
+A gestão de membros já bloqueia remover ou rebaixar o último administrador. Isso é distinto da exclusão de conta de usuário, cujo comportamento atual pode apagar um workspace compartilhado quando sai seu único administrador. A política dessa segunda jornada permanece uma decisão explícita; veja [último administrador e exclusão de conta](./workspace-account-deletion-policy.md).
+
 Chaves de API são criadas em `/settings/api-keys` para um workspace e têm escopos explícitos `recurso:read`/`recurso:write`, ou presets `read_only`, `read_write`, `admin`; `admin` não se combina com outros escopos. O segredo só é exibido na criação, enquanto o backend persiste hash. Criar, alterar escopos e revogar exigem sessão com verificação MFA recente; as rotas financeiras exigem o escopo mapeado e também a associação ao workspace. Falta de escopo devolve `403` com `required_scope`. Simular/comparar oportunidades exige `investments:read`, embora use `POST`, pois não grava carteira. **Fontes:** `backend/internal/entity/api_key.go` (`ResolveApiKeyScopes`), `backend/internal/usecase/api_key.go`, `backend/internal/controller/http/middleware/api_key_scope_middleware.go`, `backend/internal/controller/http/v1/api_key.go`.
 
 ## Categorias, subcategorias e etiquetas
@@ -100,3 +102,7 @@ Não foi encontrada uma jornada geral de **exportação de relatórios** no inve
 | Notificações e configurações | `/notifications`, `/settings/*` | `notifications.go`, `user.go`, `admin.go` | Testes de autenticação e de rotas correspondentes; sem prova de entrega externa de e-mail nesta página |
 
 Esta verificação cruza fontes e testes existentes. Foram executados nove testes de unidade de `Opportunity` e `GoalStrategy` com `GOCACHE=/tmp/fintrack-docs-go-cache go test ./internal/usecase -run 'Test.*(Opportunity|GoalStrategy)' -count=1` (**passou**). Não houve acesso a banco nem execução de fluxos reais; os testes de integração citados são evidência existente no código, não execução desta revisão. Nomes de arquivos nas tabelas são relativos às árvores `backend/` e `frontend/` indicadas no começo.
+
+## Garantias atuais de MFA
+
+A [política de MFA](./mfa-security-policy.md) detalha a prova preservada no refresh, a recusa de setup sobre fator ativo, falha fechada na consulta de estado e consumo único atômico de códigos de recuperação. Sessões anteriores à ativação do fator não comprovam esse fator.

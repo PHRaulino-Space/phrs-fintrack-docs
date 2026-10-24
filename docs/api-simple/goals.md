@@ -491,6 +491,7 @@ Sem propriedades.
 | completed_at | string | não |  |
 | completed_value | number | não | CompletedValue is written only when a goal is completed. Legacy completions remain nil. |
 | created_at | string | não |  |
+| currency_code | string | não |  |
 | current_value | number | não |  |
 | due_date | string | não |  |
 | id | string | não |  |
@@ -624,6 +625,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
+| effective_at | string | não | EffectiveAt is the real movement instant, never inferred from its creation time. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -660,6 +662,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | created_at | string | não |  |
+| effective_at | string | não | EffectiveAt is the explicitly supplied observation instant. NULL preserves legacy day-only precision. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -677,6 +680,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
+| effective_at | string | não | EffectiveAt is the real movement instant, never inferred from its creation time. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -986,6 +990,7 @@ Sem propriedades.
 | completed_at | string | não |  |
 | completed_value | number | não |  |
 | created_at | string | não |  |
+| currency_code | string | não |  |
 | current_value | number | não |  |
 | due_date | string | não |  |
 | id | string | não |  |

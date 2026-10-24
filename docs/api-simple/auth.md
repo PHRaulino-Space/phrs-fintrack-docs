@@ -222,7 +222,7 @@ Sem parâmetros.
 
 **Resumo:** Confirm MFA
 
-Confirm MFA enrollment and return recovery codes. Requires verified MFA if MFA is already enabled.
+Confirm pending MFA enrollment, return recovery codes and issue verified session cookies. Does not replace an active factor.
 
 **Consumes:** application/json
 
@@ -343,7 +343,7 @@ Verify a recovery code and issue MFA-verified tokens. Accepts an authenticated i
 
 **Resumo:** Setup MFA
 
-Initialize MFA enrollment and return secret/QR. Requires verified MFA if MFA is already enabled.
+Initialize MFA enrollment and return secret/QR. Existing active MFA cannot be replaced by setup; disable it with the current factor first.
 
 **Consumes:** application/json
 
@@ -360,6 +360,8 @@ Sem parâmetros.
 | 200 | OK | v1.mfaSetupResponse |
 | 400 | Bad Request | object |
 | 401 | Unauthorized | object |
+| 409 | Conflict | object |
+| 500 | Internal Server Error | object |
 
 ## POST `/auth/mfa/verify`
 

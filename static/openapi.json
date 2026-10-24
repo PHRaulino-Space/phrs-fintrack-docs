@@ -2100,7 +2100,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Confirm MFA enrollment and return recovery codes. Requires verified MFA if MFA is already enabled.",
+                "description": "Confirm pending MFA enrollment, return recovery codes and issue verified session cookies. Does not replace an active factor.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2414,7 +2414,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Initialize MFA enrollment and return secret/QR. Requires verified MFA if MFA is already enabled.",
+                "description": "Initialize MFA enrollment and return secret/QR. Existing active MFA cannot be replaced by setup; disable it with the current factor first.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2443,6 +2443,24 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -8828,7 +8846,7 @@
         },
         "/import-sessions/{id}/upload": {
             "post": {
-                "description": "Upload a CSV file to import transactions into the session. The file is parsed and transactions are created as staged.",
+                "description": "Upload semicolon CSV (max 5 MiB, 50000 records). Valid rows are staged atomically; invalid rows are reported by line/code. Structural or limit errors persist nothing.",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -8856,17 +8874,20 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/v1.importCSVUploadResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.importCSVUploadResponse"
+                        }
+                    },
+                    "413": {
+                        "description": "Request Entity Too Large",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -9492,7 +9513,7 @@
         },
         "/investments/{id}/deposits": {
             "post": {
-                "description": "Create a new investment deposit",
+                "description": "Create a new investment deposit. effective_at is the real RFC3339 event instant and must match transaction_date in America/Sao_Paulo; no time is inferred.",
                 "consumes": [
                     "application/json"
                 ],
@@ -9775,7 +9796,7 @@
                 }
             },
             "post": {
-                "description": "Create a value history entry for an investment",
+                "description": "Record an absolute investment position at effective_at (required RFC3339 instant). updated_at_date is its America/Sao_Paulo civil day. Later movements, including the same day, change the position; legacy day-only records are never assigned invented times.",
                 "consumes": [
                     "application/json"
                 ],
@@ -9926,7 +9947,7 @@
         },
         "/investments/{id}/withdrawals": {
             "post": {
-                "description": "Create a new investment withdrawal",
+                "description": "Create a new investment withdrawal. effective_at is the real RFC3339 event instant and must match transaction_date in America/Sao_Paulo; no time is inferred.",
                 "consumes": [
                     "application/json"
                 ],
@@ -16534,6 +16555,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "currency_code": {
+                    "type": "string"
+                },
                 "current_value": {
                     "type": "number"
                 },
@@ -16953,6 +16977,10 @@
                 "description": {
                     "type": "string"
                 },
+                "effective_at": {
+                    "description": "EffectiveAt is the real movement instant, never inferred from its creation time.",
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -17059,6 +17087,10 @@
                 "created_at": {
                     "type": "string"
                 },
+                "effective_at": {
+                    "description": "EffectiveAt is the explicitly supplied observation instant. NULL preserves legacy day-only precision.",
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -17103,6 +17135,10 @@
                     "type": "string"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "effective_at": {
+                    "description": "EffectiveAt is the real movement instant, never inferred from its creation time.",
                     "type": "string"
                 },
                 "id": {
@@ -18539,6 +18575,17 @@
                 "AccountKindCreditCard"
             ]
         },
+        "parser.RowRejection": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "line": {
+                    "type": "integer"
+                }
+            }
+        },
         "transactiondto.TransactionItemDTO": {
             "type": "object",
             "properties": {
@@ -18570,6 +18617,9 @@
                     "type": "string"
                 },
                 "destination_account_name": {
+                    "type": "string"
+                },
+                "effective_at": {
                     "type": "string"
                 },
                 "id": {
@@ -19452,6 +19502,9 @@
                     "items": {
                         "$ref": "#/definitions/usecase.CategoryComparison"
                     }
+                },
+                "currency_code": {
+                    "type": "string"
                 },
                 "currentBalance": {
                     "type": "number"
@@ -21916,6 +21969,9 @@
                 "recurring_expense_id": {
                     "type": "string"
                 },
+                "recurring_transaction_id": {
+                    "type": "string"
+                },
                 "sub_category_id": {
                     "type": "string"
                 },
@@ -22016,6 +22072,9 @@
                 "recurring_income_id": {
                     "type": "string"
                 },
+                "recurring_transaction_id": {
+                    "type": "string"
+                },
                 "sub_category_id": {
                     "type": "string"
                 },
@@ -22038,6 +22097,7 @@
             "required": [
                 "account_id",
                 "amount",
+                "effective_at",
                 "transaction_date"
             ],
             "properties": {
@@ -22049,6 +22109,10 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "effective_at": {
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "tag_ids": {
                     "type": "array",
@@ -22106,10 +22170,15 @@
         "v1.createInvestmentValueHistoryRequest": {
             "type": "object",
             "required": [
+                "effective_at",
                 "updated_at_date",
                 "value"
             ],
             "properties": {
+                "effective_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
                 "updated_at_date": {
                     "type": "string"
                 },
@@ -22123,6 +22192,7 @@
             "required": [
                 "account_id",
                 "amount",
+                "effective_at",
                 "transaction_date"
             ],
             "properties": {
@@ -22134,6 +22204,10 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "effective_at": {
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "rescued": {
                     "type": "boolean"
@@ -22534,6 +22608,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "currency_code": {
+                    "type": "string"
+                },
                 "current_value": {
                     "type": "number"
                 },
@@ -22599,6 +22676,9 @@
                 "completed_count": {
                     "type": "integer"
                 },
+                "currency_code": {
+                    "type": "string"
+                },
                 "progress_pct": {
                     "type": "number"
                 },
@@ -22646,6 +22726,29 @@
                 },
                 "url": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.importCSVUploadResponse": {
+            "type": "object",
+            "properties": {
+                "accepted": {
+                    "type": "integer"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "rejected": {
+                    "type": "integer"
+                },
+                "rejections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/parser.RowRejection"
+                    }
                 }
             }
         },
@@ -22967,6 +23070,9 @@
             "type": "object",
             "properties": {
                 "created_at": {
+                    "type": "string"
+                },
+                "effective_at": {
                     "type": "string"
                 },
                 "id": {
@@ -23915,6 +24021,9 @@
                 "description": {
                     "type": "string"
                 },
+                "effective_at": {
+                    "type": "string"
+                },
                 "tag_ids": {
                     "type": "array",
                     "items": {
@@ -23968,6 +24077,9 @@
                     "type": "number"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "effective_at": {
                     "type": "string"
                 },
                 "tag_ids": {

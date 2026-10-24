@@ -11,7 +11,7 @@ Comece por [Produto e regras atuais](./product/index.md) para acompanhar jornada
 ## Para quem usa
 
 1. Entre e selecione um workspace; contas, cartões, categorias e movimentos são ligados a esse contexto.
-2. Cadastre contas e cartões; confira saldo inicial, moeda, usuário atribuído, fechamento e vencimento.
+2. Antes de cadastrar contas e cartões, confira a [política de moedas sem conversão](./product/currency-policy.md): contas usam sua moeda, cartões e metas herdam a moeda do workspace; as moedas da conta e do workspace são imutáveis após o cadastro. Confira também saldo inicial, usuário atribuído, fechamento e vencimento.
 3. Registre lançamentos diretamente ou crie uma sessão de importação para revisar dados antes de confirmar. Uma conexão Open Finance pode fornecer transações por um provedor externo configurado.
 4. Leia transações, faturas, recorrências e planejamento distinguindo **pago**, **pendente**, **projetado** e **simulado**.
 5. Acompanhe investimentos e metas com atenção às moedas e ao fato de que uma ligação entre entidades não movimenta dinheiro por si só.

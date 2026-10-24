@@ -346,7 +346,7 @@ Create a new investment
 
 **Resumo:** Create investment value history
 
-Create a value history entry for an investment
+Record an absolute investment position at effective_at (required RFC3339 instant). updated_at_date is its America/Sao_Paulo civil day. Later movements, including the same day, change the position; legacy day-only records are never assigned invented times.
 
 **Consumes:** application/json
 
@@ -661,6 +661,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
+| effective_at | string | não | EffectiveAt is the real movement instant, never inferred from its creation time. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -697,6 +698,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | created_at | string | não |  |
+| effective_at | string | não | EffectiveAt is the explicitly supplied observation instant. NULL preserves legacy day-only precision. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -714,6 +716,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
+| effective_at | string | não | EffectiveAt is the real movement instant, never inferred from its creation time. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -987,6 +990,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| effective_at | string | sim |  |
 | updated_at_date | string | sim |  |
 | value | number | sim |  |
 
@@ -1103,6 +1107,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | created_at | string | não |  |
+| effective_at | string | não |  |
 | id | string | não |  |
 | investment_id | string | não |  |
 | updated_at | string | não |  |
@@ -1116,6 +1121,7 @@ Sem propriedades.
 | account_id | string | não |  |
 | amount | number | não |  |
 | description | string | não |  |
+| effective_at | string | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
 
@@ -1139,5 +1145,6 @@ Sem propriedades.
 | account_id | string | não |  |
 | amount | number | não |  |
 | description | string | não |  |
+| effective_at | string | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |

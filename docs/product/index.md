@@ -18,8 +18,18 @@ Consulte o [mapa do domínio](./domain-map.md) para entender os efeitos entre á
 
 ## Como ler números
 
+A [política canônica de moedas](./currency-policy.md) define a origem de cada moeda, os bloqueios sem conversão, consultas individuais e consolidadas e os limites de reparação de dados legados.
+
 Uma data civil como `2026-05-31` é um dia de calendário e uma competência como `2026-05` é um mês; timestamps de auditoria representam instantes. A moeda de uma conta, investimento ou meta não implica conversão automática. Sempre confira a seleção de status, conta, workspace, período e fonte de cada valor na página específica. Quantias dos exemplos usam duas casas decimais por clareza; o arredondamento efetivo é aquele indicado na implementação de cada operação.
 
 ## Escopo desta revisão
 
 O inventário foi feito em `frontend/src/app/**/page.tsx`, `frontend/src/components/layout/data/sidebar-data.tsx`, `frontend/src/hooks`, `frontend/src/services`, `frontend/e2e`, `backend/internal/controller/http/v1/router.go` e handlers do mesmo diretório, `backend/internal/usecase`, `backend/internal/entity`, `backend/internal/infra/postgres/repository`, `backend/internal/infra/dbsetup` e testes adjacentes. A árvore canônica de edição é **`backend/docs`**; `frontend/docs` é outro checkout do mesmo repositório e recebeu as mesmas fontes/OpenAPI nesta atualização, sem commit nem mudança de ponteiros. Não houve consulta a dados financeiros reais.
+
+- [Instante de avaliação dos investimentos](./investment-time-policy.md): posição absoluta, fluxos posteriores e precisão do legado.
+
+- [MFA, prova recente e recuperação](./mfa-security-policy.md): refresh preserva prova, setup protege fator ativo e recuperação usa consumo único.
+
+- [Último administrador e exclusão de conta](./workspace-account-deletion-policy.md): proteção já existente na gestão de membros e decisão pendente sobre workspaces compartilhados.
+
+- [Exclusão de conta e workspace: comportamento atual e decisão pendente](./workspace-account-deletion-policy.md)

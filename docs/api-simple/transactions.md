@@ -283,7 +283,7 @@ Create a new card payment transaction
 
 **Resumo:** Create investment deposit
 
-Create a new investment deposit
+Create a new investment deposit. effective_at is the real RFC3339 event instant and must match transaction_date in America/Sao_Paulo; no time is inferred.
 
 **Consumes:** application/json
 
@@ -309,7 +309,7 @@ Create a new investment deposit
 
 **Resumo:** Create investment withdrawal
 
-Create a new investment withdrawal
+Create a new investment withdrawal. effective_at is the real RFC3339 event instant and must match transaction_date in America/Sao_Paulo; no time is inferred.
 
 **Consumes:** application/json
 
@@ -727,6 +727,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
+| effective_at | string | não | EffectiveAt is the real movement instant, never inferred from its creation time. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -763,6 +764,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | created_at | string | não |  |
+| effective_at | string | não | EffectiveAt is the explicitly supplied observation instant. NULL preserves legacy day-only precision. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -780,6 +782,7 @@ Sem propriedades.
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
+| effective_at | string | não | EffectiveAt is the real movement instant, never inferred from its creation time. |
 | id | string | não |  |
 | investment | object | não | Relationships |
 | investment_id | string | não |  |
@@ -1050,6 +1053,7 @@ Sem propriedades.
 | description | string | não |  |
 | destination_account_id | string | não |  |
 | destination_account_name | string | não |  |
+| effective_at | string | não |  |
 | id | string | não |  |
 | investment_id | string | não |  |
 | investment_name | string | não |  |
@@ -1179,6 +1183,7 @@ Sem propriedades.
 | account_id | string | sim |  |
 | amount | number | sim |  |
 | description | string | não |  |
+| effective_at | string | sim |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
 | transaction_status | entity.TransactionStatus | não |  |
@@ -1190,6 +1195,7 @@ Sem propriedades.
 | account_id | string | sim |  |
 | amount | number | sim |  |
 | description | string | não |  |
+| effective_at | string | sim |  |
 | rescued | boolean | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | sim |  |
