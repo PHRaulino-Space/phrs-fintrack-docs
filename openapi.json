@@ -1041,6 +1041,3008 @@
                 }
             }
         },
+        "/ai/capabilities": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Human session and current workspace membership required. AI jobs are independent from general background jobs. inference_disabled_reason is sanitized runtime metadata (ai_jobs_disabled, read_only_smoke or execution_unavailable), omitted when enabled. Workspace policy, credentials, scopes and model compatibility are validated separately. Conditional mutations still require a fresh snapshot and exact human approval. Attachment kinds mean a native preparation adapter exists; actual bytes, limits, model support and bounded price are validated before paid dispatch. No credentials or private prompts are returned.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read AI runtime capabilities",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiCapabilitiesResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session-only. Current workspace members can read shared conversations regardless of their individual execution scopes. Removed members lose access.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List AI conversations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page, starting at 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size, 1-50",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIChatPage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "The client supplies a stable UUID for this attempt. Only its creator can send messages. Model must be allowed by the workspace administrator.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Create an AI conversation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Conversation",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiCreateChatRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIChat"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "History remains available when budget or credentials prevent execution. Messages are returned in ascending sequence order; use next_before_sequence to page backwards.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read an AI conversation and recent execution states",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Exclusive upper message sequence",
+                        "name": "before_sequence",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Message page size, 1-100",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIChatDetail"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/attachments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Active workspace members can read regardless of execution scopes or available AI budget. Pending, expired and deleted attachments are omitted. No object path or signed URL is returned.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List private chat attachments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page, default 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size, default 20, maximum 50",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIAttachmentPage"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/attachments/{attachment_id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session and recent MFA when enabled; only the chat creator can upload. Exactly one multipart file, at most 10 MiB. PNG/JPEG, PDF, WAV/MP3 only; extension, declared MIME and bytes must agree. Stable attachment UUID deduplicates identical uploads. Runtime capabilities are available at /ai/capabilities. Native interpretation validates original bytes, model compatibility and bounded cost before dispatch; storage readiness alone does not guarantee readability. Logical retention is 30 days.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Upload a private AI chat attachment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stable attachment UUID",
+                        "name": "attachment_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Private attachment, maximum 10 MiB",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIAttachment"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "413": {
+                        "description": "Request Entity Too Large",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "415": {
+                        "description": "Unsupported Media Type",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/attachments/{attachment_id}/content": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Active membership and chat access are checked for every request and again after storage retrieval. Authenticated attachment download, never a presigned URL; no-store, nosniff and sandbox headers. Expired attachments return 410. Already received bytes cannot be revoked.",
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Download a private chat attachment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Attachment ID",
+                        "name": "attachment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/messages": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creator-only; requires the member's own current FINTRACK key and an active workspace provider credential. The stable message UUID deduplicates retries; revision must match the chat. No provider call occurs in this HTTP request. Text limit is 32 KiB. Execution must be enabled server-side.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Persist a message and queue an AI execution",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Message and expected chat revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiSendMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AISendResult"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/public-research": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Local cache only, maximum five nonexpired snapshots. Empty after expiry or restart. Requires session and current workspace membership; reader execution scopes and chat authorship do not filter shared contents.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List shared public research snapshots for a chat",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIPublicResearchPage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session-only and chat-creator-only. The human must enter the exact public query in a separate empty field and explicitly confirm its transmission to DuckDuckGo. Never prefill from model/chat/workspace data. Searches immediately and prefetches up to five results using a static official financial host allowlist; the model only reads the cached snapshot. No model call, credential, private workspace field or implicit query is transmitted. Same ID retries are cached within this process and TTL, including failures; snapshots expire after 15 minutes and are lost on restart. Missing publication dates stay explicit. Does not create a chat message or AI run.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Search the public web using an explicit human public query",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Exact public query and explicit confirmation",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AICreatePublicResearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIPublicResearch"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/public-research/{research_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session-only, current workspace member. Shared snapshot contents are readable without execution scopes; only the chat creator may create a new research request. Local cache read never repeats public HTTP. Expiry or restart returns 410. No publication date is inferred from collection time.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read an existing temporary public research snapshot",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Public research ID",
+                        "name": "research_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIPublicResearch"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/chats/{chat_id}/statements": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Paginated request/run pairs retain discovery after reload. Current workspace membership is required; no execution scope is needed for reading.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List statement preparations in a shared chat",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page, default 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size, default 20, maximum 50",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIStatementPage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Explicit human intent fixes attachments, target, month, model and optional instructions. Requires own imports:write key and chat authorship. Uses existing budgeted media runner; creates only a reviewable import session and PENDING rows after complete validation, never a ledger effect or invoice. Uncertain extraction creates no partial staging. Stable request ID makes retries idempotent.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Prepare an uploaded statement for import review",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Explicit statement preparation request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIPrepareStatement"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIStatementResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/credentials/member": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires a user session and a key owned by this user in the selected workspace. The key's current scopes and revocation are revalidated during execution; administrator credentials are never inherited.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Store this member's own FINTRACK API key for AI executions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Individual FINTRACK API key",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiCredentialRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AICredentialStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Removes the encrypted value used by AI. Does not revoke the original API key or reverse completed operations.",
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Remove this member's stored FINTRACK credential",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/credentials/provider": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace administrators only. Validates through the provider's read-only key endpoint. Previous versions are retained only for outstanding cost reconciliation; no inference runs here.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Store a new version of the workspace OpenRouter credential",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "OpenRouter API key",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiCredentialRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AICredentialStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace administrators only. Immediately blocks new inference. Encrypted provider versions remain available only for existing pending billing receipts; explicit retention maintenance erases them after grace periods and pending-use checks. Does not revoke the key at OpenRouter or reverse completed operations.",
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Remove all stored workspace OpenRouter credential versions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/enrichments/{enrichment_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current workspace members read structured progress, each ordinary budgeted child run and immutable suggestions. queued/processing/waiting_budget/uncertain are not completed classification; staging_prepared is PENDING staging only, never a ledger commit. No credentials or provider payloads are exposed.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read budgeted classification progress and suggestions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Confirmed enrichment action ID",
+                        "name": "enrichment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIEnrichmentDetail"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/enrichments/{enrichment_id}/cancel": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Only the original requester with current workspace membership may cancel. Future dispatch stops; in-flight provider outcomes remain reconcilable and incurred costs are not refunded or assumed zero. Repeating cancellation is idempotent. Queued children become cancelled; uncertain children retain accounting uncertainty. Human resume/recovery uses the existing requester-only child-run endpoints with their original credentials and current scopes.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Request cancellation of an enrichment and all child runs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Enrichment action ID",
+                        "name": "enrichment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIEnrichmentDetail"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/maintenance/plans": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current human workspace admin only. Persists a bounded dry-run plan with exact resource IDs, grace periods and retention pins. No object deletion, secret erasure, billing call or inference occurs. Reusing the UUID with the same limit retrieves the original plan.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Preview AI retention maintenance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Stable plan ID and optional limit, default 20, maximum 50",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIMaintenancePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIMaintenanceResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/maintenance/plans/{plan_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current human workspace admin only. Reading never executes or retries deletion. Unknown outcomes preserve quota and require inspection of this same plan.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read an AI maintenance plan and durable outcome",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Plan ID",
+                        "name": "plan_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIMaintenanceResult"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/maintenance/plans/{plan_id}/execute": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "The same current human admin confirms the exact stored digest. Revalidates authority, grace periods and pins before each action. Deletes only eligible original attachment bytes and erases only unneeded old ciphertext; audit rows, financial receipts and accounting remain. Retrying cannot expand the plan. An ambiguous DELETE/COMMIT remains durable and quota-bearing until confirmed.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Execute an explicitly reviewed AI maintenance plan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Plan ID",
+                        "name": "plan_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Exact digest and explicit confirm=true",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIMaintenanceExecuteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIMaintenanceResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/reports": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current workspace members read full content independently of key scopes, policy or remaining budget. Deleted reports are omitted.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List shared AI reports",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page, default 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size, default 20, maximum 50",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIReportPage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Any current member with their own active FINTRACK credential and the required read scopes may create a report. Plain text and typed parameters only. Saving a definition performs no inference; id is idempotent for identical initial content.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Create a declarative AI report definition",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Report ID and safe definition",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiReportCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIReport"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/reports/{report_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Includes the 20 most recent refresh runs. Failed, stale or incomplete refreshes retain the previous published version. Sources are derived from persisted successful tool reads.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read an AI report and its last successful version",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIReportDetail"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Any current member with their own key and both prior and replacement required scopes may edit. revision must match the current report revision. Existing published output remains available; a new refresh is explicit.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Revise a shared AI report definition",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected report revision and replacement definition",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiReportUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIReport"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires the current report revision and the requesting member's own active key with the report read scopes. Retains definitions and published history. Pending refreshes cannot publish into the deleted report.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Remove an AI report from active listings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected report revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiReportDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/reports/{report_id}/definitions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Newest revision first; history remains readable by current members after report deletion.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read immutable AI report definition revisions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Load revisions older than this value",
+                        "name": "before_revision",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size, default 20, maximum 50",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIReportDefinitions"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/reports/{report_id}/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Queues the existing AI runner with a pinned definition, model and requesting member credentials. Uses the same budget, cancellation and reconciliation controls. Read tools only. Publication atomically advances latest after full validation and expected-revision comparison. No scheduled refresh is created.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Refresh a shared report using this member's own key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Idempotency ID, current report revision and model",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIRefreshReport"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIReportRefreshResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/reports/{report_id}/versions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Newest version first. Each version retains its exact definition revision, requesting member, model, run, data date and recorded source evidence. Text is plain text; decimals are strings.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read immutable published AI report versions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Load versions older than this value",
+                        "name": "before_version",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size, default 20, maximum 50",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIReportVersions"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read an AI execution with durable progress events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIRunDetail"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/cancel": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cancellation stops subsequent work. It does not undo completed operations or release charges whose outcome is unknown. Repeated requests are idempotent.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Request cancellation of this member's AI execution",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIRun"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/confirmation": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Shared with current workspace members. Contains server snapshots and exact arguments_json. No key identifiers or private continuation are returned. Reading does not authorize an action.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read the exact financial action awaiting confirmation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIRunConfirmation"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Human session and CSRF only, never API-key/MCP/model input. Only the original requester may decide. Digest, action ID and run revision must match. Approval queues the stored continuation without replaying inference. The financial executor revalidates scopes and record versions in its effect transaction. Rejection stops the run; cancellation never undoes completed effects. Approval requires both inference and financial mutation server gates.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Explicitly approve or reject this run's exact financial proposal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Exact action and explicit human decision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiConfirmationDecisionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIRunConfirmation"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/enrichments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Structured discovery avoids extracting job handles from model prose. Current workspace membership is required; execution scopes remain separate. Returns the jobs and child runs without provider or member credentials.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Discover enrichment jobs requested by a parent run",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Original parent run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIEnrichmentPage"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/image-uploads": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Human session only. Structured non-secret metadata, never signed URLs or object keys. Only the original requester with current individual scopes may read. Authorization alone does not prove upload or image association.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List the requester's confirmed image upload authorizations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIImageUploadPage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/image-uploads/{action_id}/delivery": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Human session, CSRF and recent MFA when configured. Does not accept API-key/model calls. Revalidates the original individual key scopes, AI credential, run, confirmation, receipt, active target version and fixed five-minute deadline. URL is a secret capability: no-store; keep only in local UI memory and never send to chat or logs. PUT requires exact MIME and byte length and If-None-Match:*. Browser supplies Content-Length from the File bytes. Issuing or using the URL does not save the image association. Repeated delivery never renews the absolute deadline; cancellation cannot revoke a URL already issued.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Deliver a confirmed image upload URL exclusively to its requester",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Confirmed action ID",
+                        "name": "action_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Empty object",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIImageUploadDelivery"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/open-finance-tokens": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cookie session only. Structured handles, connection IDs, expiry and delivery state, without plaintext tokens. Original requester and current individual scopes/credentials are revalidated. A ready token does not prove bank authorization or account synchronization.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List the requester's Open Finance token deliveries",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIExternalHumanTokenPage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/open-finance-tokens/{action_id}/delivery": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cookie session, matching CSRF and recent MFA when configured. API keys and Bearer authorization are refused. Token is encrypted at rest and consumed before response; expired or consumed tokens cannot be delivered again. A lost delivery response must not trigger automatic reissuance. Keep plaintext only in transient browser memory for the consent SDK; never send to chat, logs, analytics, storage or a model. Cancellation cannot revoke a capability already delivered.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Deliver an Open Finance authorization token once to its requester",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Confirmed action ID",
+                        "name": "action_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Empty object",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIExternalHumanToken"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/recover-financial": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Only the requester may verify the persisted receipt under current access. Reads the same action without executing a mutation or making a paid call. A valid receipt records a continuation waiting for a separate manual resume; cancellation is preserved. An absent receipt leaves the outcome uncertain. Requires a human session.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Recover a committed financial result",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected run revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiFinancialRecoveryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIFinancialRecovery"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/recover-progress": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requester-only local verification of the last settled provider turn and exact completed receipts in mixed batches. No inference or financial operation runs here. Recorded read results and completed effects are not repeated; remaining work awaits a separate human resume and every new mutation still requires its own confirmation. Missing proof or an unresolved financial action leaves uncertainty unchanged. Requires a human session.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Recover persisted execution progress",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected run revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiRunResumeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProgressRecovery"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/resume": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Only its requester may resume, using the last read revision and current access. Keeps the original model/key and resumes from the stored next step without replaying paid calls. Uncertain runs cannot be resumed. Requires a human session and an enabled worker.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Resume a run waiting for budget",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected run revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiRunResumeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIRun"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/skills": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current workspace members may inspect selected instructions; these are not authorization or consent.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read the exact skill versions selected for a run",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.AISkillVersion"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/settings": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Available to current workspace members even when AI is disabled or its budget is exhausted. No credential values are returned. Requires a user session.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read AI settings and this member's credential status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiSettingsResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace administrators only, with a recent MFA session when enabled. revision must match the last read policy. Monthly amounts are integer micro-USD and renew on UTC calendar months.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Configure workspace AI policy",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "AI workspace policy",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiPolicyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIWorkspacePolicy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/skills": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current members can read full instructions without an API key or available AI budget. Pagination excludes deleted skills.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List shared workspace AI skills",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size (default 20, maximum 50)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AISkillPage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace admin and recent MFA when enabled. Instructions cannot authorize actions. Selection matches normalized keywords in the human message, or always; at most five skills are selected by relevance and stable ID. Creation ID is idempotent for the same initial content.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Create a reusable AI skill",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Skill and selection criteria",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiSkillCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AISkill"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/skills/{skill_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read a workspace AI skill",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill ID",
+                        "name": "skill_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AISkill"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace admin only; revision must match the version last read. Existing runs retain their selected snapshots.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Save a new immutable AI skill version",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill ID",
+                        "name": "skill_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected revision and replacement content",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiSkillUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AISkill"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace admin only, with expected revision. Retains immutable versions used by earlier runs. Does not cancel or authorize financial actions.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Delete an AI skill from future selection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill ID",
+                        "name": "skill_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Expected revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiSkillDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/skills/{skill_id}/versions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Shared history remains available after deletion; newest revision first. Edits apply to selection on later messages, not to versions already bound to a run.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read immutable skill versions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill ID",
+                        "name": "skill_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Load versions older than this revision",
+                        "name": "before_revision",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size (default 20, maximum 50)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AISkillVersions"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/statements/{statement_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current workspace members read provenance, safe review issues, optional import session and run status without execution scopes. A queued statement may have a failed/cancelled run; prepared means staging only.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read statement preparation and its run",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Statement request ID",
+                        "name": "statement_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIStatementResult"
+                        }
+                    }
+                }
+            }
+        },
         "/api-keys": {
             "get": {
                 "security": [
@@ -15736,6 +18738,1201 @@
         }
     },
     "definitions": {
+        "entity.AIActionState": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "approved",
+                "rejected",
+                "executing",
+                "succeeded",
+                "failed",
+                "uncertain"
+            ],
+            "x-enum-varnames": [
+                "AIActionPending",
+                "AIActionApproved",
+                "AIActionRejected",
+                "AIActionExecuting",
+                "AIActionSucceeded",
+                "AIActionFailed",
+                "AIActionUncertain"
+            ]
+        },
+        "entity.AIAttachment": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "processing_reason": {
+                    "type": "string"
+                },
+                "processing_state": {
+                    "type": "string"
+                },
+                "provenance": {
+                    "type": "string"
+                },
+                "sha256": {
+                    "type": "string"
+                },
+                "size_bytes": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "uploaded_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIBudgetMonth": {
+            "type": "object",
+            "properties": {
+                "period": {
+                    "type": "string"
+                },
+                "reserved_micros": {
+                    "type": "integer"
+                },
+                "spent_micros": {
+                    "type": "integer"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIChat": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIEnrichment": {
+            "type": "object",
+            "properties": {
+                "batch_count": {
+                    "type": "integer"
+                },
+                "cancel_requested": {
+                    "type": "boolean"
+                },
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "input_count": {
+                    "type": "integer"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "parent_chat_id": {
+                    "type": "string"
+                },
+                "parent_run_id": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "session_id": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIEnrichmentBatch": {
+            "type": "object",
+            "properties": {
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "input_count": {
+                    "type": "integer"
+                },
+                "job_id": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "start_index": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "suggestions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIEnrichmentSuggestion"
+                    }
+                }
+            }
+        },
+        "entity.AIEnrichmentSuggestion": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "certain": {
+                    "type": "boolean"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "sub_category_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIMaintenanceItem": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "bytes": {
+                    "type": "integer"
+                },
+                "eligible": {
+                    "type": "boolean"
+                },
+                "eligible_after": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "reason_codes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "state": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.AIMaintenancePlan": {
+            "type": "object",
+            "properties": {
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "digest": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "has_more": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIMaintenanceItem"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIMessage": {
+            "type": "object",
+            "properties": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIAttachment"
+                    }
+                },
+                "author_id": {
+                    "type": "string"
+                },
+                "author_name": {
+                    "type": "string"
+                },
+                "avatar_url": {
+                    "type": "string"
+                },
+                "chat_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "sequence": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.AIPublicResearch": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "public_query": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "snapshot": {
+                    "$ref": "#/definitions/entity.AIPublicWebSnapshot"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIPublicWebCoverage": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "integer"
+                },
+                "excluded": {
+                    "type": "integer"
+                },
+                "index_url": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "publication_note": {
+                    "type": "string"
+                },
+                "retrieved_at": {
+                    "type": "string"
+                },
+                "returned": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "truncated": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "entity.AIPublicWebSnapshot": {
+            "type": "object",
+            "properties": {
+                "collected_at": {
+                    "type": "string"
+                },
+                "coverage": {
+                    "$ref": "#/definitions/entity.AIPublicWebCoverage"
+                },
+                "scope": {
+                    "type": "string"
+                },
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIPublicWebSource"
+                    }
+                },
+                "untrusted": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "entity.AIPublicWebSource": {
+            "type": "object",
+            "properties": {
+                "date_status": {
+                    "type": "string"
+                },
+                "excerpt": {
+                    "type": "string"
+                },
+                "excerpt_truncated": {
+                    "type": "boolean"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "handle": {
+                    "type": "string"
+                },
+                "index_url": {
+                    "type": "string"
+                },
+                "modified_date": {
+                    "type": "string"
+                },
+                "published_date": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "retrieval_status": {
+                    "type": "string"
+                },
+                "retrieval_url": {
+                    "type": "string"
+                },
+                "retrieved_at": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReport": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "definition": {
+                    "$ref": "#/definitions/entity.AIReportDefinitionContent"
+                },
+                "definition_revision": {
+                    "type": "integer"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latest_version": {
+                    "type": "integer"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportBlock": {
+            "type": "object",
+            "properties": {
+                "chart": {
+                    "$ref": "#/definitions/entity.AIReportChart"
+                },
+                "metric": {
+                    "$ref": "#/definitions/entity.AIReportMetric"
+                },
+                "source_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "table": {
+                    "$ref": "#/definitions/entity.AIReportTable"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportChart": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "description": "line, bar, pie",
+                    "type": "string"
+                },
+                "series": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportSeries"
+                    }
+                },
+                "unit": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportColumn": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "description": "text, number, date",
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportDefinition": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "definition": {
+                    "$ref": "#/definitions/entity.AIReportDefinitionContent"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "report_id": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportDefinitionContent": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/entity.AIReportParameters"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "required_scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "schema_version": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportDocument": {
+            "type": "object",
+            "properties": {
+                "blocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportBlock"
+                    }
+                },
+                "data_as_of": {
+                    "type": "string"
+                },
+                "schema_version": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportEvidence": {
+            "type": "object",
+            "properties": {
+                "input_digest": {
+                    "type": "string"
+                },
+                "output_digest": {
+                    "type": "string"
+                },
+                "retrieved_at": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportMetric": {
+            "type": "object",
+            "properties": {
+                "unit": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportParameters": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportPoint": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "description": "exact decimal, never a JSON floating-point number",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportRefresh": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "definition_revision": {
+                    "type": "integer"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "report_id": {
+                    "type": "string"
+                },
+                "report_revision": {
+                    "type": "integer"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportSeries": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportPoint"
+                    }
+                }
+            }
+        },
+        "entity.AIReportSource": {
+            "type": "object",
+            "properties": {
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportEvidence"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportSourceLink"
+                    }
+                },
+                "tool_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportSourceLink": {
+            "type": "object",
+            "properties": {
+                "data_end_date": {
+                    "type": "string"
+                },
+                "data_start_date": {
+                    "type": "string"
+                },
+                "modified_date": {
+                    "type": "string"
+                },
+                "published_date": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "retrieval_url": {
+                    "type": "string"
+                },
+                "retrieved_at": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReportTable": {
+            "type": "object",
+            "properties": {
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportColumn"
+                    }
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "entity.AIReportVersion": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "definition_revision": {
+                    "type": "integer"
+                },
+                "document": {
+                    "$ref": "#/definitions/entity.AIReportDocument"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "report_id": {
+                    "type": "string"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportSource"
+                    }
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIResourceVersion": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIRun": {
+            "type": "object",
+            "properties": {
+                "cancel_requested": {
+                    "type": "boolean"
+                },
+                "chat_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "error_code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message_id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "state": {
+                    "$ref": "#/definitions/entity.AIRunState"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIRunEvent": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "sequence": {
+                    "type": "integer"
+                },
+                "state": {
+                    "$ref": "#/definitions/entity.AIRunState"
+                }
+            }
+        },
+        "entity.AIRunState": {
+            "type": "string",
+            "enum": [
+                "queued",
+                "running",
+                "waiting_confirmation",
+                "waiting_budget",
+                "reconciling",
+                "succeeded",
+                "failed",
+                "cancelled"
+            ],
+            "x-enum-varnames": [
+                "AIRunQueued",
+                "AIRunRunning",
+                "AIRunWaitingConfirmation",
+                "AIRunWaitingBudget",
+                "AIRunReconciling",
+                "AIRunSucceeded",
+                "AIRunFailed",
+                "AIRunCancelled"
+            ]
+        },
+        "entity.AISkill": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "instructions": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "selection_mode": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AISkillVersion": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "instructions": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "selection_mode": {
+                    "type": "string"
+                },
+                "skill_id": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIStatement": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "string"
+                },
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "issues": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIStatementIssue"
+                    }
+                },
+                "message_id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "row_count": {
+                    "type": "integer"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "session_id": {
+                    "type": "string"
+                },
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIStatementSource"
+                    }
+                },
+                "staged_transaction_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "state": {
+                    "type": "string"
+                },
+                "target": {
+                    "$ref": "#/definitions/entity.AIStatementTarget"
+                }
+            }
+        },
+        "entity.AIStatementIssue": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "row": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.AIStatementSource": {
+            "type": "object",
+            "properties": {
+                "attachment_id": {
+                    "type": "string"
+                },
+                "binding_created_at": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "provenance": {
+                    "type": "string"
+                },
+                "sha256": {
+                    "type": "string"
+                },
+                "size_bytes": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.AIStatementTarget": {
+            "type": "object",
+            "properties": {
+                "billing_month": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIWorkspacePolicy": {
+            "type": "object",
+            "properties": {
+                "allowed_models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "default_model": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "monthly_limit_micros": {
+                    "type": "integer"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Account": {
             "type": "object",
             "properties": {
@@ -18683,6 +22880,854 @@
                 }
             }
         },
+        "usecase.AIAttachmentPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIAttachment"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIChatDetail": {
+            "type": "object",
+            "properties": {
+                "chat": {
+                    "$ref": "#/definitions/entity.AIChat"
+                },
+                "has_more": {
+                    "type": "boolean"
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIMessage"
+                    }
+                },
+                "next_before_sequence": {
+                    "type": "integer"
+                },
+                "runs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIRun"
+                    }
+                }
+            }
+        },
+        "usecase.AIChatPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIChat"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AICreatePublicResearch": {
+            "type": "object",
+            "properties": {
+                "confirm_public_query": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AICredentialStatus": {
+            "type": "object",
+            "properties": {
+                "api_key_id": {
+                    "type": "string"
+                },
+                "configured": {
+                    "type": "boolean"
+                },
+                "fingerprint": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "validated_at": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIEnrichmentBatchDetail": {
+            "type": "object",
+            "properties": {
+                "batch": {
+                    "$ref": "#/definitions/entity.AIEnrichmentBatch"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIEnrichmentDetail": {
+            "type": "object",
+            "properties": {
+                "batches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIEnrichmentBatchDetail"
+                    }
+                },
+                "completed_batches": {
+                    "type": "integer"
+                },
+                "enrichment": {
+                    "$ref": "#/definitions/entity.AIEnrichment"
+                },
+                "remaining_batches": {
+                    "type": "integer"
+                },
+                "suggestions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIEnrichmentItem"
+                    }
+                }
+            }
+        },
+        "usecase.AIEnrichmentItem": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "certain": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "sub_category_id": {
+                    "type": "string"
+                },
+                "sub_category_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.CategoryType"
+                }
+            }
+        },
+        "usecase.AIEnrichmentPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIEnrichmentDetail"
+                    }
+                }
+            }
+        },
+        "usecase.AIExternalHumanToken": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "action_id": {
+                    "type": "string"
+                },
+                "connection_id": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                },
+                "update_item": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIExternalHumanTokenPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIExternalHumanTokenStatus"
+                    }
+                }
+            }
+        },
+        "usecase.AIExternalHumanTokenStatus": {
+            "type": "object",
+            "properties": {
+                "action_id": {
+                    "type": "string"
+                },
+                "connection_id": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIFinancialRecovery": {
+            "type": "object",
+            "properties": {
+                "receipt": {
+                    "$ref": "#/definitions/usecase.AIMutationReceipt"
+                },
+                "receipt_json": {
+                    "type": "string"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIHumanConfirmation": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "digest": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "state": {
+                    "$ref": "#/definitions/entity.AIActionState"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIHumanProposal": {
+            "type": "object",
+            "properties": {
+                "arguments": {
+                    "type": "object"
+                },
+                "arguments_json": {
+                    "type": "string"
+                },
+                "required_scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "resources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIResourceVersion"
+                    }
+                },
+                "tool": {
+                    "type": "string"
+                },
+                "tool_version": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIImageUploadDelivery": {
+            "type": "object",
+            "properties": {
+                "action_id": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "image_linked": {
+                    "type": "boolean"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "size_bytes": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "target_id": {
+                    "type": "string"
+                },
+                "upload_completed": {
+                    "type": "boolean"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIImageUploadPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIImageUploadView"
+                    }
+                }
+            }
+        },
+        "usecase.AIImageUploadView": {
+            "type": "object",
+            "properties": {
+                "action_id": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "handle": {
+                    "type": "string"
+                },
+                "image_linked": {
+                    "type": "boolean"
+                },
+                "size_bytes": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "target_id": {
+                    "type": "string"
+                },
+                "target_kind": {
+                    "type": "string"
+                },
+                "target_name": {
+                    "type": "string"
+                },
+                "upload_completed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "usecase.AIMaintenanceExecuteRequest": {
+            "type": "object",
+            "properties": {
+                "confirm": {
+                    "type": "boolean"
+                },
+                "digest": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIMaintenancePlanRequest": {
+            "type": "object",
+            "properties": {
+                "continue_after": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIMaintenanceResult": {
+            "type": "object",
+            "properties": {
+                "plan": {
+                    "$ref": "#/definitions/entity.AIMaintenancePlan"
+                },
+                "totals": {
+                    "$ref": "#/definitions/usecase.AIMaintenanceTotals"
+                }
+            }
+        },
+        "usecase.AIMaintenanceTotals": {
+            "type": "object",
+            "properties": {
+                "deleted": {
+                    "type": "integer"
+                },
+                "eligible": {
+                    "type": "integer"
+                },
+                "eligible_bytes": {
+                    "type": "integer"
+                },
+                "erased": {
+                    "type": "integer"
+                },
+                "retained": {
+                    "type": "integer"
+                },
+                "selected": {
+                    "type": "integer"
+                },
+                "unresolved": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIMutationCapability": {
+            "type": "object",
+            "properties": {
+                "constraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "input_schema": {
+                    "type": "object"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "reason_code": {
+                    "type": "string"
+                },
+                "required_scope": {
+                    "type": "string"
+                },
+                "required_scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/usecase.AIMutationStatus"
+                },
+                "tool_version": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIMutationReceipt": {
+            "type": "object",
+            "properties": {
+                "action_id": {
+                    "type": "string"
+                },
+                "digest": {
+                    "type": "string"
+                },
+                "executed_at": {
+                    "type": "string"
+                },
+                "requested_by": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "object"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                },
+                "tool_version": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIMutationStatus": {
+            "type": "string",
+            "enum": [
+                "conditional",
+                "blocked"
+            ],
+            "x-enum-varnames": [
+                "AIMutationConditional",
+                "AIMutationBlocked"
+            ]
+        },
+        "usecase.AIPrepareStatement": {
+            "type": "object",
+            "properties": {
+                "attachment_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "target": {
+                    "$ref": "#/definitions/usecase.AIStatementTargetInput"
+                }
+            }
+        },
+        "usecase.AIProgressRecovery": {
+            "type": "object",
+            "properties": {
+                "completed_tools": {
+                    "type": "integer"
+                },
+                "phase": {
+                    "type": "string"
+                },
+                "ready_to_publish": {
+                    "type": "boolean"
+                },
+                "remaining_tools": {
+                    "type": "integer"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIPublicResearchPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIPublicResearch"
+                    }
+                }
+            }
+        },
+        "usecase.AIRefreshReport": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIReportDefinitions": {
+            "type": "object",
+            "properties": {
+                "has_more": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportDefinition"
+                    }
+                },
+                "next_before_revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIReportDetail": {
+            "type": "object",
+            "properties": {
+                "latest_version": {
+                    "$ref": "#/definitions/entity.AIReportVersion"
+                },
+                "report": {
+                    "$ref": "#/definitions/entity.AIReport"
+                },
+                "runs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIRun"
+                    }
+                }
+            }
+        },
+        "usecase.AIReportPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReport"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIReportRefreshResult": {
+            "type": "object",
+            "properties": {
+                "refresh": {
+                    "$ref": "#/definitions/entity.AIReportRefresh"
+                },
+                "report": {
+                    "$ref": "#/definitions/entity.AIReport"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIReportVersions": {
+            "type": "object",
+            "properties": {
+                "has_more": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReportVersion"
+                    }
+                },
+                "next_before_version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIRunConfirmation": {
+            "type": "object",
+            "properties": {
+                "confirmation": {
+                    "$ref": "#/definitions/usecase.AIHumanConfirmation"
+                },
+                "preview": {
+                    "type": "object"
+                },
+                "proposal": {
+                    "$ref": "#/definitions/usecase.AIHumanProposal"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIRunDetail": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIRunEvent"
+                    }
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AISendResult": {
+            "type": "object",
+            "properties": {
+                "chat": {
+                    "$ref": "#/definitions/entity.AIChat"
+                },
+                "message": {
+                    "$ref": "#/definitions/entity.AIMessage"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AISkillPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AISkill"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AISkillVersions": {
+            "type": "object",
+            "properties": {
+                "has_more": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AISkillVersion"
+                    }
+                },
+                "next_before_revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIStatementPage": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIStatementResult"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIStatementResult": {
+            "type": "object",
+            "properties": {
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
+                },
+                "statement": {
+                    "$ref": "#/definitions/entity.AIStatement"
+                }
+            }
+        },
+        "usecase.AIStatementTargetInput": {
+            "type": "object",
+            "properties": {
+                "billing_month": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIWorkspaceState": {
+            "type": "object",
+            "properties": {
+                "budget": {
+                    "$ref": "#/definitions/entity.AIBudgetMonth"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "policy": {
+                    "$ref": "#/definitions/entity.AIWorkspacePolicy"
+                },
+                "timezone": {
+                    "type": "string"
+                }
+            }
+        },
         "usecase.ApiKeyCreated": {
             "type": "object",
             "properties": {
@@ -21177,6 +26222,271 @@
             ],
             "properties": {
                 "investment_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.aiAttachmentCapabilities": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "kinds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "max_file_bytes": {
+                    "type": "integer"
+                },
+                "max_prompt_bytes": {
+                    "type": "integer"
+                },
+                "max_prompt_items": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiCapabilitiesResponse": {
+            "type": "object",
+            "properties": {
+                "attachments": {
+                    "$ref": "#/definitions/v1.aiAttachmentCapabilities"
+                },
+                "inference_disabled_reason": {
+                    "type": "string",
+                    "enum": [
+                        "ai_jobs_disabled",
+                        "read_only_smoke",
+                        "execution_unavailable"
+                    ]
+                },
+                "inference_enabled": {
+                    "type": "boolean"
+                },
+                "mutations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIMutationCapability"
+                    }
+                },
+                "mutations_enabled": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.aiConfirmationDecisionRequest": {
+            "type": "object",
+            "properties": {
+                "action_id": {
+                    "type": "string"
+                },
+                "approve": {
+                    "type": "boolean"
+                },
+                "confirm_name": {
+                    "type": "string"
+                },
+                "digest": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiCreateChatRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.aiCredentialRequest": {
+            "type": "object",
+            "properties": {
+                "api_key": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.aiFinancialRecoveryRequest": {
+            "type": "object",
+            "properties": {
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiPolicyRequest": {
+            "type": "object",
+            "properties": {
+                "allowed_models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "default_model": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "monthly_limit_micros": {
+                    "type": "integer"
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiReportCreateRequest": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "$ref": "#/definitions/entity.AIReportDefinitionContent"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.aiReportDeleteRequest": {
+            "type": "object",
+            "properties": {
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiReportUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "$ref": "#/definitions/entity.AIReportDefinitionContent"
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiRunResumeRequest": {
+            "type": "object",
+            "properties": {
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiSendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "attachment_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiSettingsResponse": {
+            "type": "object",
+            "properties": {
+                "member_credential": {
+                    "$ref": "#/definitions/usecase.AICredentialStatus"
+                },
+                "provider_credential": {
+                    "$ref": "#/definitions/usecase.AICredentialStatus"
+                },
+                "workspace": {
+                    "$ref": "#/definitions/usecase.AIWorkspaceState"
+                }
+            }
+        },
+        "v1.aiSkillCreateRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "instructions": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "selection_mode": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.aiSkillDeleteRequest": {
+            "type": "object",
+            "properties": {
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiSkillUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "instructions": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "selection_mode": {
                     "type": "string"
                 }
             }
