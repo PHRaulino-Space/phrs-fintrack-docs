@@ -647,9 +647,11 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| asset_id | string | não |  |
 | color | string | não |  |
 | created_at | string | não |  |
 | expenses_tags | array&lt;entity.ExpenseTag&gt; | não |  |
+| goal_id | string | não | Link IDs are projections, never columns on tags. Presence flags are mutation-only. |
 | id | string | não |  |
 | incomes_tags | array&lt;entity.IncomeTag&gt; | não | Relationships |
 | is_active | boolean | não |  |
