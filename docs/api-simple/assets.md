@@ -140,6 +140,8 @@ Default response is AssetDetail with histories. view=summary omits expenses, val
 
 **Resumo:** Edit an asset, its initial valuation and financing choice atomically
 
+tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of goals.
+
 **Consumes:** application/json
 
 **Produces:** application/json
@@ -642,6 +644,7 @@ Default response is AssetDetail with histories. view=summary omits expenses, val
 | initial_value | number | não |  |
 | kind | string | sim |  |
 | name | string | sim |  |
+| tag_id | string | não |  |
 
 #### v1.assetValuationBody
 

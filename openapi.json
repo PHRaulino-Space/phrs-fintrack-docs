@@ -4549,6 +4549,7 @@
                 }
             },
             "patch": {
+                "description": "tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of goals.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10350,7 +10351,7 @@
                 }
             },
             "patch": {
-                "description": "Update a goal",
+                "description": "tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of assets.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10404,6 +10405,15 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -16135,7 +16145,7 @@
                 }
             },
             "patch": {
-                "description": "Update a tag",
+                "description": "goal_id and asset_id are independent: omit to preserve, null to remove, UUID to assign or move within this workspace. Updates are atomic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -22443,6 +22453,9 @@
         "entity.Tag": {
             "type": "object",
             "properties": {
+                "asset_id": {
+                    "type": "string"
+                },
                 "color": {
                     "type": "string"
                 },
@@ -22454,6 +22467,10 @@
                     "items": {
                         "$ref": "#/definitions/entity.ExpenseTag"
                     }
+                },
+                "goal_id": {
+                    "description": "Link IDs are projections, never columns on tags. Presence flags are mutation-only.",
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -26833,6 +26850,10 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "tag_id": {
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         },
@@ -29263,6 +29284,10 @@
                 "reserve_kind": {
                     "type": "string"
                 },
+                "tag_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
                 "target_value": {
                     "type": "number"
                 },
@@ -29535,8 +29560,16 @@
         "v1.updateTagRequest": {
             "type": "object",
             "properties": {
+                "asset_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
                 "color": {
                     "type": "string"
+                },
+                "goal_id": {
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "is_active": {
                     "type": "boolean"

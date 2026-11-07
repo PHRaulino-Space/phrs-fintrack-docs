@@ -82,7 +82,7 @@ Get a tag in the selected workspace. Missing and foreign IDs return 404.
 
 **Resumo:** Update tag
 
-Update a tag
+goal_id and asset_id are independent: omit to preserve, null to remove, UUID to assign or move within this workspace. Updates are atomic.
 
 **Consumes:** application/json
 
@@ -600,9 +600,11 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| asset_id | string | não |  |
 | color | string | não |  |
 | created_at | string | não |  |
 | expenses_tags | array&lt;entity.ExpenseTag&gt; | não |  |
+| goal_id | string | não | Link IDs are projections, never columns on tags. Presence flags are mutation-only. |
 | id | string | não |  |
 | incomes_tags | array&lt;entity.IncomeTag&gt; | não | Relationships |
 | is_active | boolean | não |  |
@@ -630,6 +632,8 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| asset_id | string | não |  |
 | color | string | não |  |
+| goal_id | string | não |  |
 | is_active | boolean | não |  |
 | name | string | não |  |

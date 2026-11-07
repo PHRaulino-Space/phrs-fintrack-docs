@@ -132,7 +132,7 @@ Reconstruct dated balances from deposits, withdrawals and value records of the i
 
 **Resumo:** Update goal
 
-Update a goal
+tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of assets.
 
 **Consumes:** application/json
 
@@ -153,6 +153,7 @@ Update a goal
 | 200 | OK | entity.Goal |
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
+| 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
 ## POST `/goals`
@@ -919,9 +920,11 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| asset_id | string | não |  |
 | color | string | não |  |
 | created_at | string | não |  |
 | expenses_tags | array&lt;entity.ExpenseTag&gt; | não |  |
+| goal_id | string | não | Link IDs are projections, never columns on tags. Presence flags are mutation-only. |
 | id | string | não |  |
 | incomes_tags | array&lt;entity.IncomeTag&gt; | não | Relationships |
 | is_active | boolean | não |  |
@@ -1054,5 +1057,6 @@ Sem propriedades.
 | priority | entity.GoalPriority | não |  |
 | purpose | entity.GoalPurpose | não |  |
 | reserve_kind | string | não |  |
+| tag_id | string | não |  |
 | target_value | number | não |  |
 | type | entity.GoalType | não |  |
