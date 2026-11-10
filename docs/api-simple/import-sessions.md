@@ -305,7 +305,7 @@ Commit all READY staged transactions to their respective main tables (incomes, e
 
 **Resumo:** Enrich staged transactions
 
-Trigger enrichment for all PENDING staged transactions in a session.
+Normalize unchanged legacy descriptions in open staged transactions, then trigger enrichment for pending transactions in the session.
 
 **Consumes:** application/json
 
@@ -576,6 +576,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | confirmed_at | string | não |  |
 | created_at | string | não |  |
+| expected_date | string | não |  |
 | id | string | não |  |
 | recurring_amount | number | não |  |
 | recurring_description | string | não |  |

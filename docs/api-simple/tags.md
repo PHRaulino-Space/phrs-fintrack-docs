@@ -528,6 +528,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | confirmed_at | string | não |  |
 | created_at | string | não |  |
+| expected_date | string | não |  |
 | id | string | não |  |
 | recurring_amount | number | não |  |
 | recurring_description | string | não |  |

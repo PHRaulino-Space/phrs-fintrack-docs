@@ -11354,7 +11354,7 @@
         },
         "/import-sessions/{id}/enrich": {
             "post": {
-                "description": "Trigger enrichment for all PENDING staged transactions in a session.",
+                "description": "Normalize unchanged legacy descriptions in open staged transactions, then trigger enrichment for pending transactions in the session.",
                 "consumes": [
                     "application/json"
                 ],
@@ -22371,6 +22371,9 @@
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "expected_date": {
                     "type": "string"
                 },
                 "id": {
