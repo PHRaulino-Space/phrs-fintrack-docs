@@ -1246,6 +1246,60 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires a current session from the conversation owner or a workspace administrator. A retry resumes a pending deletion. Active executions, uploads and pending reviews must settle before deletion starts. Saved reports retain their linked conversation.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Delete an AI conversation and all of its original attachments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/ai/chats/{chat_id}/attachments": {
@@ -1837,7 +1891,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Requires a user session and a key owned by this user in the selected workspace. The key's current scopes and revocation are revalidated during execution; administrator credentials are never inherited.",
+                "description": "Requires a user session and recent MFA. Creates a dedicated key when AI is enabled for the workspace. Updating the access level keeps the same active key. The key is never returned.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1847,7 +1901,7 @@
                 "tags": [
                     "ai"
                 ],
-                "summary": "Store this member's own FINTRACK API key for AI executions",
+                "summary": "Enable this member's managed FINTRACK API key for AI executions",
                 "parameters": [
                     {
                         "type": "string",
@@ -1857,12 +1911,11 @@
                         "required": true
                     },
                     {
-                        "description": "Individual FINTRACK API key",
+                        "description": "Personal access level",
                         "name": "request",
                         "in": "body",
-                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.aiCredentialRequest"
+                            "$ref": "#/definitions/v1.aiMemberAccessRequest"
                         }
                     }
                 ],
@@ -1884,6 +1937,12 @@
                         "schema": {
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
                     }
                 }
             },
@@ -1893,11 +1952,11 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Removes the encrypted value used by AI. Does not revoke the original API key or reverse completed operations.",
+                "description": "Revokes the managed key and erases the encrypted value used by AI. Completed operations are not reversed.",
                 "tags": [
                     "ai"
                 ],
-                "summary": "Remove this member's stored FINTRACK credential",
+                "summary": "Disable this member's FINTRACK access for AI",
                 "parameters": [
                     {
                         "type": "string",
@@ -2110,6 +2169,76 @@
                 }
             }
         },
+        "/ai/maintenance/attachments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Current human workspace admin only. Reads metadata without creating a maintenance plan or accessing file contents.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List original AI attachments and their deletion eligibility",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size (default 20, maximum 50)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by eligible or protected",
+                        "name": "eligibility",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort by filename, expires_at or size_bytes, with an optional descending minus prefix",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIAttachmentInventoryPage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/ai/maintenance/plans": {
             "post": {
                 "security": [
@@ -2117,7 +2246,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Current human workspace admin only. Persists a bounded dry-run plan with exact resource IDs, grace periods and retention pins. No object deletion, secret erasure, billing call or inference occurs. Reusing the UUID with the same limit retrieves the original plan.",
+                "description": "Current human workspace admin only. Persists a bounded dry-run plan with exact resource IDs, grace periods and retention pins. No object deletion, secret erasure, billing call or inference occurs. Set attachments_only to select only attachment originals or attachment_id to prepare one exact deletion. Reusing the UUID with the same limit, scope and previous plan retrieves the original plan.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2137,7 +2266,7 @@
                         "required": true
                     },
                     {
-                        "description": "Stable plan ID and optional limit, default 20, maximum 50",
+                        "description": "Stable plan ID, optional attachments-only scope and limit (default 20, maximum 50)",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -16394,6 +16523,19 @@
                         "in": "query"
                     },
                     {
+                        "enum": [
+                            "VALIDATING",
+                            "PAID",
+                            "PENDING",
+                            "IGNORE",
+                            "PROJECTED"
+                        ],
+                        "type": "string",
+                        "description": "Status of the transaction",
+                        "name": "transaction_status",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "Start date (YYYY-MM-DD)",
                         "name": "date_from",
@@ -18404,7 +18546,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Enabling requires the workspace administrator to have enabled MCP. Disabling deletes this member's managed key.",
+                "description": "Enabling requires the workspace administrator to have enabled MCP. Personal scopes are capped by the workspace policy. Updating a level keeps the existing key. Disabling deletes this member's managed key.",
                 "consumes": [
                     "application/json"
                 ],
@@ -18436,6 +18578,12 @@
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
                     },
                     "403": {
                         "description": "Forbidden",
@@ -18841,6 +18989,9 @@
                 },
                 "created_by": {
                     "type": "string"
+                },
+                "deletion_pending": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "string"
@@ -20017,6 +20168,9 @@
         "entity.ApiKey": {
             "type": "object",
             "properties": {
+                "ai_managed": {
+                    "type": "boolean"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -22897,6 +23051,52 @@
                 }
             }
         },
+        "usecase.AIAttachmentInventoryItem": {
+            "type": "object",
+            "properties": {
+                "eligible": {
+                    "type": "boolean"
+                },
+                "eligible_after": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "has_pending_evidence": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recovery_plan_id": {
+                    "type": "string"
+                },
+                "size_bytes": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIAttachmentInventoryPage": {
+            "type": "object",
+            "properties": {
+                "has_more": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIAttachmentInventoryItem"
+                    }
+                }
+            }
+        },
         "usecase.AIAttachmentPage": {
             "type": "object",
             "properties": {
@@ -22991,6 +23191,13 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "scope_preset": {
+                    "type": "string",
+                    "enum": [
+                        "read_only",
+                        "read_write"
+                    ]
                 },
                 "validated_at": {
                     "type": "string"
@@ -23316,6 +23523,12 @@
         "usecase.AIMaintenancePlanRequest": {
             "type": "object",
             "properties": {
+                "attachment_id": {
+                    "type": "string"
+                },
+                "attachments_only": {
+                    "type": "boolean"
+                },
                 "continue_after": {
                     "type": "string"
                 },
@@ -25109,11 +25322,17 @@
                 "cloudflare_linked": {
                     "type": "boolean"
                 },
+                "effective_access_level": {
+                    "type": "string"
+                },
                 "enabled": {
                     "type": "boolean"
                 },
                 "policy_enabled": {
                     "type": "boolean"
+                },
+                "scope_preset": {
+                    "type": "string"
                 }
             }
         },
@@ -26341,6 +26560,18 @@
             "properties": {
                 "revision": {
                     "type": "integer"
+                }
+            }
+        },
+        "v1.aiMemberAccessRequest": {
+            "type": "object",
+            "properties": {
+                "scope_preset": {
+                    "type": "string",
+                    "enum": [
+                        "read_only",
+                        "read_write"
+                    ]
                 }
             }
         },
@@ -28608,9 +28839,20 @@
         },
         "v1.mcpMemberRequest": {
             "type": "object",
+            "required": [
+                "enabled"
+            ],
             "properties": {
                 "enabled": {
                     "type": "boolean"
+                },
+                "scope_preset": {
+                    "type": "string",
+                    "enum": [
+                        "workspace",
+                        "read_only",
+                        "read_write"
+                    ]
                 }
             }
         },

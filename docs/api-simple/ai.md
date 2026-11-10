@@ -1,11 +1,35 @@
 ---
 title: Ai
 ---
+## DELETE `/ai/chats/{chat_id}`
+
+**Resumo:** Delete an AI conversation and all of its original attachments
+
+Requires a current session from the conversation owner or a workspace administrator. A retry resumes a pending deletion. Active executions, uploads and pending reviews must settle before deletion starts. Saved reports retain their linked conversation.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| chat_id | path | string | sim | Chat ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 403 | Forbidden | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
+| 503 | Service Unavailable | v1.ErrorResponse |
+
 ## DELETE `/ai/credentials/member`
 
-**Resumo:** Remove this member's stored FINTRACK credential
+**Resumo:** Disable this member's FINTRACK access for AI
 
-Removes the encrypted value used by AI. Does not revoke the original API key or reverse completed operations.
+Revokes the managed key and erases the encrypted value used by AI. Completed operations are not reversed.
 
 ### Parâmetros
 
@@ -294,6 +318,32 @@ Current workspace members read structured progress, each ordinary budgeted child
 | 200 | OK | usecase.AIEnrichmentDetail |
 | 403 | Forbidden | v1.ErrorResponse |
 | 404 | Not Found | v1.ErrorResponse |
+
+## GET `/ai/maintenance/attachments`
+
+**Resumo:** List original AI attachments and their deletion eligibility
+
+Current human workspace admin only. Reads metadata without creating a maintenance plan or accessing file contents.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| page | query | integer | não | Page (default 1) |
+| limit | query | integer | não | Page size (default 20, maximum 50) |
+| eligibility | query | string | não | Filter by eligible or protected |
+| sort | query | string | não | Sort by filename, expires_at or size_bytes, with an optional descending minus prefix |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIAttachmentInventoryPage |
+| 400 | Bad Request | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
 
 ## GET `/ai/maintenance/plans/{plan_id}`
 
@@ -781,7 +831,7 @@ Only the original requester with current workspace membership may cancel. Future
 
 **Resumo:** Preview AI retention maintenance
 
-Current human workspace admin only. Persists a bounded dry-run plan with exact resource IDs, grace periods and retention pins. No object deletion, secret erasure, billing call or inference occurs. Reusing the UUID with the same limit retrieves the original plan.
+Current human workspace admin only. Persists a bounded dry-run plan with exact resource IDs, grace periods and retention pins. No object deletion, secret erasure, billing call or inference occurs. Set attachments_only to select only attachment originals or attachment_id to prepare one exact deletion. Reusing the UUID with the same limit, scope and previous plan retrieves the original plan.
 
 **Consumes:** application/json
 
@@ -792,7 +842,7 @@ Current human workspace admin only. Persists a bounded dry-run plan with exact r
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| request | body | usecase.AIMaintenancePlanRequest | sim | Stable plan ID and optional limit, default 20, maximum 50 |
+| request | body | usecase.AIMaintenancePlanRequest | sim | Stable plan ID, optional attachments-only scope and limit (default 20, maximum 50) |
 
 ### Respostas
 
@@ -1133,9 +1183,9 @@ Session and recent MFA when enabled; only the chat creator can upload. Exactly o
 
 ## PUT `/ai/credentials/member`
 
-**Resumo:** Store this member's own FINTRACK API key for AI executions
+**Resumo:** Enable this member's managed FINTRACK API key for AI executions
 
-Requires a user session and a key owned by this user in the selected workspace. The key's current scopes and revocation are revalidated during execution; administrator credentials are never inherited.
+Requires a user session and recent MFA. Creates a dedicated key when AI is enabled for the workspace. Updating the access level keeps the same active key. The key is never returned.
 
 **Consumes:** application/json
 
@@ -1146,7 +1196,7 @@ Requires a user session and a key owned by this user in the selected workspace. 
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| request | body | v1.aiCredentialRequest | sim | Individual FINTRACK API key |
+| request | body | v1.aiMemberAccessRequest | não | Personal access level |
 
 ### Respostas
 
@@ -1155,6 +1205,7 @@ Requires a user session and a key owned by this user in the selected workspace. 
 | 200 | OK | usecase.AICredentialStatus |
 | 400 | Bad Request | v1.ErrorResponse |
 | 403 | Forbidden | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
 
 ## PUT `/ai/credentials/provider`
 
@@ -1299,6 +1350,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | created_at | string | não |  |
 | created_by | string | não |  |
+| deletion_pending | boolean | não |  |
 | id | string | não |  |
 | model | string | não |  |
 | revision | integer | não |  |
@@ -1767,6 +1819,27 @@ Sem propriedades.
 
 Sem propriedades.
 
+#### usecase.AIAttachmentInventoryItem
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| eligible | boolean | não |  |
+| eligible_after | string | não |  |
+| expires_at | string | não |  |
+| filename | string | não |  |
+| has_pending_evidence | boolean | não |  |
+| id | string | não |  |
+| recovery_plan_id | string | não |  |
+| size_bytes | integer | não |  |
+| state | string | não |  |
+
+#### usecase.AIAttachmentInventoryPage
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| has_more | boolean | não |  |
+| items | array&lt;usecase.AIAttachmentInventoryItem&gt; | não |  |
+
 #### usecase.AIAttachmentPage
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -1811,6 +1884,7 @@ Sem propriedades.
 | configured | boolean | não |  |
 | fingerprint | string | não |  |
 | id | string | não |  |
+| scope_preset | string | não |  |
 | validated_at | string | não |  |
 | version | integer | não |  |
 
@@ -1961,6 +2035,8 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| attachment_id | string | não |  |
+| attachments_only | boolean | não |  |
 | continue_after | string | não |  |
 | id | string | não |  |
 | limit | integer | não |  |
@@ -2215,6 +2291,12 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | revision | integer | não |  |
+
+#### v1.aiMemberAccessRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| scope_preset | string | não |  |
 
 #### v1.aiPolicyRequest
 

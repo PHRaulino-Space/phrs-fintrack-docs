@@ -149,6 +149,7 @@ Workspace-scoped search across account and card transactions. Totals cover all m
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | search | query | string | não | Comma-separated terms matched against description, civil date and BRL amount |
 | type | query | string | não | Transaction type |
+| transaction_status | query | string | não | Status of the transaction |
 | date_from | query | string | não | Start date (YYYY-MM-DD) |
 | date_to | query | string | não | End date (YYYY-MM-DD) |
 | account_id | query | string | não | Account UUID (transfers also match destination) |

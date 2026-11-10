@@ -99,6 +99,7 @@ Create a new API key for programmatic access
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| ai_managed | boolean | não |  |
 | created_at | string | não |  |
 | expires_at | string | não |  |
 | id | string | não |  |

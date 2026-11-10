@@ -143,7 +143,7 @@ Enables or disables the workspace MCP policy; disabling deletes all members' MCP
 
 **Resumo:** Enable or disable the current member's own MCP key
 
-Enabling requires the workspace administrator to have enabled MCP. Disabling deletes this member's managed key.
+Enabling requires the workspace administrator to have enabled MCP. Personal scopes are capped by the workspace policy. Updating a level keeps the existing key. Disabling deletes this member's managed key.
 
 **Consumes:** application/json
 
@@ -161,6 +161,7 @@ Enabling requires the workspace administrator to have enabled MCP. Disabling del
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 204 | No Content |  |
+| 400 | Bad Request | v1.ErrorResponse |
 | 403 | Forbidden | v1.ErrorResponse |
 
 ### Schemas
@@ -180,8 +181,10 @@ Enabling requires the workspace administrator to have enabled MCP. Disabling del
 | --- | --- | --- | --- |
 | access_level | string | não |  |
 | cloudflare_linked | boolean | não |  |
+| effective_access_level | string | não |  |
 | enabled | boolean | não |  |
 | policy_enabled | boolean | não |  |
+| scope_preset | string | não |  |
 
 #### usecase.MCPWorkspaceOption
 
@@ -208,7 +211,8 @@ Enabling requires the workspace administrator to have enabled MCP. Disabling del
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
-| enabled | boolean | não |  |
+| enabled | boolean | sim |  |
+| scope_preset | string | não |  |
 
 #### v1.mcpPolicyRequest
 
