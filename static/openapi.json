@@ -476,7 +476,7 @@
         },
         "/accounts/{account_id}/deletion-confirmation": {
             "post": {
-                "description": "Revalidate the preview and atomically move compatible references or soft-delete supported associated records; unsupported links return conflict.",
+                "description": "Revalidate the preview and atomically move compatible references or delete supported associated records, including manual import sessions and staging rows. Automatic or provider-linked import records return conflict.",
                 "consumes": [
                     "application/json"
                 ],
@@ -20227,7 +20227,8 @@
                 "CRIPTO",
                 "CRIPTOWALLET",
                 "MEAL_VOUCHER",
-                "FOOD_VOUCHER"
+                "FOOD_VOUCHER",
+                "FGTS"
             ],
             "x-enum-varnames": [
                 "AccountTypeChecking",
@@ -20237,7 +20238,8 @@
                 "AccountTypeCripto",
                 "AccountTypeCriptoWallet",
                 "AccountTypeMealVoucher",
-                "AccountTypeFoodVoucher"
+                "AccountTypeFoodVoucher",
+                "AccountTypeFGTS"
             ]
         },
         "entity.ApiKey": {
