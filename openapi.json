@@ -8714,7 +8714,7 @@
                 }
             },
             "post": {
-                "description": "Create a new category",
+                "description": "Optionally link an expense or Meta / Aporte category to a matching budget group in the workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -8904,7 +8904,7 @@
                 }
             },
             "patch": {
-                "description": "Update a category",
+                "description": "Optionally move a category to a matching expense or deposit budget group for the entire workspace. A null group_name clears the link.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14781,7 +14781,7 @@
         },
         "/planning/actions": {
             "get": {
-                "description": "Reserves unresolved expenses and invoices through month end, including overdue obligations, plus remaining extra budgets. Future income enters projected cash only on its expected date. Any active LEGACY_TOTAL budget sets review_required and suppresses numeric contribution suggestions until reviewed or removed. No payment is executed.",
+                "description": "Applies the workspace deposit groups percentage to expected income each month. Today uses received income, recorded deposits and cash after reserving expenses and invoices. Future income is counted only by its expected date and cannot fund a goal after its deadline. No payment is executed.",
                 "produces": [
                     "application/json"
                 ],
@@ -14804,6 +14804,81 @@
                         "schema": {
                             "$ref": "#/definitions/usecase.PlanningActions"
                         }
+                    }
+                }
+            }
+        },
+        "/planning/budget-groups": {
+            "get": {
+                "description": "The workspace distribution applies to every month. Limits use paid income from the preceding month. Paid and validating account expenses and deposits use their transaction dates. Card expenses use their billing month.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Get the monthly budget groups and their usage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Budget month (YYYY-MM)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.BudgetGroupsSummary"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Percentages are in basis points and must sum to 10000. Each category may be linked to only one group. EXPENSE uses expense categories; DEPOSIT uses goal categories.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Replace the workspace budget distribution",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Complete distribution for the workspace",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.budgetGroupsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -20392,6 +20467,41 @@
                 }
             }
         },
+        "entity.BudgetGroup": {
+            "type": "object",
+            "properties": {
+                "basis_points": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 0
+                },
+                "category_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "EXPENSE",
+                        "DEPOSIT"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.BudgetGroupAssignment": {
+            "type": "object",
+            "properties": {
+                "group_name": {
+                    "type": "string",
+                    "x-nullable": true
+                }
+            }
+        },
         "entity.BudgetHealth": {
             "type": "string",
             "enum": [
@@ -21328,6 +21438,9 @@
                 },
                 "amount": {
                     "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
                 },
                 "created_at": {
                     "type": "string"
@@ -24430,6 +24543,70 @@
                 }
             }
         },
+        "usecase.BudgetGroupSummary": {
+            "type": "object",
+            "properties": {
+                "basis_points": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 0
+                },
+                "category_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "EXPENSE",
+                        "DEPOSIT"
+                    ]
+                },
+                "limit": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "remaining": {
+                    "type": "number"
+                },
+                "used": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.BudgetGroupsSummary": {
+            "type": "object",
+            "properties": {
+                "currency_code": {
+                    "type": "string"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetGroupSummary"
+                    }
+                },
+                "income_month": {
+                    "type": "string"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "previous_income": {
+                    "type": "number"
+                },
+                "unassigned_deposits": {
+                    "type": "number"
+                },
+                "unassigned_expenses": {
+                    "type": "number"
+                }
+            }
+        },
         "usecase.BudgetSummary": {
             "type": "object",
             "properties": {
@@ -27132,6 +27309,20 @@
                 }
             }
         },
+        "v1.budgetGroupsRequest": {
+            "type": "object",
+            "required": [
+                "groups"
+            ],
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.BudgetGroup"
+                    }
+                }
+            }
+        },
         "v1.cardResponse": {
             "type": "object",
             "properties": {
@@ -27500,6 +27691,9 @@
                 "type"
             ],
             "properties": {
+                "budget_group_assignment": {
+                    "$ref": "#/definitions/entity.BudgetGroupAssignment"
+                },
                 "color": {
                     "type": "string"
                 },
@@ -27675,6 +27869,10 @@
                 },
                 "amount": {
                     "type": "number"
+                },
+                "category_id": {
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "description": {
                     "type": "string"
@@ -29450,6 +29648,9 @@
         "v1.updateCategoryRequest": {
             "type": "object",
             "properties": {
+                "budget_group_assignment": {
+                    "$ref": "#/definitions/entity.BudgetGroupAssignment"
+                },
                 "color": {
                     "type": "string"
                 },
@@ -29601,6 +29802,11 @@
                 },
                 "amount": {
                     "type": "number"
+                },
+                "category_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "x-nullable": true
                 },
                 "description": {
                     "type": "string"

@@ -383,6 +383,7 @@ Sem propriedades.
 | account | entity.Account | não |  |
 | account_id | string | não |  |
 | amount | number | não |  |
+| category_id | string | não |  |
 | created_at | string | não |  |
 | deleted_at | string | não |  |
 | description | string | não |  |
