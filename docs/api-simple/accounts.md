@@ -182,7 +182,7 @@ Update an existing account by its ID
 
 **Resumo:** Confirm account deletion or move
 
-Revalidate the preview and atomically move compatible references or soft-delete supported associated records; unsupported links return conflict.
+Revalidate the preview and atomically move compatible references or delete supported associated records, including manual import sessions and staging rows. Automatic or provider-linked import records return conflict.
 
 **Consumes:** application/json
 

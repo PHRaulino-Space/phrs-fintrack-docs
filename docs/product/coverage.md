@@ -36,7 +36,7 @@ O menu visível está em `frontend/src/components/layout/data/sidebar-data.tsx`:
 | Patrimônio e metas | `/assets`, `/assets/[id]`, `/investments-portfolio`, `/investments-portfolio/[id]`, `/goals`, `/goals/[id]` |
 | Planejamento | `/planning`, `/planning/budgets`, `/planning/goals`, `/budgets`, `/dashboard` |
 | Workspace | `/workspace`, `/workspace/accounts`, `/workspace/cards`, `/workspace/categories`, `/workspace/investments`, `/workspace/members`, `/workspace/tags`, `/workspace/asset-classifications` |
-| Configuração e integração | `/settings`, `/settings/profile`, `/settings/security`, `/settings/privacy`, `/settings/api-keys`, `/settings/linked-accounts`, `/settings/open-finance`, `/notifications`, `/open-finance/oauth/callback` |
+| Configuração e integração | `/settings`, `/settings/profile`, `/settings/security`, `/settings/privacy`, `/settings/api-keys`, `/settings/linked-accounts`, `/settings/integrations`, `/notifications`, `/open-finance/oauth/callback` |
 
 O endpoint raiz `/api/health` e `v1/openapi.json`/`v1/docs/*any` são de infraestrutura. `backend/internal/controller/http/v1/router.go` registra os grupos de auth, perfil, workspace, catálogo, livro financeiro, importação, planejamento e integrações. O prefixo real é configurável (`API_PREFIX`; padrão `/api`). Para conferir uma rota individual, procure `new*Routes` no `router.go` e o método no respectivo handler; **não** suponha que páginas ocultas no menu estejam indisponíveis.
 

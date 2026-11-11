@@ -5,7 +5,7 @@ title: Planning
 
 **Resumo:** Get current month's planning actions and goal forecast
 
-Reserves unresolved expenses and invoices through month end, including overdue obligations, plus remaining extra budgets. Future income enters projected cash only on its expected date. Any active LEGACY_TOTAL budget sets review_required and suppresses numeric contribution suggestions until reviewed or removed. No payment is executed.
+Applies the workspace deposit groups percentage to expected income each month. Today uses received income, recorded deposits and cash after reserving expenses and invoices. Future income is counted only by its expected date and cannot fund a goal after its deadline. No payment is executed.
 
 **Produces:** application/json
 
@@ -20,6 +20,27 @@ Reserves unresolved expenses and invoices through month end, including overdue o
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | usecase.PlanningActions |
+
+## GET `/planning/budget-groups`
+
+**Resumo:** Get the monthly budget groups and their usage
+
+The workspace distribution applies to every month. Limits use paid income from the preceding month. Paid and validating account expenses and deposits use their transaction dates. Card expenses use their billing month.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| month | query | string | sim | Budget month (YYYY-MM) |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.BudgetGroupsSummary |
 
 ## GET `/planning/month`
 
@@ -78,6 +99,30 @@ Reserves unresolved expenses and invoices through month end, including overdue o
 | --- | --- | --- |
 | 200 | OK | usecase.PlanningYear |
 
+## PUT `/planning/budget-groups`
+
+**Resumo:** Replace the workspace budget distribution
+
+Percentages are in basis points and must sum to 10000. Each category may be linked to only one group. EXPENSE uses expense categories; DEPOSIT uses goal categories.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | v1.budgetGroupsRequest | sim | Complete distribution for the workspace |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request |  |
+
 ## PUT `/planning/categories/{id}`
 
 **Resumo:** Assign an expense category to a planning bucket
@@ -123,6 +168,15 @@ Reserves unresolved expenses and invoices through month end, including overdue o
 
 ### Schemas
 
+#### entity.BudgetGroup
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| basis_points | integer | não |  |
+| category_ids | array&lt;string&gt; | não |  |
+| kind | string | não |  |
+| name | string | não |  |
+
 #### entity.GoalPurpose
 
 Sem propriedades.
@@ -135,6 +189,30 @@ Sem propriedades.
 | growth_percent | integer | não |  |
 | personal_percent | integer | não |  |
 | workspace_id | string | não |  |
+
+#### usecase.BudgetGroupsSummary
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| currency_code | string | não |  |
+| groups | array&lt;usecase.BudgetGroupSummary&gt; | não |  |
+| income_month | string | não |  |
+| month | string | não |  |
+| previous_income | number | não |  |
+| unassigned_deposits | number | não |  |
+| unassigned_expenses | number | não |  |
+
+#### usecase.BudgetGroupSummary
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| basis_points | integer | não |  |
+| category_ids | array&lt;string&gt; | não |  |
+| kind | string | não |  |
+| limit | number | não |  |
+| name | string | não |  |
+| remaining | number | não |  |
+| used | number | não |  |
 
 #### usecase.PlanningActions
 
@@ -321,6 +399,12 @@ Sem propriedades.
 | essential_percent | integer | não |  |
 | growth_percent | integer | não |  |
 | personal_percent | integer | não |  |
+
+#### v1.budgetGroupsRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| groups | array&lt;entity.BudgetGroup&gt; | sim |  |
 
 #### v1.categoryBucketRequest
 

@@ -105,7 +105,7 @@ Count persisted category and child references by type. Informational only; a fut
 
 **Resumo:** Update category
 
-Update a category
+Optionally move a category to a matching expense or deposit budget group for the entire workspace. A null group_name clears the link.
 
 **Consumes:** application/json
 
@@ -131,6 +131,8 @@ Update a category
 ## POST `/categories`
 
 **Resumo:** Create a new category
+
+Optionally link an expense or Meta / Aporte category to a matching budget group in the workspace.
 
 **Consumes:** application/json
 
@@ -200,6 +202,12 @@ Revalidate the preview and atomically move category references or soft-delete su
 #### entity.AccountType
 
 Sem propriedades.
+
+#### entity.BudgetGroupAssignment
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| group_name | string | não |  |
 
 #### entity.Card
 
@@ -575,6 +583,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | confirmed_at | string | não |  |
 | created_at | string | não |  |
+| expected_date | string | não |  |
 | id | string | não |  |
 | recurring_amount | number | não |  |
 | recurring_description | string | não |  |
@@ -698,6 +707,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| budget_group_assignment | entity.BudgetGroupAssignment | não |  |
 | color | string | sim |  |
 | icon | string | sim |  |
 | is_active | boolean | não |  |
@@ -708,6 +718,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| budget_group_assignment | entity.BudgetGroupAssignment | não |  |
 | color | string | não |  |
 | icon | string | não |  |
 | is_active | boolean | não |  |
