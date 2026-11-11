@@ -25,7 +25,7 @@ Applies the workspace deposit groups percentage to expected income each month. T
 
 **Resumo:** Get the monthly budget groups and their usage
 
-The workspace distribution applies to every month. Limits use paid income from the preceding month. Paid and validating account expenses and deposits use their transaction dates. Card expenses use their billing month.
+The workspace distribution and transaction rules apply to every month. Limits use paid income selected by the rules. previous_income holds that total and income_month is the budget month used by the default rule. category_activity breaks down the same budget movements by category, including expenses linked to assets through tags.
 
 **Produces:** application/json
 
@@ -123,6 +123,30 @@ Percentages are in basis points and must sum to 10000. Each category may be link
 | 204 | No Content |  |
 | 400 | Bad Request |  |
 
+## PUT `/planning/budget-groups/transaction-rules`
+
+**Resumo:** Replace the workspace budget transaction rules
+
+Configure the income and activity periods by account type and choose how card spending is counted. Omitted account types use income and activity from the budget month.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | entity.BudgetTransactionRules | sim | Budget transaction rules |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 400 | Bad Request |  |
+
 ## PUT `/planning/categories/{id}`
 
 **Resumo:** Assign an expense category to a planning bucket
@@ -168,6 +192,17 @@ Percentages are in basis points and must sum to 10000. Each category may be link
 
 ### Schemas
 
+#### entity.BudgetAccountRule
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| activity | object | não |  |
+| income | object | não |  |
+
+#### entity.BudgetCardMode
+
+Sem propriedades.
+
 #### entity.BudgetGroup
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -176,6 +211,17 @@ Percentages are in basis points and must sum to 10000. Each category may be link
 | category_ids | array&lt;string&gt; | não |  |
 | kind | string | não |  |
 | name | string | não |  |
+
+#### entity.BudgetPeriod
+
+Sem propriedades.
+
+#### entity.BudgetTransactionRules
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| accounts | object | sim |  |
+| cards | object | sim |  |
 
 #### entity.GoalPurpose
 
@@ -190,15 +236,25 @@ Sem propriedades.
 | personal_percent | integer | não |  |
 | workspace_id | string | não |  |
 
+#### usecase.BudgetCategoryActivity
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| asset_expenses | number | não |  |
+| deposits | number | não |  |
+| expenses | number | não |  |
+
 #### usecase.BudgetGroupsSummary
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| category_activity | object | não |  |
 | currency_code | string | não |  |
 | groups | array&lt;usecase.BudgetGroupSummary&gt; | não |  |
 | income_month | string | não |  |
 | month | string | não |  |
 | previous_income | number | não |  |
+| transaction_rules | entity.BudgetTransactionRules | não |  |
 | unassigned_deposits | number | não |  |
 | unassigned_expenses | number | não |  |
 

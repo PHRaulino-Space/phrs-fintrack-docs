@@ -14810,7 +14810,7 @@
         },
         "/planning/budget-groups": {
             "get": {
-                "description": "The workspace distribution applies to every month. Limits use paid income from the preceding month. Paid and validating account expenses and deposits use their transaction dates. Card expenses use their billing month.",
+                "description": "The workspace distribution and transaction rules apply to every month. Limits use paid income selected by the rules. previous_income holds that total and income_month is the budget month used by the default rule. category_activity breaks down the same budget movements by category, including expenses linked to assets through tags.",
                 "produces": [
                     "application/json"
                 ],
@@ -14870,6 +14870,47 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/v1.budgetGroupsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/planning/budget-groups/transaction-rules": {
+            "put": {
+                "description": "Configure the income and activity periods by account type and choose how card spending is counted. Omitted account types use income and activity from the budget month.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Replace the workspace budget transaction rules",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Budget transaction rules",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.BudgetTransactionRules"
                         }
                     }
                 ],
@@ -16472,8 +16513,14 @@
                     },
                     {
                         "type": "string",
-                        "description": "Account ID",
+                        "description": "Account ID (single-account filter)",
                         "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated account IDs. Use instead of account_id.",
+                        "name": "account_ids",
                         "in": "query"
                     },
                     {
@@ -16510,6 +16557,12 @@
                         "type": "boolean",
                         "description": "Include projected and PROJECTED-status transactions (default true)",
                         "name": "include_projected",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include IGNORE-status transactions (default false)",
+                        "name": "include_ignored",
                         "in": "query"
                     }
                 ],
@@ -16736,7 +16789,7 @@
         },
         "/transactions/summary": {
             "get": {
-                "description": "Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is always for the account_id and ignores type filters.",
+                "description": "Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is for the selected accounts and ignores type filters.",
                 "consumes": [
                     "application/json"
                 ],
@@ -16763,8 +16816,14 @@
                     },
                     {
                         "type": "string",
-                        "description": "Account ID",
+                        "description": "Account ID (single-account filter)",
                         "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated account IDs. Use instead of account_id.",
+                        "name": "account_ids",
                         "in": "query"
                     },
                     {
@@ -16801,6 +16860,12 @@
                         "type": "boolean",
                         "description": "Include projected and PROJECTED-status transactions (default true)",
                         "name": "include_projected",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include IGNORE-status transactions (default false)",
+                        "name": "include_ignored",
                         "in": "query"
                     }
                 ],
@@ -20228,7 +20293,8 @@
                 "CRIPTOWALLET",
                 "MEAL_VOUCHER",
                 "FOOD_VOUCHER",
-                "FGTS"
+                "FGTS",
+                "PENSION"
             ],
             "x-enum-varnames": [
                 "AccountTypeChecking",
@@ -20239,7 +20305,8 @@
                 "AccountTypeCriptoWallet",
                 "AccountTypeMealVoucher",
                 "AccountTypeFoodVoucher",
-                "AccountTypeFGTS"
+                "AccountTypeFGTS",
+                "AccountTypePension"
             ]
         },
         "entity.ApiKey": {
@@ -20469,6 +20536,50 @@
                 }
             }
         },
+        "entity.BudgetAccountRule": {
+            "type": "object",
+            "properties": {
+                "activity": {
+                    "enum": [
+                        "CURRENT",
+                        "PREVIOUS",
+                        "EXCLUDED"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.BudgetPeriod"
+                        }
+                    ]
+                },
+                "income": {
+                    "enum": [
+                        "CURRENT",
+                        "PREVIOUS",
+                        "EXCLUDED"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.BudgetPeriod"
+                        }
+                    ]
+                }
+            }
+        },
+        "entity.BudgetCardMode": {
+            "type": "string",
+            "enum": [
+                "PURCHASE_DATE",
+                "BILLING_MONTH",
+                "PAYMENT_DATE",
+                "EXCLUDED"
+            ],
+            "x-enum-varnames": [
+                "BudgetCardPurchase",
+                "BudgetCardBilling",
+                "BudgetCardPayment",
+                "BudgetCardExcluded"
+            ]
+        },
         "entity.BudgetGroup": {
             "type": "object",
             "properties": {
@@ -20517,6 +20628,19 @@
                 "BudgetHealthOverBudget"
             ]
         },
+        "entity.BudgetPeriod": {
+            "type": "string",
+            "enum": [
+                "CURRENT",
+                "PREVIOUS",
+                "EXCLUDED"
+            ],
+            "x-enum-varnames": [
+                "BudgetCurrent",
+                "BudgetPrevious",
+                "BudgetExcluded"
+            ]
+        },
         "entity.BudgetScope": {
             "type": "string",
             "enum": [
@@ -20527,6 +20651,34 @@
                 "BudgetScopeLegacyTotal",
                 "BudgetScopeExtra"
             ]
+        },
+        "entity.BudgetTransactionRules": {
+            "type": "object",
+            "required": [
+                "accounts",
+                "cards"
+            ],
+            "properties": {
+                "accounts": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/entity.BudgetAccountRule"
+                    }
+                },
+                "cards": {
+                    "enum": [
+                        "PURCHASE_DATE",
+                        "BILLING_MONTH",
+                        "PAYMENT_DATE",
+                        "EXCLUDED"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.BudgetCardMode"
+                        }
+                    ]
+                }
+            }
         },
         "entity.Card": {
             "type": "object",
@@ -24436,6 +24588,20 @@
                 }
             }
         },
+        "usecase.BudgetCategoryActivity": {
+            "type": "object",
+            "properties": {
+                "asset_expenses": {
+                    "type": "number"
+                },
+                "deposits": {
+                    "type": "number"
+                },
+                "expenses": {
+                    "type": "number"
+                }
+            }
+        },
         "usecase.BudgetDuplicateResult": {
             "type": "object",
             "properties": {
@@ -24583,6 +24749,12 @@
         "usecase.BudgetGroupsSummary": {
             "type": "object",
             "properties": {
+                "category_activity": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/usecase.BudgetCategoryActivity"
+                    }
+                },
                 "currency_code": {
                     "type": "string"
                 },
@@ -24600,6 +24772,9 @@
                 },
                 "previous_income": {
                     "type": "number"
+                },
+                "transaction_rules": {
+                    "$ref": "#/definitions/entity.BudgetTransactionRules"
                 },
                 "unassigned_deposits": {
                     "type": "number"

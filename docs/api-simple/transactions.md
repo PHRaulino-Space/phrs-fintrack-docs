@@ -117,13 +117,15 @@ Returns the legacy array. Pagination is opt-in with limit or cursor; without eit
 | cursor | query | string | não | Authenticated continuation cursor bound to filters |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
-| account_id | query | string | não | Account ID |
+| account_id | query | string | não | Account ID (single-account filter) |
+| account_ids | query | string | não | Comma-separated account IDs. Use instead of account_id. |
 | assigned_user_id | query | string | não | Account assignee UUID; transfers match either involved account within the workspace |
 | card_id | query | string | não | Card ID (not supported yet) |
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
 | include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
+| include_ignored | query | boolean | não | Include IGNORE-status transactions (default false) |
 
 ### Respostas
 
@@ -173,7 +175,7 @@ Workspace-scoped search across account and card transactions. Totals cover all m
 
 **Resumo:** Transactions summary
 
-Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is always for the account_id and ignores type filters.
+Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is for the selected accounts and ignores type filters.
 
 **Consumes:** application/json
 
@@ -185,13 +187,15 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | type | query | string | não | Filter by type (comma-separated): expense,income,transfer,investment_deposit,investment_withdraw,card_payment |
-| account_id | query | string | não | Account ID |
+| account_id | query | string | não | Account ID (single-account filter) |
+| account_ids | query | string | não | Comma-separated account IDs. Use instead of account_id. |
 | assigned_user_id | query | string | não | Account assignee UUID; transfers match either involved account within the workspace |
 | card_id | query | string | não | Card ID (not supported yet) |
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
 | include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
+| include_ignored | query | boolean | não | Include IGNORE-status transactions (default false) |
 
 ### Respostas
 
