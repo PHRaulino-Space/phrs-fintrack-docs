@@ -159,6 +159,7 @@ Workspace-scoped search across account and card transactions. Totals cover all m
 | assigned_user_id | query | string | não | User assigned to account or card |
 | category_id | query | string | não | Category UUID |
 | sub_category_id | query | string | não | Subcategory UUID (combined with category when supplied) |
+| budget_group | query | string | não | Workspace budget group name (filters by assigned category) |
 | tag_ids | query | string | não | Comma-separated tag UUIDs (any match) |
 | amount_min | query | string | não | Minimum absolute amount (decimal, inclusive) |
 | amount_max | query | string | não | Maximum absolute amount (decimal, inclusive) |

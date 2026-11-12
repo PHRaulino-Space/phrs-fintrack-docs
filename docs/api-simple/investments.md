@@ -1129,6 +1129,7 @@ Sem propriedades.
 | effective_at | string | não |  |
 | tag_ids | array&lt;string&gt; | não |  |
 | transaction_date | string | não |  |
+| transaction_status | object | não |  |
 
 #### v1.updateInvestmentRequest
 

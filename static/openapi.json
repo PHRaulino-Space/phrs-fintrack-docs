@@ -16790,6 +16790,12 @@
                     },
                     {
                         "type": "string",
+                        "description": "Workspace budget group name (filters by assigned category)",
+                        "name": "budget_group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Comma-separated tag UUIDs (any match)",
                         "name": "tag_ids",
                         "in": "query"
@@ -30210,6 +30216,20 @@
                 },
                 "transaction_date": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "enum": [
+                        "VALIDATING",
+                        "PAID",
+                        "PENDING",
+                        "IGNORE",
+                        "PROJECTED"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.TransactionStatus"
+                        }
+                    ]
                 }
             }
         },
