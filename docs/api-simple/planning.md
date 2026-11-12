@@ -35,6 +35,7 @@ The workspace distribution and transaction rules apply to every month. Limits us
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | month | query | string | sim | Budget month (YYYY-MM) |
+| include_incomes | query | boolean | não | Include the paid income transactions counted by the budget rules |
 | include_expenses | query | boolean | não | Include the expense transactions counted by the budget rules |
 | include_deposits | query | boolean | não | Include the deposit transactions counted by the budget rules |
 
@@ -339,6 +340,7 @@ Sem propriedades.
 | groups | array&lt;usecase.BudgetGroupSummary&gt; | não |  |
 | income_month | string | não |  |
 | income_sources | array&lt;usecase.BudgetIncomeSource&gt; | não |  |
+| income_transactions | array&lt;usecase.BudgetIncomeTransaction&gt; | não |  |
 | month | string | não |  |
 | previous_income | number | não |  |
 | transaction_rules | entity.BudgetTransactionRules | não |  |
@@ -364,6 +366,17 @@ Sem propriedades.
 | account_type | entity.AccountType | não |  |
 | amount | number | não |  |
 | period | entity.BudgetPeriod | não |  |
+
+#### usecase.BudgetIncomeTransaction
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_name | string | não |  |
+| amount | number | não |  |
+| date | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| period | object | não |  |
 
 #### usecase.PlanningActions
 

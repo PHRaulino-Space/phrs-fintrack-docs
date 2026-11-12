@@ -14835,6 +14835,12 @@
                     },
                     {
                         "type": "boolean",
+                        "description": "Include the paid income transactions counted by the budget rules",
+                        "name": "include_incomes",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
                         "description": "Include the expense transactions counted by the budget rules",
                         "name": "include_expenses",
                         "in": "query"
@@ -24951,6 +24957,12 @@
                         "$ref": "#/definitions/usecase.BudgetIncomeSource"
                     }
                 },
+                "income_transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetIncomeTransaction"
+                    }
+                },
                 "month": {
                     "type": "string"
                 },
@@ -24979,6 +24991,38 @@
                 },
                 "period": {
                     "$ref": "#/definitions/entity.BudgetPeriod"
+                }
+            }
+        },
+        "usecase.BudgetIncomeTransaction": {
+            "type": "object",
+            "properties": {
+                "account_name": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-01-15"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "period": {
+                    "enum": [
+                        "CURRENT",
+                        "PREVIOUS"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.BudgetPeriod"
+                        }
+                    ]
                 }
             }
         },
