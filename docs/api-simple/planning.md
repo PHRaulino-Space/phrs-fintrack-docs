@@ -5,7 +5,7 @@ title: Planning
 
 **Resumo:** Get current month's planning actions and goal forecast
 
-Available today is eligible cash less remaining expense group budgets. For goal projections, the combined deposit group percentage applies to future recurring income up to the goal deadline. The amount already saved and each dated contribution compound at 8% annually. No payment is executed.
+Available today is eligible cash less remaining expense group budgets. For goal projections, the combined deposit group percentage applies to future recurring income up to the goal deadline. The amount already saved and each dated contribution compound at the workspace's real annual return, which defaults to 8%.
 
 **Produces:** application/json
 
@@ -43,6 +43,26 @@ The workspace distribution and transaction rules apply to every month. Limits us
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | usecase.BudgetGroupsSummary |
+
+## GET `/planning/goal-settings`
+
+**Resumo:** Get the workspace goal projection settings
+
+Returns the real annual return in basis points. The default is 800 (8%).
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.PlanningGoalSettings |
 
 ## GET `/planning/month`
 
@@ -171,6 +191,30 @@ Configure the income and activity periods by account type and choose how card sp
 | --- | --- | --- |
 | 204 | No Content |  |
 
+## PUT `/planning/goal-settings`
+
+**Resumo:** Update the workspace goal projection settings
+
+Set the real annual return in basis points. Zero and negative rates above -100% are supported.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| payload | body | v1.goalSettingsRequest | sim | Goal projection settings |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.PlanningGoalSettings |
+| 400 | Bad Request |  |
+
 ## PUT `/planning/settings`
 
 **Resumo:** Update planning distribution
@@ -241,6 +285,12 @@ Sem propriedades.
 | growth_percent | integer | não |  |
 | personal_percent | integer | não |  |
 | workspace_id | string | não |  |
+
+#### entity.PlanningGoalSettings
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| annual_return_basis_points | integer | não |  |
 
 #### entity.TransactionStatus
 
@@ -514,3 +564,9 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | bucket | string | sim |  |
+
+#### v1.goalSettingsRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| annual_return_basis_points | integer | sim |  |

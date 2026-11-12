@@ -14781,7 +14781,7 @@
         },
         "/planning/actions": {
             "get": {
-                "description": "Available today is eligible cash less remaining expense group budgets. For goal projections, the combined deposit group percentage applies to future recurring income up to the goal deadline. The amount already saved and each dated contribution compound at 8% annually. No payment is executed.",
+                "description": "Available today is eligible cash less remaining expense group budgets. For goal projections, the combined deposit group percentage applies to future recurring income up to the goal deadline. The amount already saved and each dated contribution compound at the workspace's real annual return, which defaults to 8%.",
                 "produces": [
                     "application/json"
                 ],
@@ -14976,6 +14976,77 @@
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/planning/goal-settings": {
+            "get": {
+                "description": "Returns the real annual return in basis points. The default is 800 (8%).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Get the workspace goal projection settings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.PlanningGoalSettings"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Set the real annual return in basis points. Zero and negative rates above -100% are supported.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "planning"
+                ],
+                "summary": "Update the workspace goal projection settings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Goal projection settings",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.goalSettingsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.PlanningGoalSettings"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -22239,6 +22310,16 @@
                 }
             }
         },
+        "entity.PlanningGoalSettings": {
+            "type": "object",
+            "properties": {
+                "annual_return_basis_points": {
+                    "type": "integer",
+                    "minimum": -9999,
+                    "example": 800
+                }
+            }
+        },
         "entity.ProjectionSlot": {
             "type": "object",
             "properties": {
@@ -28725,6 +28806,19 @@
                 },
                 "workspace_id": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.goalSettingsRequest": {
+            "type": "object",
+            "required": [
+                "annual_return_basis_points"
+            ],
+            "properties": {
+                "annual_return_basis_points": {
+                    "type": "integer",
+                    "minimum": -9999,
+                    "example": 800
                 }
             }
         },
