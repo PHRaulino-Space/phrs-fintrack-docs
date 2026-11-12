@@ -14781,7 +14781,7 @@
         },
         "/planning/actions": {
             "get": {
-                "description": "Applies the workspace deposit groups percentage to expected income each month. Today uses received income, recorded deposits and cash after reserving expenses and invoices. Future income is counted only by its expected date and cannot fund a goal after its deadline. No payment is executed.",
+                "description": "Available today is eligible cash less remaining expense group budgets. For goal projections, the combined deposit group percentage applies to future recurring income up to the goal deadline. The amount already saved and each dated contribution compound at 8% annually. No payment is executed.",
                 "produces": [
                     "application/json"
                 ],
@@ -14832,6 +14832,18 @@
                         "name": "month",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include the expense transactions counted by the budget rules",
+                        "name": "include_expenses",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include the deposit transactions counted by the budget rules",
+                        "name": "include_deposits",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -24602,6 +24614,44 @@
                 }
             }
         },
+        "usecase.BudgetDepositTransaction": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-01-15"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "investment_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "PAID",
+                        "VALIDATING"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.TransactionStatus"
+                        }
+                    ]
+                }
+            }
+        },
         "usecase.BudgetDuplicateResult": {
             "type": "object",
             "properties": {
@@ -24610,6 +24660,35 @@
                 },
                 "skipped": {
                     "type": "integer"
+                }
+            }
+        },
+        "usecase.BudgetExpenseTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-01-15"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "expense",
+                        "card_expense",
+                        "card_payment"
+                    ]
                 }
             }
         },
@@ -24758,6 +24837,18 @@
                 "currency_code": {
                     "type": "string"
                 },
+                "deposit_transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetDepositTransaction"
+                    }
+                },
+                "expense_transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetExpenseTransaction"
+                    }
+                },
                 "groups": {
                     "type": "array",
                     "items": {
@@ -24766,6 +24857,12 @@
                 },
                 "income_month": {
                     "type": "string"
+                },
+                "income_sources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.BudgetIncomeSource"
+                    }
                 },
                 "month": {
                     "type": "string"
@@ -24781,6 +24878,20 @@
                 },
                 "unassigned_expenses": {
                     "type": "number"
+                }
+            }
+        },
+        "usecase.BudgetIncomeSource": {
+            "type": "object",
+            "properties": {
+                "account_type": {
+                    "$ref": "#/definitions/entity.AccountType"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "period": {
+                    "$ref": "#/definitions/entity.BudgetPeriod"
                 }
             }
         },
@@ -26059,6 +26170,12 @@
                     "type": "string"
                 },
                 "current_deficit": {
+                    "type": "number"
+                },
+                "expense_budget_remaining": {
+                    "type": "number"
+                },
+                "goal_annual_return_percent": {
                     "type": "number"
                 },
                 "goals": {

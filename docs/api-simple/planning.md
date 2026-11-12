@@ -5,7 +5,7 @@ title: Planning
 
 **Resumo:** Get current month's planning actions and goal forecast
 
-Applies the workspace deposit groups percentage to expected income each month. Today uses received income, recorded deposits and cash after reserving expenses and invoices. Future income is counted only by its expected date and cannot fund a goal after its deadline. No payment is executed.
+Available today is eligible cash less remaining expense group budgets. For goal projections, the combined deposit group percentage applies to future recurring income up to the goal deadline. The amount already saved and each dated contribution compound at 8% annually. No payment is executed.
 
 **Produces:** application/json
 
@@ -35,6 +35,8 @@ The workspace distribution and transaction rules apply to every month. Limits us
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | month | query | string | sim | Budget month (YYYY-MM) |
+| include_expenses | query | boolean | não | Include the expense transactions counted by the budget rules |
+| include_deposits | query | boolean | não | Include the deposit transactions counted by the budget rules |
 
 ### Respostas
 
@@ -192,6 +194,10 @@ Configure the income and activity periods by account type and choose how card sp
 
 ### Schemas
 
+#### entity.AccountType
+
+Sem propriedades.
+
 #### entity.BudgetAccountRule
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -236,6 +242,10 @@ Sem propriedades.
 | personal_percent | integer | não |  |
 | workspace_id | string | não |  |
 
+#### entity.TransactionStatus
+
+Sem propriedades.
+
 #### usecase.BudgetCategoryActivity
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -244,14 +254,41 @@ Sem propriedades.
 | deposits | number | não |  |
 | expenses | number | não |  |
 
+#### usecase.BudgetDepositTransaction
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| amount | number | não |  |
+| category_id | string | não |  |
+| date | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| investment_id | string | não |  |
+| status | object | não |  |
+
+#### usecase.BudgetExpenseTransaction
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| amount | number | não |  |
+| category_id | string | não |  |
+| date | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| type | string | não |  |
+
 #### usecase.BudgetGroupsSummary
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | category_activity | object | não |  |
 | currency_code | string | não |  |
+| deposit_transactions | array&lt;usecase.BudgetDepositTransaction&gt; | não |  |
+| expense_transactions | array&lt;usecase.BudgetExpenseTransaction&gt; | não |  |
 | groups | array&lt;usecase.BudgetGroupSummary&gt; | não |  |
 | income_month | string | não |  |
+| income_sources | array&lt;usecase.BudgetIncomeSource&gt; | não |  |
 | month | string | não |  |
 | previous_income | number | não |  |
 | transaction_rules | entity.BudgetTransactionRules | não |  |
@@ -269,6 +306,14 @@ Sem propriedades.
 | name | string | não |  |
 | remaining | number | não |  |
 | used | number | não |  |
+
+#### usecase.BudgetIncomeSource
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_type | entity.AccountType | não |  |
+| amount | number | não |  |
+| period | entity.BudgetPeriod | não |  |
 
 #### usecase.PlanningActions
 
@@ -318,6 +363,8 @@ Sem propriedades.
 | committed | number | não |  |
 | currency_code | string | não |  |
 | current_deficit | number | não |  |
+| expense_budget_remaining | number | não |  |
+| goal_annual_return_percent | number | não |  |
 | goals | array&lt;usecase.PlanningForecastGoal&gt; | não |  |
 | legacy_budget_total | number | não |  |
 | lowest_cash_before_income | number | não |  |
