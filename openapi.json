@@ -4678,7 +4678,7 @@
                 }
             },
             "patch": {
-                "description": "tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of goals.",
+                "description": "tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of goals.\nannual_appreciation_percent omitted preserves the rate; null clears it; a signed number sets the annual percentage.",
                 "consumes": [
                     "application/json"
                 ],
@@ -5083,6 +5083,118 @@
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/valuations/{valuation_id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Correct the date and value of an asset valuation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Valuation ID",
+                        "name": "valuation_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Valuation date and value",
+                        "name": "valuation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.assetValuationUpdateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "Delete an asset valuation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Valuation ID",
+                        "name": "valuation_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AssetDetail"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -24395,6 +24507,9 @@
                 "acquisition_cost": {
                     "type": "number"
                 },
+                "annual_appreciation_percent": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -27457,6 +27572,9 @@
                 "acquisition_cost": {
                     "type": "number"
                 },
+                "annual_appreciation_percent": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -27698,6 +27816,9 @@
                 "acquisition_date": {
                     "type": "string"
                 },
+                "annual_appreciation_percent": {
+                    "type": "number"
+                },
                 "financing": {
                     "$ref": "#/definitions/v1.assetFinancingEditBody"
                 },
@@ -27720,6 +27841,22 @@
             "type": "object",
             "required": [
                 "date"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number",
+                    "minimum": 0
+                }
+            }
+        },
+        "v1.assetValuationUpdateBody": {
+            "type": "object",
+            "required": [
+                "date",
+                "value"
             ],
             "properties": {
                 "date": {

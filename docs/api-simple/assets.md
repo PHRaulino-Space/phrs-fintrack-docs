@@ -35,6 +35,27 @@ title: Assets
 | --- | --- | --- |
 | 204 | No Content |  |
 
+## DELETE `/assets/{id}/valuations/{valuation_id}`
+
+**Resumo:** Delete an asset valuation
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Asset ID |
+| valuation_id | path | string | sim | Valuation ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AssetDetail |
+| 404 | Not Found | object |
+
 ## GET `/asset-classifications`
 
 **Resumo:** List asset natures and purposes, including archived entries
@@ -140,7 +161,7 @@ Default response is AssetDetail with histories. view=summary omits expenses, val
 
 **Resumo:** Edit an asset, its initial valuation and financing choice atomically
 
-tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of goals.
+tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag independently of goals. annual_appreciation_percent omitted preserves the rate; null clears it; a signed number sets the annual percentage.
 
 **Consumes:** application/json
 
@@ -340,6 +361,30 @@ tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag
 | --- | --- | --- |
 | 200 | OK | usecase.AssetDetail |
 
+## PUT `/assets/{id}/valuations/{valuation_id}`
+
+**Resumo:** Correct the date and value of an asset valuation
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Asset ID |
+| valuation_id | path | string | sim | Valuation ID |
+| valuation | body | v1.assetValuationUpdateBody | sim | Valuation date and value |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AssetDetail |
+| 404 | Not Found | object |
+
 ### Schemas
 
 #### entity.AssetClassification
@@ -397,6 +442,7 @@ tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag
 | --- | --- | --- | --- |
 | acquisition | number | não |  |
 | acquisition_cost | number | não |  |
+| annual_appreciation_percent | number | não |  |
 | created_at | string | não |  |
 | expenses | array&lt;usecase.AssetExpense&gt; | não |  |
 | financing | entity.AssetFinancing | não |  |
@@ -543,6 +589,7 @@ tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag
 | --- | --- | --- | --- |
 | acquisition | number | não |  |
 | acquisition_cost | number | não |  |
+| annual_appreciation_percent | number | não |  |
 | created_at | string | não |  |
 | expenses | array&lt;usecase.AssetExpense&gt; | não |  |
 | financing | entity.AssetFinancing | não |  |
@@ -640,6 +687,7 @@ tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | acquisition_date | string | não |  |
+| annual_appreciation_percent | number | não |  |
 | financing | v1.assetFinancingEditBody | não |  |
 | initial_value | number | não |  |
 | kind | string | sim |  |
@@ -652,3 +700,10 @@ tag_id omitted preserves the link; null removes it; UUID assigns a workspace tag
 | --- | --- | --- | --- |
 | date | string | sim |  |
 | value | number | não |  |
+
+#### v1.assetValuationUpdateBody
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| date | string | sim |  |
+| value | number | sim |  |
