@@ -8587,7 +8587,7 @@
         },
         "/cards/{id}/invoices/{billing_month}/transactions": {
             "get": {
-                "description": "List card expenses, chargebacks and payments for a given invoice (billing month)",
+                "description": "List card expenses, chargebacks, payments and projected recurring expenses for a billing month",
                 "consumes": [
                     "application/json"
                 ],
@@ -8619,6 +8619,12 @@
                         "name": "billing_month",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include transactions and projections before an invoice exists",
+                        "name": "include_without_invoice",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -15458,7 +15464,7 @@
         },
         "/recurring/summary": {
             "get": {
-                "description": "Return projected, paid, and pending amounts for the requested month",
+                "description": "Return monthly projected, paid, and pending totals, plus projected and paid subtotals for income and expenses. Expense subtotals include recurring card expenses. Transfer amounts are included only in the overall totals.",
                 "tags": [
                     "recurring"
                 ],
@@ -22722,9 +22728,26 @@
                 }
             }
         },
+        "entity.RecurringMonthlyTotals": {
+            "type": "object",
+            "properties": {
+                "paid_current_month": {
+                    "type": "number"
+                },
+                "projected_current_month": {
+                    "type": "number"
+                }
+            }
+        },
         "entity.RecurringSummary": {
             "type": "object",
             "properties": {
+                "expenses": {
+                    "$ref": "#/definitions/entity.RecurringMonthlyTotals"
+                },
+                "income": {
+                    "$ref": "#/definitions/entity.RecurringMonthlyTotals"
+                },
                 "paid_current_month": {
                     "type": "number"
                 },

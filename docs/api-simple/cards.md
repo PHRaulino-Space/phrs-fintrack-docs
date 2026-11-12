@@ -164,7 +164,7 @@ Returns a single invoice identified by billing_month for the provided card
 
 **Resumo:** List invoice transactions
 
-List card expenses, chargebacks and payments for a given invoice (billing month)
+List card expenses, chargebacks, payments and projected recurring expenses for a billing month
 
 **Consumes:** application/json
 
@@ -177,6 +177,7 @@ List card expenses, chargebacks and payments for a given invoice (billing month)
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Card ID |
 | billing_month | path | string | sim | Billing month (YYYY-MM) |
+| include_without_invoice | query | boolean | não | Include transactions and projections before an invoice exists |
 
 ### Respostas
 

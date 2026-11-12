@@ -168,7 +168,7 @@ Identify empty slots for recurring transactions up to end of month
 
 **Resumo:** Recurring summary
 
-Return projected, paid, and pending amounts for the requested month
+Return monthly projected, paid, and pending totals, plus projected and paid subtotals for income and expenses. Expense subtotals include recurring card expenses. Transfer amounts are included only in the overall totals.
 
 ### Parâmetros
 
@@ -784,10 +784,19 @@ Sem propriedades.
 | updated_at | string | não |  |
 | workspace_id | string | não |  |
 
+#### entity.RecurringMonthlyTotals
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| paid_current_month | number | não |  |
+| projected_current_month | number | não |  |
+
 #### entity.RecurringSummary
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| expenses | entity.RecurringMonthlyTotals | não |  |
+| income | entity.RecurringMonthlyTotals | não |  |
 | paid_current_month | number | não |  |
 | pending_until_month_end | number | não |  |
 | projected_current_month | number | não |  |
