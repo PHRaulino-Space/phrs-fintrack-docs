@@ -509,6 +509,25 @@ Update editable fields of an import session (description, billing_month, target_
 | --- | --- | --- |
 | 200 | OK | entity.ImportKnowledge |
 
+## PUT `/import-sessions/{id}/knowledge/links/{knowledge_id}`
+
+**Resumo:** Attach reusable workspace guidance to an import session
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Session ID |
+| knowledge_id | path | string | sim | Workspace knowledge ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ImportKnowledge |
+
 ## PUT `/import-sessions/{id}/knowledge/order`
 
 **Resumo:** Reorder all knowledge items in a session
@@ -538,6 +557,7 @@ Update editable fields of an import session (description, billing_month, target_
 | content_html | string | não |  |
 | created_at | string | não |  |
 | id | string | não |  |
+| knowledge_id | string | não |  |
 | position | integer | não |  |
 | session_id | string | não |  |
 | title | string | não |  |

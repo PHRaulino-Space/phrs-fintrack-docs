@@ -11667,6 +11667,41 @@
                 }
             }
         },
+        "/import-sessions/{id}/knowledge/links/{knowledge_id}": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import-sessions"
+                ],
+                "summary": "Attach reusable workspace guidance to an import session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Workspace knowledge ID",
+                        "name": "knowledge_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ImportKnowledge"
+                        }
+                    }
+                }
+            }
+        },
         "/import-sessions/{id}/knowledge/order": {
             "put": {
                 "consumes": [
@@ -13485,6 +13520,227 @@
                 }
             }
         },
+        "/knowledge": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "List reusable knowledge for the current workspace",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by workspace tag ID",
+                        "name": "tag_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Knowledge"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Create reusable workspace knowledge",
+                "parameters": [
+                    {
+                        "description": "Knowledge",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.workspaceKnowledgeBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Knowledge"
+                        }
+                    }
+                }
+            }
+        },
+        "/knowledge/contexts/{kind}/{context_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Get workspace memory matched by account, card or import context tags",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "account, card, import_session or staged_transaction",
+                        "name": "kind",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Resource ID",
+                        "name": "context_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.KnowledgeContext"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Replace the workspace tags assigned to an account or card",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "account or card",
+                        "name": "kind",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account or card ID",
+                        "name": "context_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Tag IDs, empty to clear all",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.contextTagBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/knowledge/{knowledge_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Read one workspace knowledge entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Knowledge ID",
+                        "name": "knowledge_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Knowledge"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Update reusable workspace knowledge and its linked guidance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Knowledge ID",
+                        "name": "knowledge_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Knowledge",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.workspaceKnowledgeBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Knowledge"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Delete a workspace knowledge entry and remove its linked guidance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Knowledge ID",
+                        "name": "knowledge_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/mcp/cloudflare-link/status": {
             "get": {
                 "description": "Validates the Access assertion and checks for an explicit Fintrack user link.",
@@ -13591,6 +13847,83 @@
                         "schema": {
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/monthly-closing": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "List the current user's configured monthly closing items with tags and resolved knowledge",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by item kind: account, card or task. Requires item_id.",
+                        "name": "kind",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by closing item ID. Requires kind.",
+                        "name": "item_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.MonthlyClosingItem"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/monthly-closing/{kind}/{item_id}/knowledge": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge"
+                ],
+                "summary": "Replace direct knowledge links or personal tags for a monthly closing item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "account, card or task",
+                        "name": "kind",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Closing item ID",
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Knowledge IDs or tag IDs. Omitted fields are preserved. An empty list clears that field.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.closingKnowledgeBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     }
                 }
             }
@@ -21519,6 +21852,9 @@
                 "id": {
                     "type": "string"
                 },
+                "knowledge_id": {
+                    "type": "string"
+                },
                 "position": {
                     "type": "integer"
                 },
@@ -22105,6 +22441,64 @@
                 "InvoiceStatusOverdue"
             ]
         },
+        "entity.Knowledge": {
+            "type": "object",
+            "properties": {
+                "content_html": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.KnowledgeContext": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "knowledge": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Knowledge"
+                    }
+                },
+                "resource_id": {
+                    "type": "string"
+                },
+                "resource_kind": {
+                    "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "entity.LiquidityType": {
             "type": "string",
             "enum": [
@@ -22135,6 +22529,38 @@
                 },
                 "workspace_id": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.MonthlyClosingItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "inherited_tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "knowledge": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Knowledge"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -27968,6 +28394,23 @@
                 }
             }
         },
+        "v1.closingKnowledgeBody": {
+            "type": "object",
+            "properties": {
+                "knowledge_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "v1.cloudflareLinkCompleteRequest": {
             "type": "object",
             "required": [
@@ -28040,6 +28483,20 @@
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.contextTagBody": {
+            "type": "object",
+            "required": [
+                "tag_ids"
+            ],
+            "properties": {
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -30706,6 +31163,26 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.workspaceKnowledgeBody": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "content_html": {
+                    "type": "string"
+                },
+                "tag_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
                     "type": "string"
                 }
             }

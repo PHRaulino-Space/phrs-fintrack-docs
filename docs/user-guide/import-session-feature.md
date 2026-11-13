@@ -10,10 +10,24 @@ Leia [Importações e Open Finance](../product/imports-open-finance.md) para o c
 
 Fontes: backend/internal/usecase/import.go, backend/internal/infra/postgres/repository/import_postgres.go, frontend/src/services/import-sessions.ts e testes correspondentes.
 
-## Conhecimentos da sessão
+## Memória do workspace
 
-A terceira aba **Conhecimentos** é um checklist de orientações exclusivo da sessão. Cada item tem título, detalhes com listas, negrito e links, marcação e posição manual. Clicar no título abre os detalhes e a edição. **Limpar marcações** desmarca todos os itens da sessão, preservando texto e ordem. Nenhuma ação do checklist cria ou altera transações, saldo, conta ou cartão.
+Abra **Memória** no menu principal para registrar preferências, regras e rotinas que os membros e agentes autorizados do workspace podem consultar em novas conversas, como a forma de atualizar uma parcela de financiamento ou as regras para marcar despesas com o carro. Os detalhes aceitam listas, negrito e links. Ao criar ou editar uma orientação, escolha as tags do workspace. A biblioteca permite filtrar as orientações por tag.
 
-Os itens são vinculados ao ID da sessão e ao workspace. Outra sessão da mesma conta não recebe cópia nem herda os itens. Excluir a sessão exclui seus conhecimentos. A API remove HTML ativo e atributos não permitidos; links aceitam apenas `http`, `https` e `mailto` e abrem com `noopener noreferrer`.
+Em **Workspace → Contas** ou **Cartões**, abra o menu do item e escolha **Tags e memória**. As sessões de importação desse recurso exibem as orientações com uma tag ativa em comum.
 
-Rotas sob `/import-sessions/{id}/knowledge`: `GET` lista; `POST` cria; `PUT /{item_id}` edita; `PATCH /{item_id}/check` define a marcação; `DELETE /{item_id}` exclui; `PUT /order` envia todos os IDs na ordem desejada; `POST /clear-checks` desmarca tudo. Todas exigem autenticação, CSRF nas mutações e `X-Workspace-ID`. O corpo de criação/edição é `{ "title": "...", "content_html": "...", "checked": false }`; a criação inicia desmarcada. Para ordem use `{ "ids": ["uuid", "..."] }` com cada item da sessão exatamente uma vez. Para marcação use `{ "checked": true }` ou `false`. A resposta de item inclui `id`, `session_id`, `workspace_id`, `title`, `content_html`, `checked`, `position`, `created_at` e `updated_at`.
+Para adicionar uma orientação ao checklist, abra a aba **Memória** e escolha **Vincular memória**. Cada sessão tem sua própria ordem e marcações. Para editar uma orientação compartilhada, abra a biblioteca. **Desvincular** remove o item do checklist da sessão e mantém a orientação na biblioteca.
+
+Ao trabalhar em uma importação, o agente recebe automaticamente as memórias pelas
+tags da conta ou do cartão e pelos vínculos da sessão. Você pode corrigir ou
+estabelecer uma preferência durante o trabalho. O agente pode atualizar a memória
+para que a próxima importação use a versão mais recente. No chat do Fintrack,
+revise a gravação no painel de confirmação.
+
+A migração leva os conhecimentos já cadastrados nas sessões para a biblioteca e preserva os vínculos, a ordem e as marcações existentes.
+
+## Fechamento mensal
+
+Em **Importações**, abra **Configurar fechamento**. Selecione as contas e os cartões e use a aba **Tarefas** para cadastrar outras etapas do mês. Adicione tags aos itens ou escolha orientações diretamente da biblioteca. Contas e cartões também trazem as orientações das tags cadastradas no workspace. Uma orientação aparece uma única vez por item, mesmo com várias tags em comum ou com um vínculo direto.
+
+Abra **Fechamento mensal** no cabeçalho para consultar as orientações, acompanhar o progresso e marcar os itens concluídos. A lista é pessoal e as marcações são guardadas por mês de referência. A [API da memória](../api-simple/knowledge.md) documenta as operações da biblioteca e do fechamento.
