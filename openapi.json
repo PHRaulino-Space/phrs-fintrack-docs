@@ -7158,6 +7158,49 @@
                 }
             }
         },
+        "/cache/revision": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Poll on focus/reconnect to invalidate financial query caches across devices. No-store. Includes the current Brazilian civil day.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cache"
+                ],
+                "summary": "Financial data freshness revision",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.cacheRevisionResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/card-chargebacks": {
             "post": {
                 "description": "Create a new card chargeback transaction",
@@ -28331,6 +28374,14 @@
                     "items": {
                         "$ref": "#/definitions/entity.BudgetGroup"
                     }
+                }
+            }
+        },
+        "v1.cacheRevisionResponse": {
+            "type": "object",
+            "properties": {
+                "revision": {
+                    "type": "string"
                 }
             }
         },
