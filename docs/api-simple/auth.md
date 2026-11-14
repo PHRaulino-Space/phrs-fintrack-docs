@@ -126,6 +126,29 @@ Initiate OAuth login flow with the specified provider (e.g., github)
 | 307 | Redirect to OAuth provider |  |
 | 400 | Bad Request | object |
 
+## GET `/auth/username-availability`
+
+**Resumo:** Check username availability
+
+Advisory availability only, rate-limited. No user identities are returned. Registration rechecks uniqueness atomically.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| username | query | string | sim | Desired username |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 429 | Too Many Requests | object |
+| 503 | Service Unavailable | object |
+
 ## GET `/auth/validate`
 
 **Resumo:** Validate token
@@ -505,7 +528,7 @@ Refresh access and refresh tokens using cookie or request body
 
 **Resumo:** Register new user
 
-Register a new user with email and password (native authentication)
+Register with email/password and optional username. Blank generates a username; explicit usernames use 3-32 ASCII letters/digits/underscore, start alphanumeric, and normalize to lowercase. Uniqueness is checked atomically.
 
 **Consumes:** application/json
 
@@ -523,6 +546,7 @@ Register a new user with email and password (native authentication)
 | --- | --- | --- |
 | 201 | User created successfully |  |
 | 400 | Bad Request | object |
+| 409 | Conflict | object |
 | 500 | Internal Server Error | object |
 
 ## POST `/auth/reset-password`
@@ -706,6 +730,7 @@ Sem parâmetros.
 | email | string | sim |  |
 | name | string | sim |  |
 | password | string | sim |  |
+| username | string | não |  |
 
 #### v1.resetPasswordRequest
 

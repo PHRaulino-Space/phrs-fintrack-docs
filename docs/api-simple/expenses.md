@@ -135,6 +135,7 @@ Update an existing expense (you can set/unset recurring_transaction_id)
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| company_id | string | não |  |
 | created_at | string | não |  |
 | currency | string | não | Relationships |
 | currency_code | string | não |  |

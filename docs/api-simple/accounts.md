@@ -298,6 +298,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| company_id | string | não |  |
 | currency_code | string | não |  |
 | image_key | string | não |  |
 | include_in_available_balance | boolean | não | IncludeInAvailableBalance includes this account in dashboard and planning indicators. |
@@ -310,6 +311,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| company_id | string | não |  |
 | created_at | string | não |  |
 | currency_code | string | não |  |
 | id | string | não |  |
@@ -328,6 +330,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| company_id | string | não |  |
 | currency_code | string | não |  |
 | image_key | string | não |  |
 | include_in_available_balance | boolean | não | IncludeInAvailableBalance includes this account in dashboard and planning indicators. |

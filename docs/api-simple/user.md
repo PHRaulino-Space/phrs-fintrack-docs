@@ -5,7 +5,7 @@ title: User
 
 **Resumo:** Confirm account deletion
 
-Confirm account deletion using the provided token
+Synchronously revoke access and logically delete the user using the token. Exclusive workspaces are removed; shared workspaces are preserved and require another administrator.
 
 **Consumes:** application/json
 

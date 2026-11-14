@@ -863,6 +863,136 @@
                 }
             }
         },
+        "/admin/currencies": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List fiat currencies for administration",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Currency"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Create fiat currency",
+                "parameters": [
+                    {
+                        "description": "Currency",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AdminCurrencyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Currency"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/currencies/{code}": {
+            "delete": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Delete unused fiat currency",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Currency code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Update fiat currency (code immutable)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Currency code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Currency fields",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AdminCurrencyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Currency"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/dashboard": {
+            "get": {
+                "description": "Read-only consistent snapshot of users/workspaces and non-deleted accounts/cards counts. Recent login data is prospective only, never inferred from refresh, activity or creation timestamps. No balances, transaction data, credentials or financial values are returned. No workspace header is required.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Application administrator operational overview",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AdminDashboard"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/train-embeddings": {
             "post": {
                 "description": "Starts category embedding training in the background (admin only).",
@@ -901,6 +1031,28 @@
                             "type": "object",
                             "additionalProperties": {
                                 "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List application users without credentials or financial data",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/usecase.AdminUserSummary"
                             }
                         }
                     }
@@ -967,12 +1119,7 @@
         },
         "/admin/users/{user_id}": {
             "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Deletes a user account directly. Admin accounts cannot be deleted.",
+                "description": "Requires a user session, fresh MFA when enabled and exact preview confirmation_name (current name, or user ID for unnamed users). Revokes access and removes memberships, retaining historical identity and workspace data. Protected users and workspace ownership blockers are rejected.",
                 "consumes": [
                     "application/json"
                 ],
@@ -982,7 +1129,7 @@
                 "tags": [
                     "admin"
                 ],
-                "summary": "Delete user account (admin)",
+                "summary": "Logically delete a user as global administrator",
                 "parameters": [
                     {
                         "type": "string",
@@ -990,17 +1137,20 @@
                         "name": "user_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Current user name confirmation",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AdminDeleteUserRequest"
+                        }
                     }
                 ],
                 "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1029,14 +1179,385 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
                                 "type": "string"
                             }
                         }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Change application role (last global administrator protected)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "role: admin or user",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/admin/users/{user_id}/deletion-preview": {
+            "get": {
+                "description": "Lists blockers and affected workspace counts, without deleting anything. Requires a global administrator's user session.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Preview global user deletion",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AdminUserDeletionPreview"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/workspace-defaults": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Get effective template for future workspaces",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.WorkspaceDefaultsDocument"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Replace template using expected revision; existing workspaces unchanged",
+                "parameters": [
+                    {
+                        "description": "Template with expected revision",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.WorkspaceDefaultsDocument"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.WorkspaceDefaultsDocument"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/workspaces": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List workspace metadata, not balances",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/usecase.AdminWorkspaceSummary"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/workspaces/{workspace_id}": {
+            "delete": {
+                "description": "Requires a user session, fresh MFA when enabled and exact current workspace name confirmation. Deletes workspace data, preserving users and global catalogs. Refuses to remove any member's last workspace.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Permanently delete a workspace as global administrator",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Current workspace name confirmation",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AdminDeleteWorkspaceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Rename workspace without changing financial settings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "name",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/admin/workspaces/{workspace_id}/members": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List workspace members and permissions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/usecase.AdminMemberSummary"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/workspaces/{workspace_id}/members/{user_id}": {
+            "put": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Add an existing active user or update workspace membership",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "role: admin or member",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Remove membership, preserving last admin and last workspace",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     }
                 }
             }
@@ -6150,7 +6671,7 @@
         },
         "/auth/register": {
             "post": {
-                "description": "Register a new user with email and password (native authentication)",
+                "description": "Register with email/password and optional username. Blank generates a username; explicit usernames use 3-32 ASCII letters/digits/underscore, start alphanumeric, and normalize to lowercase. Uniqueness is checked atomically.",
                 "consumes": [
                     "application/json"
                 ],
@@ -6178,6 +6699,15 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -6233,6 +6763,65 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/username-availability": {
+            "get": {
+                "description": "Advisory availability only, rate-limited. No user identities are returned. Registration rechecks uniqueness atomically.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Check username availability",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Desired username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -8822,6 +9411,28 @@
                 }
             }
         },
+        "/catalog/capabilities": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Permissions for editing shared global catalogs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/categories": {
             "get": {
                 "description": "List all categories for a given workspace",
@@ -9746,6 +10357,670 @@
                 }
             }
         },
+        "/companies": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "List visible companies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "BANK, COMPANY or GOVERNMENT",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name or CNPJ",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Company"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Create company with optional shared links",
+                "parameters": [
+                    {
+                        "description": "Company",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CompanyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Company"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/lookup": {
+            "post": {
+                "description": "Read-only deterministic BrasilAPI lookup, not agentic inference. Numeric and alphanumeric CNPJs are supported. Names return guidance for the existing AI public-research journey. No company is saved, no type/site/logo is invented, and no account or investment data is sent.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Consult public company registration by CNPJ for human review",
+                "parameters": [
+                    {
+                        "description": "Public company name or CNPJ",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CompanyLookupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.CompanyLookupResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Get global company",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Company ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Company"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Delete unused company",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Company ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Update company",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Company ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Company",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CompanyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Company"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/{id}/verification": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Review company verification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Catalog ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Verification",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CatalogVerificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/company-links": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "List reusable global links",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.CompanyLink"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Create reusable company link",
+                "parameters": [
+                    {
+                        "description": "Link",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CompanyLinkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CompanyLink"
+                        }
+                    }
+                }
+            }
+        },
+        "/company-links/{id}": {
+            "delete": {
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Delete shared link and its company associations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Link ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Update shared link (affects all associated companies)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Link ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Link",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CompanyLinkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CompanyLink"
+                        }
+                    }
+                }
+            }
+        },
+        "/company-links/{id}/verification": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Review company verification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Catalog ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Verification",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CatalogVerificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/crypto-assets": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "crypto-assets"
+                ],
+                "summary": "List global crypto assets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.CryptoAsset"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "crypto-assets"
+                ],
+                "summary": "Create private workspace or verified global crypto asset",
+                "parameters": [
+                    {
+                        "description": "Crypto asset",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CryptoAssetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CryptoAsset"
+                        }
+                    }
+                }
+            }
+        },
+        "/crypto-assets/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "crypto-assets"
+                ],
+                "summary": "Get global crypto asset",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Crypto asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CryptoAsset"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "crypto-assets"
+                ],
+                "summary": "Delete unreferenced global crypto asset (global admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Crypto asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "crypto-assets"
+                ],
+                "summary": "Update global crypto asset (global admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Crypto asset ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Crypto asset",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CryptoAssetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CryptoAsset"
+                        }
+                    }
+                }
+            }
+        },
+        "/crypto-assets/{id}/verification": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Review company verification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Catalog ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Verification",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CatalogVerificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/currencies": {
             "get": {
                 "description": "List all available currencies in the system",
@@ -9771,6 +11046,70 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates an unverified currency visible only in this workspace and to global administrators. Only global administrators can edit or verify it.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "currencies"
+                ],
+                "summary": "Propose a private workspace currency",
+                "parameters": [
+                    {
+                        "description": "Currency identity",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.currencyCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Currency"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -10249,6 +11588,218 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/funds": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "funds"
+                ],
+                "summary": "List visible funds",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Fund"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "funds"
+                ],
+                "summary": "Create private workspace or verified global fund",
+                "parameters": [
+                    {
+                        "description": "Fund",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.FundRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Fund"
+                        }
+                    }
+                }
+            }
+        },
+        "/funds/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "funds"
+                ],
+                "summary": "Get global fund",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Fund ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Fund"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "funds"
+                ],
+                "summary": "Delete unreferenced global fund (global admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Fund ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "funds"
+                ],
+                "summary": "Update global fund (global admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Fund ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Fund",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.FundRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Fund"
+                        }
+                    }
+                }
+            }
+        },
+        "/funds/{id}/verification": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companies"
+                ],
+                "summary": "Review company verification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Catalog ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Verification",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CatalogVerificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -12775,7 +14326,7 @@
                 }
             },
             "patch": {
-                "description": "Update an existing investment",
+                "description": "Update an existing investment. Omit catalogue IDs to preserve them, send null to clear or a UUID to link. A change of investment type must explicitly clear any incompatible catalogue identity.",
                 "consumes": [
                     "application/json"
                 ],
@@ -12850,7 +14401,7 @@
         },
         "/investments/{id}/deposits": {
             "post": {
-                "description": "Create a new investment deposit. effective_at is the real RFC3339 event instant and must match transaction_date in America/Sao_Paulo; no time is inferred.",
+                "description": "Create a new investment. Optional company_id is the issuer; FUNDO/FII use fund_id, CRYPTO uses crypto_asset_id, and CAIXINHA/OUTRO may use either company_id or fund_id. These global catalogue identities are mutually exclusive; account and balances remain workspace-scoped. deposit. effective_at is the real RFC3339 event instant and must match transaction_date in America/Sao_Paulo; no time is inferred.",
                 "consumes": [
                     "application/json"
                 ],
@@ -17888,7 +19439,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Confirm account deletion using the provided token",
+                "description": "Synchronously revoke access and logically delete the user using the token. Exclusive workspaces are removed; shared workspaces are preserved and require another administrator.",
                 "consumes": [
                     "application/json"
                 ],
@@ -20829,6 +22380,9 @@
                 "assigned_user_id": {
                     "type": "string"
                 },
+                "company_id": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -21666,6 +23220,242 @@
                 "CategoryTypeGoals"
             ]
         },
+        "entity.Company": {
+            "type": "object",
+            "properties": {
+                "admin_validated_at": {
+                    "type": "string"
+                },
+                "admin_validated_by": {
+                    "type": "string"
+                },
+                "admin_validation_source": {
+                    "type": "string"
+                },
+                "admin_validation_version": {
+                    "type": "integer"
+                },
+                "cnpj": {
+                    "type": "string"
+                },
+                "content_version": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "creator_user_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CompanyLink"
+                    }
+                },
+                "logo_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_workspace_id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_validated_at": {
+                    "type": "string"
+                },
+                "user_validated_by": {
+                    "type": "string"
+                },
+                "user_validation_version": {
+                    "type": "integer"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.CompanyLink": {
+            "type": "object",
+            "properties": {
+                "admin_validated_at": {
+                    "type": "string"
+                },
+                "admin_validated_by": {
+                    "type": "string"
+                },
+                "admin_validation_source": {
+                    "type": "string"
+                },
+                "admin_validation_version": {
+                    "type": "integer"
+                },
+                "content_version": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "creator_user_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "owner_workspace_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "user_validated_at": {
+                    "type": "string"
+                },
+                "user_validated_by": {
+                    "type": "string"
+                },
+                "user_validation_version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.CryptoAsset": {
+            "type": "object",
+            "properties": {
+                "admin_validated_at": {
+                    "type": "string"
+                },
+                "admin_validated_by": {
+                    "type": "string"
+                },
+                "admin_validation_source": {
+                    "type": "string"
+                },
+                "admin_validation_version": {
+                    "type": "integer"
+                },
+                "content_version": {
+                    "type": "integer"
+                },
+                "contract_address": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "creator_user_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "network": {
+                    "type": "string"
+                },
+                "owner_workspace_id": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_validated_at": {
+                    "type": "string"
+                },
+                "user_validated_by": {
+                    "type": "string"
+                },
+                "user_validation_version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Currency": {
+            "type": "object",
+            "properties": {
+                "admin_validated_at": {
+                    "type": "string"
+                },
+                "admin_validated_by": {
+                    "type": "string"
+                },
+                "admin_validation_source": {
+                    "type": "string"
+                },
+                "admin_validation_version": {
+                    "type": "integer"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "content_version": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "creator_user_id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_workspace_id": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_validated_at": {
+                    "type": "string"
+                },
+                "user_validated_by": {
+                    "type": "string"
+                },
+                "user_validation_version": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.Expense": {
             "type": "object",
             "properties": {
@@ -21747,6 +23537,71 @@
                 },
                 "tag_id": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.Fund": {
+            "type": "object",
+            "properties": {
+                "admin_validated_at": {
+                    "type": "string"
+                },
+                "admin_validated_by": {
+                    "type": "string"
+                },
+                "admin_validation_source": {
+                    "type": "string"
+                },
+                "admin_validation_version": {
+                    "type": "integer"
+                },
+                "class_cnpj": {
+                    "type": "string"
+                },
+                "class_name": {
+                    "type": "string"
+                },
+                "cnpj": {
+                    "type": "string"
+                },
+                "content_version": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "creator_user_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "manager_company": {
+                    "$ref": "#/definitions/entity.Company"
+                },
+                "manager_company_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_workspace_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_validated_at": {
+                    "type": "string"
+                },
+                "user_validated_by": {
+                    "type": "string"
+                },
+                "user_validation_version": {
+                    "type": "integer"
                 }
             }
         },
@@ -22111,11 +23966,30 @@
                 "asset_name": {
                     "type": "string"
                 },
+                "company": {
+                    "$ref": "#/definitions/entity.Company"
+                },
+                "company_id": {
+                    "description": "Optional global catalogue identity. Company is the issuer, not the custodian or fund manager.",
+                    "type": "string"
+                },
                 "created_at": {
+                    "type": "string"
+                },
+                "crypto_asset": {
+                    "$ref": "#/definitions/entity.CryptoAsset"
+                },
+                "crypto_asset_id": {
                     "type": "string"
                 },
                 "current_value": {
                     "type": "number"
+                },
+                "fund": {
+                    "$ref": "#/definitions/entity.Fund"
+                },
+                "fund_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -23424,6 +25298,17 @@
                 "RecurringTypeCardTransaction"
             ]
         },
+        "entity.Role": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "AdminRole",
+                "UserRole"
+            ]
+        },
         "entity.StagedTransaction": {
             "type": "object",
             "properties": {
@@ -23808,6 +25693,69 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.WorkspaceDefaultCategory": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "group_name": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sub_categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "$ref": "#/definitions/entity.CategoryType"
+                }
+            }
+        },
+        "entity.WorkspaceDefaultGroup": {
+            "type": "object",
+            "properties": {
+                "basis_points": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.WorkspaceDefaultsDocument": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.WorkspaceDefaultCategory"
+                    }
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.WorkspaceDefaultGroup"
+                    }
+                },
+                "onboarding_workspace_name_template": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
                 }
             }
         },
@@ -24937,6 +26885,231 @@
                 }
             }
         },
+        "usecase.AdminDashboard": {
+            "type": "object",
+            "properties": {
+                "active_users": {
+                    "type": "integer"
+                },
+                "deleted_users": {
+                    "type": "integer"
+                },
+                "generated_at": {
+                    "type": "string"
+                },
+                "global_admins": {
+                    "type": "integer"
+                },
+                "recent_logins": {
+                    "$ref": "#/definitions/usecase.AdminRecentLogins"
+                },
+                "total_accounts": {
+                    "type": "integer"
+                },
+                "total_cards": {
+                    "type": "integer"
+                },
+                "total_users": {
+                    "type": "integer"
+                },
+                "total_workspaces": {
+                    "type": "integer"
+                },
+                "workspaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AdminWorkspaceMetrics"
+                    }
+                }
+            }
+        },
+        "usecase.AdminMemberSummary": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/entity.WorkspaceMemberRole"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AdminRecentLoginUser": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_login_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AdminRecentLogins": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "boolean"
+                },
+                "coverage": {
+                    "type": "string"
+                },
+                "earliest_recorded_login_at": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "user_count": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AdminRecentLoginUser"
+                    }
+                },
+                "users_without_recorded_login": {
+                    "type": "integer"
+                },
+                "window_days": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AdminUserDeletionPreview": {
+            "type": "object",
+            "properties": {
+                "blocking_catalog_references": {
+                    "type": "boolean"
+                },
+                "blocking_shared_workspaces": {
+                    "type": "integer"
+                },
+                "can_delete": {
+                    "type": "boolean"
+                },
+                "confirmation_name": {
+                    "type": "string"
+                },
+                "exclusive_workspaces": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "shared_workspaces": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AdminUserSummary": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted": {
+                    "type": "boolean"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/entity.Role"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AdminWorkspaceAdmin": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AdminWorkspaceMetrics": {
+            "type": "object",
+            "properties": {
+                "account_count": {
+                    "type": "integer"
+                },
+                "active_account_count": {
+                    "type": "integer"
+                },
+                "active_card_count": {
+                    "type": "integer"
+                },
+                "admins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AdminWorkspaceAdmin"
+                    }
+                },
+                "card_count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "member_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AdminWorkspaceSummary": {
+            "type": "object",
+            "properties": {
+                "admins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AdminWorkspaceAdmin"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "default_currency_code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "usecase.ApiKeyCreated": {
             "type": "object",
             "properties": {
@@ -25792,6 +27965,54 @@
                 },
                 "income": {
                     "type": "number"
+                }
+            }
+        },
+        "usecase.CompanyLookupCandidate": {
+            "type": "object",
+            "properties": {
+                "cnpj": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.CompanyLookupResult": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "$ref": "#/definitions/usecase.CompanyLookupCandidate"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "requires_review": {
+                    "type": "boolean"
+                },
+                "research_prompt": {
+                    "type": "string"
+                },
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.CompanyLookupSource"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.CompanyLookupSource": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
                 }
             }
         },
@@ -27432,6 +29653,9 @@
                 "assigned_user_id": {
                     "type": "string"
                 },
+                "company_id": {
+                    "type": "string"
+                },
                 "currency_code": {
                     "type": "string"
                 },
@@ -27458,6 +29682,9 @@
             "type": "object",
             "properties": {
                 "assigned_user_id": {
+                    "type": "string"
+                },
+                "company_id": {
                     "type": "string"
                 },
                 "created_at": {
@@ -27505,6 +29732,9 @@
                 "assigned_user_id": {
                     "type": "string"
                 },
+                "company_id": {
+                    "type": "string"
+                },
                 "currency_code": {
                     "type": "string"
                 },
@@ -27530,11 +29760,158 @@
                 }
             }
         },
+        "v1.AdminCurrencyRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "validate_globally": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.AdminDeleteUserRequest": {
+            "type": "object",
+            "required": [
+                "confirmation_name"
+            ],
+            "properties": {
+                "confirmation_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.AdminDeleteWorkspaceRequest": {
+            "type": "object",
+            "required": [
+                "confirmation_name"
+            ],
+            "properties": {
+                "confirmation_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.CatalogVerificationRequest": {
+            "type": "object",
+            "properties": {
+                "is_verified": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.CompanyLinkRequest": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "validate_globally": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.CompanyLookupRequest": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.CompanyRequest": {
+            "type": "object",
+            "properties": {
+                "cnpj": {
+                    "type": "string"
+                },
+                "link_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "logo_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "validate_globally": {
+                    "type": "boolean"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.CryptoAssetRequest": {
+            "type": "object",
+            "properties": {
+                "contract_address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "network": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "validate_globally": {
+                    "type": "boolean"
+                }
+            }
+        },
         "v1.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.FundRequest": {
+            "type": "object",
+            "properties": {
+                "class_cnpj": {
+                    "type": "string"
+                },
+                "class_name": {
+                    "type": "string"
+                },
+                "cnpj": {
+                    "type": "string"
+                },
+                "manager_company_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "validate_globally": {
+                    "type": "boolean"
                 }
             }
         },
@@ -29003,6 +31380,19 @@
                 "asset_name": {
                     "type": "string"
                 },
+                "company_id": {
+                    "description": "CompanyID identifies the issuer; use FundID or CryptoAssetID instead for those asset types.",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "crypto_asset_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "fund_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
                 "index_type": {
                     "$ref": "#/definitions/entity.IndexType"
                 },
@@ -29209,6 +31599,23 @@
                 }
             }
         },
+        "v1.currencyCreateRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.currencyResponse": {
             "type": "object",
             "properties": {
@@ -29216,9 +31623,18 @@
                     "type": "string",
                     "example": "BRL"
                 },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string",
                     "example": "Brazilian Real"
+                },
+                "owner_workspace_id": {
+                    "type": "string"
                 },
                 "symbol": {
                     "type": "string",
@@ -29726,11 +32142,29 @@
                 "asset_name": {
                     "type": "string"
                 },
+                "company": {
+                    "$ref": "#/definitions/entity.Company"
+                },
+                "company_id": {
+                    "type": "string"
+                },
                 "created_at": {
+                    "type": "string"
+                },
+                "crypto_asset": {
+                    "$ref": "#/definitions/entity.CryptoAsset"
+                },
+                "crypto_asset_id": {
                     "type": "string"
                 },
                 "current_value": {
                     "type": "number"
+                },
+                "fund": {
+                    "$ref": "#/definitions/entity.Fund"
+                },
+                "fund_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -30399,6 +32833,9 @@
                 "password": {
                     "type": "string",
                     "minLength": 8
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -30950,6 +33387,22 @@
             "properties": {
                 "asset_name": {
                     "type": "string"
+                },
+                "company_id": {
+                    "description": "Omitted preserves identity, null clears it, UUID links an existing global catalogue record.",
+                    "type": "string",
+                    "format": "uuid",
+                    "x-nullable": true
+                },
+                "crypto_asset_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "x-nullable": true
+                },
+                "fund_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "x-nullable": true
                 },
                 "index_type": {
                     "$ref": "#/definitions/entity.IndexType"

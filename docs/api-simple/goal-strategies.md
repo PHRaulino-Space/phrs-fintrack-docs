@@ -52,6 +52,7 @@ V1 models one new contribution in simple fixed income only. Explicit choices and
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | assigned_user_id | string | não |  |
+| company_id | string | não |  |
 | created_at | string | não |  |
 | currency | string | não | Relationships |
 | currency_code | string | não |  |
@@ -212,6 +213,75 @@ Sem propriedades.
 
 Sem propriedades.
 
+#### entity.Company
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| admin_validated_at | string | não |  |
+| admin_validated_by | string | não |  |
+| admin_validation_source | string | não |  |
+| admin_validation_version | integer | não |  |
+| cnpj | string | não |  |
+| content_version | integer | não |  |
+| created_at | string | não |  |
+| creator_user_id | string | não |  |
+| id | string | não |  |
+| is_verified | boolean | não |  |
+| links | array&lt;entity.CompanyLink&gt; | não |  |
+| logo_url | string | não |  |
+| name | string | não |  |
+| owner_workspace_id | string | não |  |
+| type | string | não |  |
+| updated_at | string | não |  |
+| user_validated_at | string | não |  |
+| user_validated_by | string | não |  |
+| user_validation_version | integer | não |  |
+| website | string | não |  |
+
+#### entity.CompanyLink
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| admin_validated_at | string | não |  |
+| admin_validated_by | string | não |  |
+| admin_validation_source | string | não |  |
+| admin_validation_version | integer | não |  |
+| content_version | integer | não |  |
+| created_at | string | não |  |
+| creator_user_id | string | não |  |
+| id | string | não |  |
+| is_verified | boolean | não |  |
+| label | string | não |  |
+| owner_workspace_id | string | não |  |
+| updated_at | string | não |  |
+| url | string | não |  |
+| user_validated_at | string | não |  |
+| user_validated_by | string | não |  |
+| user_validation_version | integer | não |  |
+
+#### entity.CryptoAsset
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| admin_validated_at | string | não |  |
+| admin_validated_by | string | não |  |
+| admin_validation_source | string | não |  |
+| admin_validation_version | integer | não |  |
+| content_version | integer | não |  |
+| contract_address | string | não |  |
+| created_at | string | não |  |
+| creator_user_id | string | não |  |
+| id | string | não |  |
+| is_verified | boolean | não |  |
+| name | string | não |  |
+| network | string | não |  |
+| owner_workspace_id | string | não |  |
+| symbol | string | não |  |
+| updated_at | string | não |  |
+| user_validated_at | string | não |  |
+| user_validated_by | string | não |  |
+| user_validation_version | integer | não |  |
+
 #### entity.Expense
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -242,6 +312,31 @@ Sem propriedades.
 | expense_id | string | não |  |
 | tag | entity.Tag | não |  |
 | tag_id | string | não |  |
+
+#### entity.Fund
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| admin_validated_at | string | não |  |
+| admin_validated_by | string | não |  |
+| admin_validation_source | string | não |  |
+| admin_validation_version | integer | não |  |
+| class_cnpj | string | não |  |
+| class_name | string | não |  |
+| cnpj | string | não |  |
+| content_version | integer | não |  |
+| created_at | string | não |  |
+| creator_user_id | string | não |  |
+| id | string | não |  |
+| is_verified | boolean | não |  |
+| manager_company | entity.Company | não |  |
+| manager_company_id | string | não |  |
+| name | string | não |  |
+| owner_workspace_id | string | não |  |
+| updated_at | string | não |  |
+| user_validated_at | string | não |  |
+| user_validated_by | string | não |  |
+| user_validation_version | integer | não |  |
 
 #### entity.Goal
 
@@ -360,8 +455,14 @@ Sem propriedades.
 | account | object | não | Relationships |
 | account_id | string | não |  |
 | asset_name | string | não |  |
+| company | entity.Company | não |  |
+| company_id | string | não | Optional global catalogue identity. Company is the issuer, not the custodian or fund manager. |
 | created_at | string | não |  |
+| crypto_asset | entity.CryptoAsset | não |  |
+| crypto_asset_id | string | não |  |
 | current_value | number | não |  |
+| fund | entity.Fund | não |  |
+| fund_id | string | não |  |
 | id | string | não |  |
 | index_type | entity.IndexType | não |  |
 | index_value | string | não |  |
