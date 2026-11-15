@@ -19393,7 +19393,7 @@
         },
         "/transactions/materialize-projection": {
             "post": {
-                "description": "Explicit human action only. Never marks paid, never materializes card payments. Replays return the current movement without changing it. Invalid or stale occurrences conflict.",
+                "description": "Optional amount and effective_date override the recorded movement, while transaction_date remains the immutable occurrence reference. Different retry intent returns conflict. Explicit human action only. Never marks paid, never materializes card payments. Replays return the current movement without changing it. Invalid or stale occurrences conflict.",
                 "consumes": [
                     "application/json"
                 ],
@@ -29542,7 +29542,13 @@
         "usecase.MaterializeProjectionInput": {
             "type": "object",
             "properties": {
+                "amount": {
+                    "type": "number"
+                },
                 "billing_month": {
+                    "type": "string"
+                },
+                "effective_date": {
                     "type": "string"
                 },
                 "id": {
