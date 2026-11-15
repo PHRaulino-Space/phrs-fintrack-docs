@@ -17,6 +17,24 @@ title: Admin
 | --- | --- | --- |
 | 204 | No Content |  |
 
+## DELETE `/admin/tutorial-videos/{id}`
+
+**Resumo:** Remove a global tutorial from publication
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Tutorial ID |
+| version | query | integer | sim | Expected version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 409 | Conflict | object |
+
 ## DELETE `/admin/users/{user_id}`
 
 **Resumo:** Logically delete a user as global administrator
@@ -123,6 +141,24 @@ Sem parâmetros.
 | 200 | OK | usecase.AdminDashboard |
 | 401 | Unauthorized | v1.ErrorResponse |
 | 403 | Forbidden | v1.ErrorResponse |
+
+## GET `/admin/tutorial-videos`
+
+**Resumo:** List global tutorials for administration
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| q | query | string | não | Literal title search, case/accent insensitive, max 200 characters |
+| limit | query | integer | não | Limit up to 100 |
+| offset | query | integer | não | Offset |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.TutorialVideoList |
 
 ## GET `/admin/users`
 
@@ -321,6 +357,46 @@ Sem parâmetros.
 | 401 | Unauthorized | object |
 | 403 | Forbidden | object |
 
+## POST `/admin/tutorial-videos`
+
+**Resumo:** Publish a global YouTube tutorial
+
+Explicit publication acknowledgment required. Unlisted links are not private; visible to all workspaces. No URL is fetched.
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| body | body | usecase.TutorialVideoInput | sim | Tutorial publication |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.TutorialVideo |
+
+## PUT `/admin/tutorial-videos/{id}`
+
+**Resumo:** Update a global tutorial with version checking
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Tutorial ID |
+| body | body | usecase.TutorialVideoInput | sim | Full tutorial and expected version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.TutorialVideo |
+| 409 | Conflict | object |
+
 ## PUT `/admin/workspace-defaults`
 
 **Resumo:** Replace template using expected revision; existing workspaces unchanged
@@ -386,6 +462,20 @@ Sem propriedades.
 #### entity.Role
 
 Sem propriedades.
+
+#### entity.TutorialVideo
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| context | string | não |  |
+| created_at | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| title | string | não |  |
+| updated_at | string | não |  |
+| version | integer | não |  |
+| youtube_url | string | não |  |
+| youtube_video_id | string | não |  |
 
 #### entity.WorkspaceDefaultCategory
 
@@ -520,6 +610,17 @@ Sem propriedades.
 | id | string | não |  |
 | name | string | não |  |
 
+#### usecase.TutorialVideoInput
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| context | string | não |  |
+| description | string | não |  |
+| publish_acknowledged | boolean | não |  |
+| title | string | não |  |
+| version | integer | não |  |
+| youtube_url | string | não |  |
+
 #### v1.AdminCurrencyRequest
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -561,3 +662,10 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | error | string | não |  |
+
+#### v1.TutorialVideoList
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| items | array&lt;entity.TutorialVideo&gt; | não |  |
+| total | integer | não |  |

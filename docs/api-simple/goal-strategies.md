@@ -1,6 +1,59 @@
 ---
 title: Goal Strategies
 ---
+## DELETE `/goal-strategies/comparison-offers/{id}`
+
+**Resumo:** Remove a simulation offer without changing investments
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Offer ID |
+| version | query | integer | sim | Expected version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 409 | Conflict | object |
+
+## GET `/goal-strategies/comparison-offers`
+
+**Resumo:** List shared workspace simulation offers
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| limit | query | integer | não | Limit up to 100 |
+| offset | query | integer | não | Offset |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.ComparisonOfferList |
+
+## GET `/goal-strategies/comparison-offers/{id}`
+
+**Resumo:** Get a workspace simulation offer
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Offer ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ComparisonOffer |
+
 ## GET `/goal-strategies/context/{goal_id}`
 
 **Resumo:** Get goal strategy context
@@ -21,6 +74,46 @@ Read one goal, its saved value and linked investments, the current planning sugg
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | usecase.GoalStrategyContext |
+
+## GET `/goal-strategies/indicator-queries`
+
+**Resumo:** List your previous indicator consultations in this workspace
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| limit | query | integer | não | 1-100; default20 |
+| offset | query | integer | não | Nonnegative offset |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.IndicatorQueryPage |
+
+## GET `/goal-strategies/indicator-queries/{id}`
+
+**Resumo:** Reopen an immutable private indicator consultation
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Consultation ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.IndicatorQuery |
+| 404 | Not Found | object |
 
 ## POST `/goal-strategies/compare`
 
@@ -44,6 +137,72 @@ V1 models one new contribution in simple fixed income only. Explicit choices and
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | usecase.GoalStrategyResponse |
+
+## POST `/goal-strategies/comparison-offers`
+
+**Resumo:** Create a hypothetical offer, not a real investment
+
+request_id identifies one logical create; retries with the same actor and terms return the existing offer.
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| body | body | v1.ComparisonOfferRequest | sim | Offer and request_id |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.ComparisonOffer |
+| 409 | Conflict | object |
+
+## POST `/goal-strategies/indicator-queries`
+
+**Resumo:** Consult official macroeconomic indicators and save private history
+
+Public BCB SGS/Focus only. Explicit refresh never changes scenario assumptions. Partial/failed consultations are saved with safe errors. Every consultation requests the latest available upstream data; history is never substituted as a fresh response.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| body | body | usecase.IndicatorQueryRequest | sim | Optional Focus year and explicit refresh |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.IndicatorQuery |
+| 400 | Bad Request | object |
+| 403 | Forbidden | object |
+
+## PUT `/goal-strategies/comparison-offers/{id}`
+
+**Resumo:** Replace simulation offer terms with optimistic version check
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Offer ID |
+| body | body | v1.ComparisonOfferRequest | sim | Offer and expected version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.ComparisonOffer |
+| 409 | Conflict | object |
 
 ### Schemas
 
@@ -259,6 +418,42 @@ Sem propriedades.
 | user_validated_by | string | não |  |
 | user_validation_version | integer | não |  |
 
+#### entity.ComparisonOffer
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| created_at | string | não |  |
+| created_by | string | não |  |
+| id | string | não |  |
+| offer | entity.ComparisonOfferTerms | não |  |
+| updated_at | string | não |  |
+| updated_by | string | não |  |
+| version | integer | não |  |
+
+#### entity.ComparisonOfferTerms
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| accessDate | string | não |  |
+| annualFeePct | number | não |  |
+| broker | string | não |  |
+| cnpj | string | não |  |
+| dailyLiquidity | boolean | não |  |
+| family | string | não |  |
+| flow | string | não |  |
+| group | string | não |  |
+| guarantee | string | não |  |
+| incomeTax | string | não |  |
+| index | string | não |  |
+| iof | string | não |  |
+| issuerName | string | não |  |
+| marketSale | boolean | não |  |
+| maturityDate | string | não |  |
+| name | string | não |  |
+| productType | string | não |  |
+| ratePct | number | não |  |
+| source | string | não |  |
+
 #### entity.CryptoAsset
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -447,6 +642,17 @@ Sem propriedades.
 #### entity.IndexType
 
 Sem propriedades.
+
+#### entity.IndicatorQuery
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| cache_hit | boolean | não |  |
+| id | string | não |  |
+| queried_at | string | não |  |
+| reference_year | integer | não |  |
+| result | object | não |  |
+| status | string | não |  |
 
 #### entity.Investment
 
@@ -897,6 +1103,22 @@ Sem propriedades.
 | risk_warnings | array&lt;string&gt; | não |  |
 | unallocated | number | não |  |
 
+#### usecase.IndicatorQueryPage
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| items | array&lt;entity.IndicatorQuery&gt; | não |  |
+| limit | integer | não |  |
+| offset | integer | não |  |
+| total | integer | não |  |
+
+#### usecase.IndicatorQueryRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| force_refresh | boolean | não | Retained for compatibility; every consultation refreshes. |
+| reference_year | integer | não |  |
+
 #### usecase.OpportunityView
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -954,3 +1176,18 @@ Sem propriedades.
 | opportunity_id | string | não |  |
 | real_net_value | number | não |  |
 | warnings | array&lt;string&gt; | não |  |
+
+#### v1.ComparisonOfferList
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| items | array&lt;entity.ComparisonOffer&gt; | não |  |
+| total | integer | não |  |
+
+#### v1.ComparisonOfferRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| offer | entity.ComparisonOfferTerms | não |  |
+| request_id | string | não |  |
+| version | integer | não |  |

@@ -360,6 +360,33 @@ When category_id is set and sub_category_id is omitted, each current subcategory
 | --- | --- | --- |
 | 200 | OK | usecase.EditorBatchResult |
 
+## POST `/transactions/materialize-projection`
+
+**Resumo:** Create a real pending movement from an unresolved projection
+
+Explicit human action only. Never marks paid, never materializes card payments. Replays return the current movement without changing it. Invalid or stale occurrences conflict.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| body | body | usecase.MaterializeProjectionInput | sim | Displayed projection identity and civil date |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.MaterializeProjectionResult |
+| 400 | Bad Request | object |
+| 403 | Forbidden | object |
+| 404 | Not Found | object |
+| 409 | Conflict | object |
+
 ## PUT `/card-chargebacks/{chargeback_id}`
 
 **Resumo:** Update card chargeback
@@ -1246,6 +1273,27 @@ Sem propriedades.
 | count | integer | não |  |
 | negative | number | não |  |
 | positive | number | não |  |
+
+#### usecase.MaterializeProjectionInput
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| billing_month | string | não |  |
+| id | string | não |  |
+| recurring_transaction_id | string | não |  |
+| transaction_date | string | não |  |
+| type | string | não |  |
+
+#### usecase.MaterializeProjectionResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| billing_month | string | não |  |
+| id | string | não |  |
+| replayed | boolean | não |  |
+| transaction_date | string | não |  |
+| transaction_status | string | não |  |
+| type | string | não |  |
 
 #### v1.createCardChargebackRequest
 
