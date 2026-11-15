@@ -8995,6 +8995,12 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Only movements with PAID status; excludes projections and all other statuses",
+                        "name": "paid_only",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -9135,6 +9141,12 @@
                         "name": "billing_month",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Only movements with PAID status; excludes projections and all other statuses",
+                        "name": "paid_only",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -9515,6 +9527,12 @@
                         "type": "boolean",
                         "description": "Include transactions and projections before an invoice exists",
                         "name": "include_without_invoice",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Only movements with PAID status; excludes projections and all other statuses",
+                        "name": "paid_only",
                         "in": "query"
                     }
                 ],
@@ -19159,6 +19177,12 @@
                     },
                     {
                         "type": "boolean",
+                        "description": "Only PAID persisted transactions; overrides projected/ignored toggles (default false)",
+                        "name": "paid_only",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
                         "description": "Include IGNORE-status transactions (default false)",
                         "name": "include_ignored",
                         "in": "query"
@@ -19470,7 +19494,7 @@
         },
         "/transactions/summary": {
             "get": {
-                "description": "Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is for the selected accounts and ignores type filters.",
+                "description": "Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is for the selected accounts and ignores type filters. previous_month_closing provides PAID actual and projected balances at the last civil day before the selected month, independent of presentation type/status filters.",
                 "consumes": [
                     "application/json"
                 ],
@@ -19541,6 +19565,12 @@
                         "type": "boolean",
                         "description": "Include projected and PROJECTED-status transactions (default true)",
                         "name": "include_projected",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Only PAID persisted transactions; overrides projected/ignored toggles (default false)",
+                        "name": "paid_only",
                         "in": "query"
                     },
                     {
@@ -26608,6 +26638,23 @@
                 }
             }
         },
+        "transactiondto.PreviousMonthClosingDTO": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "type": "number"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "projected": {
+                    "type": "number"
+                }
+            }
+        },
         "transactiondto.TransactionItemDTO": {
             "type": "object",
             "properties": {
@@ -26696,6 +26743,12 @@
                 },
                 "current_balance": {
                     "type": "number"
+                },
+                "month_closing": {
+                    "$ref": "#/definitions/transactiondto.PreviousMonthClosingDTO"
+                },
+                "previous_month_closing": {
+                    "$ref": "#/definitions/transactiondto.PreviousMonthClosingDTO"
                 },
                 "total_in": {
                     "type": "number"

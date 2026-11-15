@@ -125,6 +125,7 @@ Returns the legacy array. Pagination is opt-in with limit or cursor; without eit
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
 | include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
+| paid_only | query | boolean | não | Only PAID persisted transactions; overrides projected/ignored toggles (default false) |
 | include_ignored | query | boolean | não | Include IGNORE-status transactions (default false) |
 
 ### Respostas
@@ -176,7 +177,7 @@ Workspace-scoped search across account and card transactions. Totals cover all m
 
 **Resumo:** Transactions summary
 
-Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is for the selected accounts and ignores type filters.
+Returns total in, total out, balance for the filtered transactions, and current account balance (up to date_to or now). Current balance is for the selected accounts and ignores type filters. previous_month_closing provides PAID actual and projected balances at the last civil day before the selected month, independent of presentation type/status filters.
 
 **Consumes:** application/json
 
@@ -196,6 +197,7 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
 | include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
+| paid_only | query | boolean | não | Only PAID persisted transactions; overrides projected/ignored toggles (default false) |
 | include_ignored | query | boolean | não | Include IGNORE-status transactions (default false) |
 
 ### Respostas
@@ -1177,6 +1179,15 @@ Sem propriedades.
 
 Sem propriedades.
 
+#### transactiondto.PreviousMonthClosingDTO
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| actual | number | não |  |
+| currency | string | não |  |
+| date | string | não |  |
+| projected | number | não |  |
+
 #### transactiondto.TransactionItemDTO
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -1212,6 +1223,8 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | balance | number | não |  |
 | current_balance | number | não |  |
+| month_closing | transactiondto.PreviousMonthClosingDTO | não |  |
+| previous_month_closing | transactiondto.PreviousMonthClosingDTO | não |  |
 | total_in | number | não |  |
 | total_out | number | não |  |
 

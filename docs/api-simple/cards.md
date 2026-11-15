@@ -123,6 +123,7 @@ Returns all invoices associated with the specified card within the current works
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Card ID |
+| paid_only | query | boolean | não | Only movements with PAID status; excludes projections and all other statuses |
 
 ### Respostas
 
@@ -150,6 +151,7 @@ Returns a single invoice identified by billing_month for the provided card
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | id | path | string | sim | Card ID |
 | billing_month | path | string | sim | Billing month (YYYY-MM) |
+| paid_only | query | boolean | não | Only movements with PAID status; excludes projections and all other statuses |
 
 ### Respostas
 
@@ -178,6 +180,7 @@ List card expenses, chargebacks, payments and projected recurring expenses for a
 | id | path | string | sim | Card ID |
 | billing_month | path | string | sim | Billing month (YYYY-MM) |
 | include_without_invoice | query | boolean | não | Include transactions and projections before an invoice exists |
+| paid_only | query | boolean | não | Only movements with PAID status; excludes projections and all other statuses |
 
 ### Respostas
 
