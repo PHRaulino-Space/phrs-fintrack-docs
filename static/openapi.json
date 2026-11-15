@@ -19427,7 +19427,7 @@
                 "tags": [
                     "transactions"
                 ],
-                "summary": "Create a real pending movement from an unresolved projection",
+                "summary": "Create a real paid movement from an unresolved projection",
                 "parameters": [
                     {
                         "type": "string",
@@ -29597,6 +29597,9 @@
             "properties": {
                 "amount": {
                     "type": "number"
+                },
+                "attempt_id": {
+                    "type": "string"
                 },
                 "billing_month": {
                     "type": "string"

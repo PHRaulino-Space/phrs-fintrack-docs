@@ -364,7 +364,7 @@ When category_id is set and sub_category_id is omitted, each current subcategory
 
 ## POST `/transactions/materialize-projection`
 
-**Resumo:** Create a real pending movement from an unresolved projection
+**Resumo:** Create a real paid movement from an unresolved projection
 
 Optional amount and effective_date override the recorded movement, while transaction_date remains the immutable occurrence reference. Different retry intent returns conflict. Explicit human action only. Never marks paid, never materializes card payments. Replays return the current movement without changing it. Invalid or stale occurrences conflict.
 
@@ -1292,6 +1292,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | amount | number | não |  |
+| attempt_id | string | não |  |
 | billing_month | string | não |  |
 | effective_date | string | não |  |
 | id | string | não |  |
