@@ -1,6 +1,27 @@
 ---
 title: Help
 ---
+## GET `/help/article-images/{file}`
+
+**Resumo:** Open a private help article image
+
+Redirects an authenticated browser to a short-lived S3 URL for a PNG in the help article media prefix.
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| file | path | string | sim | SHA-256 filename ending in .png |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 307 | Temporary Redirect |  |
+| 400 | Bad Request | v1.ErrorResponse |
+| 401 | Unauthorized | v1.ErrorResponse |
+| 503 | Service Unavailable | v1.ErrorResponse |
+
 ## GET `/help/resources`
 
 **Resumo:** Browse or search published videos, articles and guided tours
@@ -73,6 +94,12 @@ title: Help
 | path | string | não |  |
 | target | string | não |  |
 | title | string | não |  |
+
+#### v1.ErrorResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| error | string | não |  |
 
 #### v1.HelpResourceList
 

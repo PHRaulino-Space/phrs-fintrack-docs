@@ -13458,6 +13458,47 @@
                 }
             }
         },
+        "/help/article-images/{file}": {
+            "get": {
+                "description": "Redirects an authenticated browser to a short-lived S3 URL for a PNG in the help article media prefix.",
+                "tags": [
+                    "help"
+                ],
+                "summary": "Open a private help article image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "SHA-256 filename ending in .png",
+                        "name": "file",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "307": {
+                        "description": "Temporary Redirect"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/help/resources": {
             "get": {
                 "tags": [
