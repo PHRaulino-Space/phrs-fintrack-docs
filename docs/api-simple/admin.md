@@ -17,6 +17,24 @@ title: Admin
 | --- | --- | --- |
 | 204 | No Content |  |
 
+## DELETE `/admin/help/resources/{id}`
+
+**Resumo:** Remove published help content with version checking
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Resource ID |
+| version | query | integer | sim | Expected version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 204 | No Content |  |
+| 409 | Conflict | object |
+
 ## DELETE `/admin/tutorial-videos/{id}`
 
 **Resumo:** Remove a global tutorial from publication
@@ -141,6 +159,40 @@ Sem parâmetros.
 | 200 | OK | usecase.AdminDashboard |
 | 401 | Unauthorized | v1.ErrorResponse |
 | 403 | Forbidden | v1.ErrorResponse |
+
+## GET `/admin/help/resources`
+
+**Resumo:** List published help articles and guided tours
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| kind | query | string | não | Resource kind |
+| limit | query | integer | não | Limit up to 100 |
+| offset | query | integer | não | Offset |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.HelpResourceList |
+
+## GET `/admin/help/resources/{id}`
+
+**Resumo:** Read published content for administration
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Resource ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.HelpResource |
 
 ## GET `/admin/tutorial-videos`
 
@@ -335,6 +387,24 @@ Sem parâmetros.
 | --- | --- | --- |
 | 201 | Created | entity.Currency |
 
+## POST `/admin/help/resources`
+
+**Resumo:** Publish a help article or guided tour to all workspaces
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| body | body | usecase.HelpResourceInput | sim | Content and explicit publication acknowledgment |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 201 | Created | entity.HelpResource |
+
 ## POST `/admin/train-embeddings`
 
 **Resumo:** Train category embeddings
@@ -376,6 +446,26 @@ Explicit publication acknowledgment required. Unlisted links are not private; vi
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 201 | Created | entity.TutorialVideo |
+
+## PUT `/admin/help/resources/{id}`
+
+**Resumo:** Update a published article or guided tour with version checking
+
+**Consumes:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| id | path | string | sim | Resource ID |
+| body | body | usecase.HelpResourceInput | sim | Content, version and explicit publication acknowledgment |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.HelpResource |
+| 409 | Conflict | object |
 
 ## PUT `/admin/tutorial-videos/{id}`
 
@@ -458,6 +548,40 @@ Sem propriedades.
 | user_validated_at | string | não |  |
 | user_validated_by | string | não |  |
 | user_validation_version | integer | não |  |
+
+#### entity.HelpResource
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| body | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| kind | string | não |  |
+| steps | array&lt;entity.HelpTourStep&gt; | não |  |
+| title | string | não |  |
+| version | integer | não |  |
+
+#### entity.HelpSearchResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| context | string | não |  |
+| description | string | não |  |
+| id | string | não |  |
+| kind | string | não |  |
+| title | string | não |  |
+| youtube_url | string | não |  |
+| youtube_video_id | string | não |  |
+
+#### entity.HelpTourStep
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| advance | string | não |  |
+| instruction | string | não |  |
+| path | string | não |  |
+| target | string | não |  |
+| title | string | não |  |
 
 #### entity.Role
 
@@ -610,6 +734,18 @@ Sem propriedades.
 | id | string | não |  |
 | name | string | não |  |
 
+#### usecase.HelpResourceInput
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| body | string | não |  |
+| description | string | não |  |
+| kind | string | não |  |
+| publish_acknowledged | boolean | não |  |
+| steps | array&lt;entity.HelpTourStep&gt; | não |  |
+| title | string | não |  |
+| version | integer | não |  |
+
 #### usecase.TutorialVideoInput
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -662,6 +798,13 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | error | string | não |  |
+
+#### v1.HelpResourceList
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| items | array&lt;entity.HelpSearchResult&gt; | não |  |
+| total | integer | não |  |
 
 #### v1.TutorialVideoList
 

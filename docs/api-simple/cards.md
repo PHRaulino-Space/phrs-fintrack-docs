@@ -162,6 +162,30 @@ Returns a single invoice identified by billing_month for the provided card
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
 
+## GET `/cards/{id}/invoices/{billing_month}/settlement`
+
+**Resumo:** Quote the real outstanding invoice balance
+
+Excludes projections and ignored movements. Does not initiate a bank payment.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | YYYY-MM |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.InvoiceSettlementQuote |
+| 403 | Forbidden | object |
+| 404 | Not Found | object |
+
 ## GET `/cards/{id}/invoices/{billing_month}/transactions`
 
 **Resumo:** List invoice transactions
@@ -367,6 +391,35 @@ Recalculates and updates the invoice status based on business rules: PAID if a f
 | 400 | Bad Request | object |
 | 404 | Not Found | object |
 | 500 | Internal Server Error | object |
+
+## POST `/cards/{id}/invoices/{billing_month}/settlement`
+
+**Resumo:** Record an explicitly confirmed invoice payment as paid
+
+Atomic and idempotent recording only, not a bank transfer. Partial payments remain partial. Other payments are never promoted, projected expenses excluded, overpayment rejected. Keep request_id unchanged for retries.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| id | path | string | sim | Card ID |
+| billing_month | path | string | sim | YYYY-MM |
+| body | body | usecase.InvoiceSettlementInput | sim | Confirmed payment |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.InvoiceSettlementResult |
+| 400 | Bad Request | object |
+| 403 | Forbidden | object |
+| 404 | Not Found | object |
+| 409 | Conflict | object |
 
 ## POST `/cards/images/upload-url`
 
@@ -892,6 +945,35 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | key | string | não |  |
 | url | string | não |  |
+
+#### usecase.InvoiceSettlementInput
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| account_id | string | não |  |
+| amount | number | não |  |
+| request_id | string | não |  |
+| transaction_date | string | não |  |
+
+#### usecase.InvoiceSettlementQuote
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| can_settle | boolean | não |  |
+| currency | string | não |  |
+| outstanding | number | não |  |
+| paid_total | number | não |  |
+| real_total | number | não |  |
+
+#### usecase.InvoiceSettlementResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| invoice_status | string | não |  |
+| payment_id | string | não |  |
+| remaining_amount | number | não |  |
+| replayed | boolean | não |  |
+| transaction_status | string | não |  |
 
 #### v1.cardResponse
 

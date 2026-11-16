@@ -993,6 +993,179 @@
                 }
             }
         },
+        "/admin/help/resources": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List published help articles and guided tours",
+                "parameters": [
+                    {
+                        "enum": [
+                            "article",
+                            "tour"
+                        ],
+                        "type": "string",
+                        "description": "Resource kind",
+                        "name": "kind",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit up to 100",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.HelpResourceList"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Publish a help article or guided tour to all workspaces",
+                "parameters": [
+                    {
+                        "description": "Content and explicit publication acknowledgment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.HelpResourceInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HelpResource"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/help/resources/{id}": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Read published content for administration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Resource ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HelpResource"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Update a published article or guided tour with version checking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Resource ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Content, version and explicit publication acknowledgment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.HelpResourceInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HelpResource"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Remove published help content with version checking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Resource ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Expected version",
+                        "name": "version",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/train-embeddings": {
             "post": {
                 "description": "Starts category embedding training in the background (admin only).",
@@ -7925,8 +8098,23 @@
                             "$ref": "#/definitions/v1.cacheRevisionResponse"
                         }
                     },
+                    "499": {
+                        "description": "Request canceled",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "503": {
                         "description": "Service Unavailable",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -9478,6 +9666,156 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cards/{id}/invoices/{billing_month}/settlement": {
+            "get": {
+                "description": "Excludes projections and ignored movements. Does not initiate a bank payment.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Quote the real outstanding invoice balance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "YYYY-MM",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.InvoiceSettlementQuote"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Atomic and idempotent recording only, not a bank transfer. Partial payments remain partial. Other payments are never promoted, projected expenses excluded, overpayment rejected. Keep request_id unchanged for retries.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Record an explicitly confirmed invoice payment as paid",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "YYYY-MM",
+                        "name": "billing_month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Confirmed payment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.InvoiceSettlementInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.InvoiceSettlementResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -12410,8 +12748,23 @@
                             }
                         }
                     },
+                    "499": {
+                        "description": "Request canceled",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -13100,6 +13453,92 @@
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/help/resources": {
+            "get": {
+                "tags": [
+                    "help"
+                ],
+                "summary": "Browse or search published videos, articles and guided tours",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "video",
+                            "article",
+                            "tour"
+                        ],
+                        "type": "string",
+                        "description": "Resource kind",
+                        "name": "kind",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search titles, descriptions, video context, article text and tour instructions",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit up to 100",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.HelpResourceList"
+                        }
+                    }
+                }
+            }
+        },
+        "/help/resources/{id}": {
+            "get": {
+                "tags": [
+                    "help"
+                ],
+                "summary": "Read a published help article or guided tour",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Resource ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HelpResource"
                         }
                     }
                 }
@@ -14497,8 +14936,23 @@
                             }
                         }
                     },
+                    "499": {
+                        "description": "Request canceled",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -15586,6 +16040,89 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/invoices/overview": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Composite browser read preserving existing invoice calculations. Null invoice means no persisted invoice. Calculation failures are explicitly nullable per card; dependency or authorization failures reject the whole request. No payment or invoice is created.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "Workspace invoice overview for a month",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing month YYYY-MM",
+                        "name": "billing_month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.InvoiceOverviewResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "499": {
+                        "description": "Request canceled",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -19559,6 +20096,12 @@
                         "type": "string",
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "date_to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include historical month closings (default true); false omits both closing fields without changing totals/current_balance",
+                        "name": "include_closings",
                         "in": "query"
                     },
                     {
@@ -24436,6 +24979,94 @@
             "x-enum-varnames": [
                 "GoalTypeInvest"
             ]
+        },
+        "entity.HelpResource": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "article",
+                        "tour"
+                    ]
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.HelpTourStep"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.HelpSearchResult": {
+            "type": "object",
+            "properties": {
+                "context": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "video",
+                        "article",
+                        "tour"
+                    ]
+                },
+                "title": {
+                    "type": "string"
+                },
+                "youtube_url": {
+                    "type": "string"
+                },
+                "youtube_video_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.HelpTourStep": {
+            "type": "object",
+            "properties": {
+                "advance": {
+                    "type": "string",
+                    "enum": [
+                        "next",
+                        "click"
+                    ]
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "target": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
         },
         "entity.ImportKnowledge": {
             "type": "object",
@@ -29338,6 +29969,39 @@
                 }
             }
         },
+        "usecase.HelpResourceInput": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "article",
+                        "tour"
+                    ]
+                },
+                "publish_acknowledged": {
+                    "type": "boolean"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.HelpTourStep"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
         "usecase.ImpactConfirmation": {
             "type": "object",
             "properties": {
@@ -29548,6 +30212,134 @@
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.InvoiceOverviewCard": {
+            "type": "object",
+            "properties": {
+                "due_date": {
+                    "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.InvoiceOverviewInvoice": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "string"
+                },
+                "paid_amount": {
+                    "type": "number"
+                },
+                "payment_type": {
+                    "$ref": "#/definitions/entity.PaymentType"
+                },
+                "status": {
+                    "$ref": "#/definitions/entity.InvoiceStatus"
+                },
+                "total_amount": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.InvoiceOverviewItem": {
+            "type": "object",
+            "properties": {
+                "card": {
+                    "$ref": "#/definitions/usecase.InvoiceOverviewCard"
+                },
+                "card_id": {
+                    "type": "string"
+                },
+                "invoice": {
+                    "$ref": "#/definitions/usecase.InvoiceOverviewInvoice"
+                },
+                "projected_recurring_cents": {
+                    "type": "integer"
+                },
+                "spending_error_code": {
+                    "type": "string"
+                },
+                "spent_cents": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.InvoiceOverviewResponse": {
+            "type": "object",
+            "properties": {
+                "billing_month": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.InvoiceOverviewItem"
+                    }
+                }
+            }
+        },
+        "usecase.InvoiceSettlementInput": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.InvoiceSettlementQuote": {
+            "type": "object",
+            "properties": {
+                "can_settle": {
+                    "type": "boolean"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "outstanding": {
+                    "type": "number"
+                },
+                "paid_total": {
+                    "type": "number"
+                },
+                "real_total": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.InvoiceSettlementResult": {
+            "type": "object",
+            "properties": {
+                "invoice_status": {
+                    "type": "string"
+                },
+                "payment_id": {
+                    "type": "string"
+                },
+                "remaining_amount": {
+                    "type": "number"
+                },
+                "replayed": {
+                    "type": "boolean"
+                },
+                "transaction_status": {
                     "type": "string"
                 }
             }
@@ -30827,6 +31619,20 @@
                 },
                 "validate_globally": {
                     "type": "boolean"
+                }
+            }
+        },
+        "v1.HelpResourceList": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.HelpSearchResult"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

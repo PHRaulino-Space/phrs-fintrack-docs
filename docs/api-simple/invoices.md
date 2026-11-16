@@ -27,6 +27,32 @@ Returns all invoices for the current workspace, regardless of card. Supports fil
 | 400 | Bad Request | object |
 | 500 | Internal Server Error | object |
 
+## GET `/invoices/overview`
+
+**Resumo:** Workspace invoice overview for a month
+
+Composite browser read preserving existing invoice calculations. Null invoice means no persisted invoice. Calculation failures are explicitly nullable per card; dependency or authorization failures reject the whole request. No payment or invoice is created.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| billing_month | query | string | sim | Billing month YYYY-MM |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.InvoiceOverviewResponse |
+| 400 | Bad Request | object |
+| 403 | Forbidden | object |
+| 499 | Request canceled | string |
+| 500 | Internal Server Error | object |
+| 504 | Gateway Timeout | object |
+
 ### Schemas
 
 #### entity.Account
@@ -519,3 +545,39 @@ Sem propriedades.
 #### entity.TransactionStatus
 
 Sem propriedades.
+
+#### usecase.InvoiceOverviewCard
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| due_date | integer | não |  |
+| is_active | boolean | não |  |
+| name | string | não |  |
+
+#### usecase.InvoiceOverviewInvoice
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| error_code | string | não |  |
+| paid_amount | number | não |  |
+| payment_type | entity.PaymentType | não |  |
+| status | entity.InvoiceStatus | não |  |
+| total_amount | number | não |  |
+
+#### usecase.InvoiceOverviewItem
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| card | usecase.InvoiceOverviewCard | não |  |
+| card_id | string | não |  |
+| invoice | usecase.InvoiceOverviewInvoice | não |  |
+| projected_recurring_cents | integer | não |  |
+| spending_error_code | string | não |  |
+| spent_cents | integer | não |  |
+
+#### usecase.InvoiceOverviewResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| billing_month | string | não |  |
+| items | array&lt;usecase.InvoiceOverviewItem&gt; | não |  |

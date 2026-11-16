@@ -130,7 +130,9 @@ List all investments for the workspace (filtered by accounts in the workspace)
 | --- | --- | --- |
 | 200 | OK | array&lt;v1.investmentListResponse&gt; |
 | 400 | Bad Request | object |
+| 499 | Request canceled | string |
 | 500 | Internal Server Error | object |
+| 504 | Gateway Timeout | object |
 
 ## GET `/investments/{id}`
 

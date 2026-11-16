@@ -20,7 +20,9 @@ Poll on focus/reconnect to invalidate financial query caches across devices. No-
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 200 | OK | v1.cacheRevisionResponse |
+| 499 | Request canceled | string |
 | 503 | Service Unavailable | object |
+| 504 | Gateway Timeout | object |
 
 ### Schemas
 

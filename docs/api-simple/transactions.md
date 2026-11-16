@@ -196,6 +196,7 @@ Returns total in, total out, balance for the filtered transactions, and current 
 | investment_id | query | string | não | Investment ID |
 | date_from | query | string | não | Start Date (YYYY-MM-DD) |
 | date_to | query | string | não | End Date (YYYY-MM-DD) |
+| include_closings | query | boolean | não | Include historical month closings (default true); false omits both closing fields without changing totals/current_balance |
 | include_projected | query | boolean | não | Include projected and PROJECTED-status transactions (default true) |
 | paid_only | query | boolean | não | Only PAID persisted transactions; overrides projected/ignored toggles (default false) |
 | include_ignored | query | boolean | não | Include IGNORE-status transactions (default false) |

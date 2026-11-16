@@ -76,7 +76,9 @@ List workspace goals with saved completion values, tagged spending and remaining
 | --- | --- | --- |
 | 200 | OK | array&lt;v1.goalListResponse&gt; |
 | 400 | Bad Request | object |
+| 499 | Request canceled | string |
 | 500 | Internal Server Error | object |
+| 504 | Gateway Timeout | object |
 
 ## GET `/goals/{goal_id}`
 
