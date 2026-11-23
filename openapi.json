@@ -863,6 +863,301 @@
                 }
             }
         },
+        "/admin/ai/providers": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read global AI providers and subsidy (system administrator)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiAdminProvidersResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/ai/providers/priority": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires both configured credentials; disabled credentials may still be preferred. CAS revision is independent of credential versions. Admitted runs are never rerouted.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Choose the preferred provider in this authenticated scope",
+                "parameters": [
+                    {
+                        "description": "Preferred provider and current priority revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderPriorityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderPriority"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/ai/providers/{provider}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Save a versioned provider key in the authenticated scope",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "openrouter or openai",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Provider key, enabled flag and current version",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderSourceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlot"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Revoke a provider slot; retain historical cost reconciliation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "openrouter or openai",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Current version",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlot"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Enable or disable a provider slot using version CAS",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "openrouter or openai",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Enabled state and current version",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderToggleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlot"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/ai/subsidy": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Configure global AI subsidy with explicit limit and revision CAS",
+                "parameters": [
+                    {
+                        "description": "Global subsidy authorization",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiSubsidyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AISubsidyState"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/ai/subsidy/reset": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Global administrator and recent MFA required. Releases subsidy holds from finished executions for the current UTC month. Mode all also clears recorded subsidy spend for that month.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Reset global AI subsidy counters",
+                "parameters": [
+                    {
+                        "description": "Current budget snapshot and reset request ID",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIBudgetResetInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIBudgetResetResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/currencies": {
             "get": {
                 "tags": [
@@ -1882,6 +2177,70 @@
                 }
             }
         },
+        "/ai/budget/reset": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Workspace administrator and recent MFA required. Releases holds from finished executions for the current UTC month. Mode all also clears recorded spend in the current budget. The call history and the global subsidy remain separate.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Reset AI budget counters in the selected workspace",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Current budget snapshot and reset request ID",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIBudgetResetInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIBudgetResetResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/ai/capabilities": {
             "get": {
                 "security": [
@@ -1935,7 +2294,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Session-only. Current workspace members can read shared conversations regardless of their individual execution scopes. Removed members lose access.",
+                "description": "Session-only. Current workspace members can read shared conversations regardless of their individual execution scopes. Optional created_by filters the creator inside the current workspace. Removed members lose access.",
                 "produces": [
                     "application/json"
                 ],
@@ -1950,6 +2309,12 @@
                         "name": "X-Workspace-ID",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter conversations by creator UUID within this workspace",
+                        "name": "created_by",
+                        "in": "query"
                     },
                     {
                         "type": "integer",
@@ -1985,7 +2350,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "The client supplies a stable UUID for this attempt. Only its creator can send messages. Model must be allowed by the workspace administrator.",
+                "description": "The client supplies a stable UUID for this attempt. Only its creator can send messages. Personal-source models must be allowed by the workspace; subsidized models must be allowed by the global administrator. Optional provider pins the selected provider without automatic fallback.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2094,7 +2459,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Requires a current session from the conversation owner or a workspace administrator. A retry resumes a pending deletion. Active executions, uploads and pending reviews must settle before deletion starts. Saved reports retain their linked conversation.",
+                "description": "Requires a current session from the conversation owner. Other members, including workspace administrators, have read-only chat access. A retry resumes pending deletion. Conflicts include the blocking reason when available. Active executions, unsettled effects, live confirmations, uploads, pending import reviews and linked saved reports are protected.",
                 "produces": [
                     "application/json"
                 ],
@@ -2131,7 +2496,7 @@
                     "409": {
                         "description": "Conflict",
                         "schema": {
-                            "$ref": "#/definitions/v1.ErrorResponse"
+                            "$ref": "#/definitions/v1.aiChatDeletionConflictResponse"
                         }
                     },
                     "503": {
@@ -2203,7 +2568,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Session and recent MFA when enabled; only the chat creator can upload. Exactly one multipart file, at most 10 MiB. PNG/JPEG, PDF, WAV/MP3 only; extension, declared MIME and bytes must agree. Stable attachment UUID deduplicates identical uploads. Runtime capabilities are available at /ai/capabilities. Native interpretation validates original bytes, model compatibility and bounded cost before dispatch; storage readiness alone does not guarantee readability. Logical retention is 30 days.",
+                "description": "Session and recent MFA when enabled; only the chat creator can upload. Exactly one multipart file, at most 10 MiB. PNG/JPEG, PDF, WAV/MP3, CSV, TXT, XLS (BIFF8) and XLSX; extension, declared MIME and bytes must agree. Stable attachment UUID deduplicates identical uploads. Runtime capabilities are available at /ai/capabilities. Native interpretation validates original bytes, model compatibility and bounded cost before dispatch; storage readiness alone does not guarantee readability. CSV/TXT/workbooks are extracted locally into text for both providers: 256 KiB per document, 512 KiB per prompt, 20 sheets, 10000 rows, 256 columns and 50000 cells. Password-protected or unreadable documents are rejected, never truncated. Logical retention is 30 days.",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -2274,6 +2639,12 @@
                         "schema": {
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -2338,6 +2709,71 @@
                 }
             }
         },
+        "/ai/chats/{chat_id}/auto-approval": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session-only. The chat owner may approve action proposals automatically in this conversation. Current access, proposal validation and receipts still apply.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Set automatic approval for an AI conversation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Automatic approval setting",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiAutoApprovalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIChat"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/ai/chats/{chat_id}/messages": {
             "post": {
                 "security": [
@@ -2345,7 +2781,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Creator-only; requires the member's own current FINTRACK key and an active workspace provider credential. The stable message UUID deduplicates retries; revision must match the chat. No provider call occurs in this HTTP request. Text limit is 32 KiB. Execution must be enabled server-side.",
+                "description": "Creator-only; requires the member's own current FINTRACK key and an active workspace provider credential. The stable message UUID deduplicates retries; revision must match the chat. Optional references are resolved within the active workspace and saved with the message. No provider call occurs in this HTTP request. Text limit is 32 KiB. Execution must be enabled server-side.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2386,6 +2822,12 @@
                         "description": "Accepted",
                         "schema": {
                             "$ref": "#/definitions/usecase.AISendResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
                         }
                     },
                     "409": {
@@ -2837,7 +3279,7 @@
                 "tags": [
                     "ai"
                 ],
-                "summary": "Store a new version of the workspace OpenRouter credential",
+                "summary": "Deprecated workspace credential write (use personal or admin provider slots)",
                 "parameters": [
                     {
                         "type": "string",
@@ -2847,7 +3289,7 @@
                         "required": true
                     },
                     {
-                        "description": "OpenRouter API key",
+                        "description": "Provider and API key; omitted provider means OpenRouter",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -3261,6 +3703,71 @@
                     },
                     "409": {
                         "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/references": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session-only. Lists permitted workspace registrations of one kind. Transaction records are excluded.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Search Fintrack records for a chat message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Record kind",
+                        "name": "kind",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Part of the record name or detail",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page, starting at 1",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIReferencePage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/v1.ErrorResponse"
                         }
@@ -4429,7 +4936,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Only its requester may resume, using the last read revision and current access. Keeps the original model/key and resumes from the stored next step without replaying paid calls. Uncertain runs cannot be resumed. Requires a human session and an enabled worker.",
+                "description": "Only its requester may resume, using the last read revision and current access. A step-limited run requires a complete checkpoint and must still be the latest run in its chat. Keeps the original model and key and continues from the next step. Requires a human session and an enabled worker.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4439,7 +4946,7 @@
                 "tags": [
                     "ai"
                 ],
-                "summary": "Resume a run waiting for budget",
+                "summary": "Resume a run paused for budget or steps",
                 "parameters": [
                     {
                         "type": "string",
@@ -4538,6 +5045,53 @@
                             "items": {
                                 "$ref": "#/definitions/entity.AISkillVersion"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/runs/{run_id}/stream": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Session-only SSE. Provisional content is replaced by durable messages after completion. Every connection starts with a fresh snapshot; reconnect never dispatches inference. Disconnect does not cancel the run; use the cancel endpoint. Migrated preview storage supports reconnects across worker/API replicas.",
+                "produces": [
+                    "text/event-stream"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Stream an AI execution",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "X-Workspace-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Run ID",
+                        "name": "run_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIStreamSnapshot"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
                         }
                     }
                 }
@@ -18305,6 +18859,268 @@
                 }
             }
         },
+        "/profile/ai/models/{provider}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Read-only catalog for model allowlist selection. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List compatible chat models for a provider",
+                "parameters": [
+                    {
+                        "enum": [
+                            "openai",
+                            "openrouter"
+                        ],
+                        "type": "string",
+                        "description": "Provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIModelCatalog"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/ai/providers": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read personal AI provider slots (own session only)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlots"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/ai/providers/priority": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires both configured credentials; disabled credentials may still be preferred. CAS revision is independent of credential versions. Admitted runs are never rerouted.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Choose the preferred provider in this authenticated scope",
+                "parameters": [
+                    {
+                        "description": "Preferred provider and current priority revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderPriorityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderPriority"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/ai/providers/{provider}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Save a versioned provider key in the authenticated scope",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "openrouter or openai",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Provider key, enabled flag and current version",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderSourceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlot"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Revoke a provider slot; retain historical cost reconciliation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "openrouter or openai",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Current version",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlot"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Enable or disable a provider slot using version CAS",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "openrouter or openai",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Enabled state and current version",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.aiProviderToggleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIProviderSlot"
+                        }
+                    }
+                }
+            }
+        },
         "/recurring": {
             "get": {
                 "description": "List recurring transactions",
@@ -22459,9 +23275,27 @@
                 }
             }
         },
+        "entity.AICallState": {
+            "type": "string",
+            "enum": [
+                "reserved",
+                "dispatched",
+                "settled",
+                "released"
+            ],
+            "x-enum-varnames": [
+                "AICallReserved",
+                "AICallDispatched",
+                "AICallSettled",
+                "AICallReleased"
+            ]
+        },
         "entity.AIChat": {
             "type": "object",
             "properties": {
+                "auto_approve": {
+                    "type": "boolean"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -22699,6 +23533,12 @@
                 "id": {
                     "type": "string"
                 },
+                "references": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReference"
+                    }
+                },
                 "role": {
                     "type": "string"
                 },
@@ -22838,6 +23678,93 @@
                 },
                 "url": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.AIReference": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "detail": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "account",
+                        "card",
+                        "category",
+                        "subcategory",
+                        "tag",
+                        "asset",
+                        "asset_classification",
+                        "budget",
+                        "budget_group",
+                        "goal",
+                        "investment",
+                        "recurring_income",
+                        "recurring_expense",
+                        "recurring_transfer",
+                        "recurring_card",
+                        "recurring_rule",
+                        "import_session",
+                        "opportunity",
+                        "comparison_offer",
+                        "company",
+                        "company_link",
+                        "fund",
+                        "crypto_asset",
+                        "currency",
+                        "knowledge",
+                        "skill"
+                    ]
+                },
+                "label": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AIReferenceKey": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "account",
+                        "card",
+                        "category",
+                        "subcategory",
+                        "tag",
+                        "asset",
+                        "asset_classification",
+                        "budget",
+                        "budget_group",
+                        "goal",
+                        "investment",
+                        "recurring_income",
+                        "recurring_expense",
+                        "recurring_transfer",
+                        "recurring_card",
+                        "recurring_rule",
+                        "import_session",
+                        "opportunity",
+                        "comparison_offer",
+                        "company",
+                        "company_link",
+                        "fund",
+                        "crypto_asset",
+                        "currency",
+                        "knowledge",
+                        "skill"
+                    ]
                 }
             }
         },
@@ -23301,6 +24228,59 @@
                 }
             }
         },
+        "entity.AIRunFailure": {
+            "type": "object",
+            "properties": {
+                "action_id": {
+                    "type": "string"
+                },
+                "billing_known": {
+                    "type": "boolean"
+                },
+                "call_id": {
+                    "type": "string"
+                },
+                "class": {
+                    "type": "string"
+                },
+                "generation_observed": {
+                    "type": "boolean"
+                },
+                "http_status": {
+                    "type": "integer"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "provider_parameter": {
+                    "type": "string"
+                },
+                "provider_reason": {
+                    "type": "string"
+                },
+                "provider_stage": {
+                    "type": "string"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "required_scope": {
+                    "type": "string"
+                },
+                "stage": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                },
+                "tool_count": {
+                    "type": "integer"
+                },
+                "turn": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.AIRunState": {
             "type": "string",
             "enum": [
@@ -23536,6 +24516,63 @@
                     "type": "string"
                 },
                 "kind": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AISubsidyBudgetMonth": {
+            "type": "object",
+            "properties": {
+                "period": {
+                    "type": "string"
+                },
+                "reserved_micros": {
+                    "type": "integer"
+                },
+                "spent_micros": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.AISubsidyPolicy": {
+            "type": "object",
+            "properties": {
+                "allowed_models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "monthly_limit_micros": {
+                    "type": "integer"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AISubsidyState": {
+            "type": "object",
+            "properties": {
+                "budget": {
+                    "$ref": "#/definitions/entity.AISubsidyBudgetMonth"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "policy": {
+                    "$ref": "#/definitions/entity.AISubsidyPolicy"
+                },
+                "timezone": {
                     "type": "string"
                 }
             }
@@ -27496,6 +28533,79 @@
                 }
             }
         },
+        "usecase.AIBudgetResetInput": {
+            "type": "object",
+            "required": [
+                "id",
+                "mode",
+                "period",
+                "reserved_micros",
+                "spent_micros"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "reservations",
+                        "all"
+                    ]
+                },
+                "period": {
+                    "type": "string",
+                    "example": "2026-11"
+                },
+                "reserved_micros": {
+                    "type": "integer"
+                },
+                "spent_micros": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIBudgetResetResult": {
+            "type": "object",
+            "properties": {
+                "period": {
+                    "type": "string"
+                },
+                "released_calls": {
+                    "type": "integer"
+                },
+                "reserved_micros": {
+                    "type": "integer"
+                },
+                "spent_micros": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AICallDiagnostic": {
+            "type": "object",
+            "properties": {
+                "actual_micros": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reserved_micros": {
+                    "type": "integer"
+                },
+                "state": {
+                    "$ref": "#/definitions/entity.AICallState"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "usecase.AIChatDetail": {
             "type": "object",
             "properties": {
@@ -27542,6 +28652,26 @@
                 }
             }
         },
+        "usecase.AIConfirmationDiagnostic": {
+            "type": "object",
+            "properties": {
+                "automatic": {
+                    "type": "boolean"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "state": {
+                    "$ref": "#/definitions/entity.AIActionState"
+                },
+                "tool": {
+                    "type": "string"
+                }
+            }
+        },
         "usecase.AICreatePublicResearch": {
             "type": "object",
             "properties": {
@@ -27570,6 +28700,13 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
                 },
                 "scope_preset": {
                     "type": "string",
@@ -27737,6 +28874,9 @@
         "usecase.AIHumanConfirmation": {
             "type": "object",
             "properties": {
+                "automatic": {
+                    "type": "boolean"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -27956,6 +29096,63 @@
                 }
             }
         },
+        "usecase.AIModelCatalog": {
+            "type": "object",
+            "properties": {
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIModelCatalogItem"
+                    }
+                },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
+                }
+            }
+        },
+        "usecase.AIModelCatalogItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIModelPolicy": {
+            "type": "object",
+            "properties": {
+                "allowed_models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "default_model": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
+                },
+                "scope": {
+                    "type": "string",
+                    "enum": [
+                        "personal",
+                        "global"
+                    ]
+                }
+            }
+        },
         "usecase.AIMutationCapability": {
             "type": "object",
             "properties": {
@@ -28083,6 +29280,73 @@
                 }
             }
         },
+        "usecase.AIProviderPriority": {
+            "type": "object",
+            "properties": {
+                "priority": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.AIProviderSlot": {
+            "type": "object",
+            "properties": {
+                "configured": {
+                    "type": "boolean"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "fingerprint": {
+                    "type": "string"
+                },
+                "openai_project_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
+                },
+                "validated_at": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "zdr_confirmed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "usecase.AIProviderSlots": {
+            "type": "object",
+            "properties": {
+                "priority": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "priority_revision": {
+                    "type": "integer"
+                },
+                "providers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIProviderSlot"
+                    }
+                }
+            }
+        },
         "usecase.AIPublicResearchPage": {
             "type": "object",
             "properties": {
@@ -28090,6 +29354,20 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.AIPublicResearch"
+                    }
+                }
+            }
+        },
+        "usecase.AIReferencePage": {
+            "type": "object",
+            "properties": {
+                "has_more": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReference"
                     }
                 }
             }
@@ -28193,6 +29471,25 @@
                 }
             }
         },
+        "usecase.AIResolvedProvider": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
+                },
+                "scope": {
+                    "type": "string",
+                    "enum": [
+                        "personal",
+                        "global"
+                    ]
+                }
+            }
+        },
         "usecase.AIRunConfirmation": {
             "type": "object",
             "properties": {
@@ -28213,6 +29510,9 @@
         "usecase.AIRunDetail": {
             "type": "object",
             "properties": {
+                "diagnostic": {
+                    "$ref": "#/definitions/usecase.AIRunDiagnostic"
+                },
                 "events": {
                     "type": "array",
                     "items": {
@@ -28221,6 +29521,26 @@
                 },
                 "run": {
                     "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIRunDiagnostic": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/usecase.AIConfirmationDiagnostic"
+                },
+                "calls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AICallDiagnostic"
+                    }
+                },
+                "failure": {
+                    "$ref": "#/definitions/entity.AIRunFailure"
+                },
+                "next_turn": {
+                    "type": "integer"
                 }
             }
         },
@@ -28317,6 +29637,20 @@
                 },
                 "kind": {
                     "type": "string"
+                }
+            }
+        },
+        "usecase.AIStreamSnapshot": {
+            "type": "object",
+            "properties": {
+                "call_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "run": {
+                    "$ref": "#/definitions/entity.AIRun"
                 }
             }
         },
@@ -31827,6 +33161,29 @@
                 }
             }
         },
+        "v1.aiAdminProvidersResponse": {
+            "type": "object",
+            "properties": {
+                "priority": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "priority_revision": {
+                    "type": "integer"
+                },
+                "providers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIProviderSlot"
+                    }
+                },
+                "subsidy": {
+                    "$ref": "#/definitions/entity.AISubsidyState"
+                }
+            }
+        },
         "v1.aiAttachmentCapabilities": {
             "type": "object",
             "properties": {
@@ -31847,6 +33204,17 @@
                 },
                 "max_prompt_items": {
                     "type": "integer"
+                }
+            }
+        },
+        "v1.aiAutoApprovalRequest": {
+            "type": "object",
+            "required": [
+                "enabled"
+            ],
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
                 }
             }
         },
@@ -31878,6 +33246,30 @@
                 }
             }
         },
+        "v1.aiChatDeletionConflictResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "enum": [
+                        "ai_chat_deletion_blocked",
+                        "ai_chat_deletion_report"
+                    ]
+                },
+                "reason": {
+                    "type": "string",
+                    "enum": [
+                        "execution",
+                        "confirmation",
+                        "reconciliation",
+                        "enrichment",
+                        "review",
+                        "upload",
+                        "attachment_cleanup"
+                    ]
+                }
+            }
+        },
         "v1.aiConfirmationDecisionRequest": {
             "type": "object",
             "properties": {
@@ -31901,11 +33293,21 @@
         "v1.aiCreateChatRequest": {
             "type": "object",
             "properties": {
+                "auto_approve": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
                 "model": {
                     "type": "string"
+                },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
                 },
                 "title": {
                     "type": "string"
@@ -31917,6 +33319,13 @@
             "properties": {
                 "api_key": {
                     "type": "string"
+                },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
                 }
             }
         },
@@ -31959,6 +33368,62 @@
                     "type": "integer"
                 },
                 "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiProviderDeleteRequest": {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiProviderPriorityRequest": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiProviderSourceRequest": {
+            "type": "object",
+            "properties": {
+                "api_key": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "openai_project_id": {
+                    "description": "Optional explicit project; empty uses the key-associated project without a project header.",
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "zdr_confirmed": {
+                    "description": "Historical metadata only; false uses standard provider policy, without a ZDR claim.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.aiProviderToggleRequest": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "version": {
                     "type": "integer"
                 }
             }
@@ -32019,6 +33484,19 @@
                 "model": {
                     "type": "string"
                 },
+                "provider": {
+                    "type": "string",
+                    "enum": [
+                        "openrouter",
+                        "openai"
+                    ]
+                },
+                "references": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AIReferenceKey"
+                    }
+                },
                 "revision": {
                     "type": "integer"
                 }
@@ -32030,8 +33508,17 @@
                 "member_credential": {
                     "$ref": "#/definitions/usecase.AICredentialStatus"
                 },
+                "model_options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIModelPolicy"
+                    }
+                },
                 "provider_credential": {
                     "$ref": "#/definitions/usecase.AICredentialStatus"
+                },
+                "resolved_provider": {
+                    "$ref": "#/definitions/usecase.AIResolvedProvider"
                 },
                 "workspace": {
                     "$ref": "#/definitions/usecase.AIWorkspaceState"
@@ -32101,6 +33588,26 @@
                 },
                 "selection_mode": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.aiSubsidyRequest": {
+            "type": "object",
+            "properties": {
+                "allowed_models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "monthly_limit_micros": {
+                    "type": "integer"
+                },
+                "revision": {
+                    "type": "integer"
                 }
             }
         },

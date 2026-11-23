@@ -1,11 +1,32 @@
 ---
 title: Ai
 ---
+## DELETE `/admin/ai/providers/{provider}`
+
+**Resumo:** Revoke a provider slot; retain historical cost reconciliation
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | openrouter or openai |
+| request | body | v1.aiProviderDeleteRequest | sim | Current version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlot |
+
 ## DELETE `/ai/chats/{chat_id}`
 
 **Resumo:** Delete an AI conversation and all of its original attachments
 
-Requires a current session from the conversation owner or a workspace administrator. A retry resumes a pending deletion. Active executions, uploads and pending reviews must settle before deletion starts. Saved reports retain their linked conversation.
+Requires a current session from the conversation owner. Other members, including workspace administrators, have read-only chat access. A retry resumes pending deletion. Conflicts include the blocking reason when available. Active executions, unsettled effects, live confirmations, uploads, pending import reviews and linked saved reports are protected.
 
 **Produces:** application/json
 
@@ -22,7 +43,7 @@ Requires a current session from the conversation owner or a workspace administra
 | --- | --- | --- |
 | 204 | No Content |  |
 | 403 | Forbidden | v1.ErrorResponse |
-| 409 | Conflict | v1.ErrorResponse |
+| 409 | Conflict | v1.aiChatDeletionConflictResponse |
 | 503 | Service Unavailable | v1.ErrorResponse |
 
 ## DELETE `/ai/credentials/member`
@@ -111,6 +132,43 @@ Workspace admin only, with expected revision. Retains immutable versions used by
 | 403 | Forbidden | v1.ErrorResponse |
 | 409 | Conflict | v1.ErrorResponse |
 
+## DELETE `/profile/ai/providers/{provider}`
+
+**Resumo:** Revoke a provider slot; retain historical cost reconciliation
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | openrouter or openai |
+| request | body | v1.aiProviderDeleteRequest | sim | Current version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlot |
+
+## GET `/admin/ai/providers`
+
+**Resumo:** Read global AI providers and subsidy (system administrator)
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | v1.aiAdminProvidersResponse |
+
 ## GET `/ai/capabilities`
 
 **Resumo:** Read AI runtime capabilities
@@ -137,7 +195,7 @@ Human session and current workspace membership required. AI jobs are independent
 
 **Resumo:** List AI conversations
 
-Session-only. Current workspace members can read shared conversations regardless of their individual execution scopes. Removed members lose access.
+Session-only. Current workspace members can read shared conversations regardless of their individual execution scopes. Optional created_by filters the creator inside the current workspace. Removed members lose access.
 
 **Produces:** application/json
 
@@ -146,6 +204,7 @@ Session-only. Current workspace members can read shared conversations regardless
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
+| created_by | query | string | não | Filter conversations by creator UUID within this workspace |
 | page | query | integer | não | Page, starting at 1 |
 | limit | query | integer | não | Page size, 1-50 |
 
@@ -367,6 +426,31 @@ Current human workspace admin only. Reading never executes or retries deletion. 
 | 200 | OK | usecase.AIMaintenanceResult |
 | 403 | Forbidden | v1.ErrorResponse |
 | 404 | Not Found | v1.ErrorResponse |
+
+## GET `/ai/references`
+
+**Resumo:** Search Fintrack records for a chat message
+
+Session-only. Lists permitted workspace registrations of one kind. Transaction records are excluded.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| kind | query | string | sim | Record kind |
+| q | query | string | não | Part of the record name or detail |
+| page | query | integer | não | Page, starting at 1 |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIReferencePage |
+| 400 | Bad Request | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
 
 ## GET `/ai/reports`
 
@@ -590,6 +674,28 @@ Current workspace members may inspect selected instructions; these are not autho
 | --- | --- | --- |
 | 200 | OK | array&lt;entity.AISkillVersion&gt; |
 
+## GET `/ai/runs/{run_id}/stream`
+
+**Resumo:** Stream an AI execution
+
+Session-only SSE. Provisional content is replaced by durable messages after completion. Every connection starts with a fresh snapshot; reconnect never dispatches inference. Disconnect does not cancel the run; use the cancel endpoint. Migrated preview storage supports reconnects across worker/API replicas.
+
+**Produces:** text/event-stream
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| run_id | path | string | sim | Run ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIStreamSnapshot |
+| 403 | Forbidden | v1.ErrorResponse |
+
 ## GET `/ai/settings`
 
 **Resumo:** Read AI settings and this member's credential status
@@ -697,11 +803,170 @@ Current workspace members read provenance, safe review issues, optional import s
 | --- | --- | --- |
 | 200 | OK | usecase.AIStatementResult |
 
+## GET `/profile/ai/models/{provider}`
+
+**Resumo:** List compatible chat models for a provider
+
+Read-only catalog for model allowlist selection. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | Provider |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIModelCatalog |
+| 400 | Bad Request | v1.ErrorResponse |
+| 401 | Unauthorized | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
+| 503 | Service Unavailable | v1.ErrorResponse |
+
+## GET `/profile/ai/providers`
+
+**Resumo:** Read personal AI provider slots (own session only)
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlots |
+
+## PATCH `/admin/ai/providers/{provider}`
+
+**Resumo:** Enable or disable a provider slot using version CAS
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | openrouter or openai |
+| request | body | v1.aiProviderToggleRequest | sim | Enabled state and current version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlot |
+
+## PATCH `/ai/chats/{chat_id}/auto-approval`
+
+**Resumo:** Set automatic approval for an AI conversation
+
+Session-only. The chat owner may approve action proposals automatically in this conversation. Current access, proposal validation and receipts still apply.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| chat_id | path | string | sim | Chat ID |
+| request | body | v1.aiAutoApprovalRequest | sim | Automatic approval setting |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AIChat |
+| 400 | Bad Request | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
+
+## PATCH `/profile/ai/providers/{provider}`
+
+**Resumo:** Enable or disable a provider slot using version CAS
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | openrouter or openai |
+| request | body | v1.aiProviderToggleRequest | sim | Enabled state and current version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlot |
+
+## POST `/admin/ai/subsidy/reset`
+
+**Resumo:** Reset global AI subsidy counters
+
+Global administrator and recent MFA required. Releases subsidy holds from finished executions for the current UTC month. Mode all also clears recorded subsidy spend for that month.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | usecase.AIBudgetResetInput | sim | Current budget snapshot and reset request ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIBudgetResetResult |
+| 400 | Bad Request | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
+
+## POST `/ai/budget/reset`
+
+**Resumo:** Reset AI budget counters in the selected workspace
+
+Workspace administrator and recent MFA required. Releases holds from finished executions for the current UTC month. Mode all also clears recorded spend in the current budget. The call history and the global subsidy remain separate.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| X-Workspace-ID | header | string | sim | Workspace ID |
+| request | body | usecase.AIBudgetResetInput | sim | Current budget snapshot and reset request ID |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIBudgetResetResult |
+| 400 | Bad Request | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
+
 ## POST `/ai/chats`
 
 **Resumo:** Create an AI conversation
 
-The client supplies a stable UUID for this attempt. Only its creator can send messages. Model must be allowed by the workspace administrator.
+The client supplies a stable UUID for this attempt. Only its creator can send messages. Personal-source models must be allowed by the workspace; subsidized models must be allowed by the global administrator. Optional provider pins the selected provider without automatic fallback.
 
 **Consumes:** application/json
 
@@ -725,7 +990,7 @@ The client supplies a stable UUID for this attempt. Only its creator can send me
 
 **Resumo:** Persist a message and queue an AI execution
 
-Creator-only; requires the member's own current FINTRACK key and an active workspace provider credential. The stable message UUID deduplicates retries; revision must match the chat. No provider call occurs in this HTTP request. Text limit is 32 KiB. Execution must be enabled server-side.
+Creator-only; requires the member's own current FINTRACK key and an active workspace provider credential. The stable message UUID deduplicates retries; revision must match the chat. Optional references are resolved within the active workspace and saved with the message. No provider call occurs in this HTTP request. Text limit is 32 KiB. Execution must be enabled server-side.
 
 **Consumes:** application/json
 
@@ -744,6 +1009,7 @@ Creator-only; requires the member's own current FINTRACK key and an active works
 | Status | Descrição | Schema |
 | --- | --- | --- |
 | 202 | Accepted | usecase.AISendResult |
+| 400 | Bad Request | v1.ErrorResponse |
 | 409 | Conflict | v1.ErrorResponse |
 | 503 | Service Unavailable | v1.ErrorResponse |
 
@@ -1100,9 +1366,9 @@ Requester-only local verification of the last settled provider turn and exact co
 
 ## POST `/ai/runs/{run_id}/resume`
 
-**Resumo:** Resume a run waiting for budget
+**Resumo:** Resume a run paused for budget or steps
 
-Only its requester may resume, using the last read revision and current access. Keeps the original model/key and resumes from the stored next step without replaying paid calls. Uncertain runs cannot be resumed. Requires a human session and an enabled worker.
+Only its requester may resume, using the last read revision and current access. A step-limited run requires a complete checkpoint and must still be the latest run in its chat. Keeps the original model and key and continues from the next step. Requires a human session and an enabled worker.
 
 **Consumes:** application/json
 
@@ -1152,11 +1418,75 @@ Workspace admin and recent MFA when enabled. Instructions cannot authorize actio
 | 403 | Forbidden | v1.ErrorResponse |
 | 409 | Conflict | v1.ErrorResponse |
 
+## PUT `/admin/ai/providers/{provider}`
+
+**Resumo:** Save a versioned provider key in the authenticated scope
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | openrouter or openai |
+| request | body | v1.aiProviderSourceRequest | sim | Provider key, enabled flag and current version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlot |
+
+## PUT `/admin/ai/providers/priority`
+
+**Resumo:** Choose the preferred provider in this authenticated scope
+
+Requires both configured credentials; disabled credentials may still be preferred. CAS revision is independent of credential versions. Admitted runs are never rerouted.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.aiProviderPriorityRequest | sim | Preferred provider and current priority revision |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderPriority |
+| 409 | Conflict | v1.ErrorResponse |
+
+## PUT `/admin/ai/subsidy`
+
+**Resumo:** Configure global AI subsidy with explicit limit and revision CAS
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.aiSubsidyRequest | sim | Global subsidy authorization |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AISubsidyState |
+
 ## PUT `/ai/chats/{chat_id}/attachments/{attachment_id}`
 
 **Resumo:** Upload a private AI chat attachment
 
-Session and recent MFA when enabled; only the chat creator can upload. Exactly one multipart file, at most 10 MiB. PNG/JPEG, PDF, WAV/MP3 only; extension, declared MIME and bytes must agree. Stable attachment UUID deduplicates identical uploads. Runtime capabilities are available at /ai/capabilities. Native interpretation validates original bytes, model compatibility and bounded cost before dispatch; storage readiness alone does not guarantee readability. Logical retention is 30 days.
+Session and recent MFA when enabled; only the chat creator can upload. Exactly one multipart file, at most 10 MiB. PNG/JPEG, PDF, WAV/MP3, CSV, TXT, XLS (BIFF8) and XLSX; extension, declared MIME and bytes must agree. Stable attachment UUID deduplicates identical uploads. Runtime capabilities are available at /ai/capabilities. Native interpretation validates original bytes, model compatibility and bounded cost before dispatch; storage readiness alone does not guarantee readability. CSV/TXT/workbooks are extracted locally into text for both providers: 256 KiB per document, 512 KiB per prompt, 20 sheets, 10000 rows, 256 columns and 50000 cells. Password-protected or unreadable documents are rejected, never truncated. Logical retention is 30 days.
 
 **Consumes:** multipart/form-data
 
@@ -1180,6 +1510,7 @@ Session and recent MFA when enabled; only the chat creator can upload. Exactly o
 | 409 | Conflict | v1.ErrorResponse |
 | 413 | Request Entity Too Large | v1.ErrorResponse |
 | 415 | Unsupported Media Type | v1.ErrorResponse |
+| 422 | Unprocessable Entity | v1.ErrorResponse |
 
 ## PUT `/ai/credentials/member`
 
@@ -1209,7 +1540,7 @@ Requires a user session and recent MFA. Creates a dedicated key when AI is enabl
 
 ## PUT `/ai/credentials/provider`
 
-**Resumo:** Store a new version of the workspace OpenRouter credential
+**Resumo:** Deprecated workspace credential write (use personal or admin provider slots)
 
 Workspace administrators only. Validates through the provider's read-only key endpoint. Previous versions are retained only for outstanding cost reconciliation; no inference runs here.
 
@@ -1222,7 +1553,7 @@ Workspace administrators only. Validates through the provider's read-only key en
 | Nome | Em | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
-| request | body | v1.aiCredentialRequest | sim | OpenRouter API key |
+| request | body | v1.aiCredentialRequest | sim | Provider and API key; omitted provider means OpenRouter |
 
 ### Respostas
 
@@ -1310,6 +1641,50 @@ Workspace admin only; revision must match the version last read. Existing runs r
 | 403 | Forbidden | v1.ErrorResponse |
 | 409 | Conflict | v1.ErrorResponse |
 
+## PUT `/profile/ai/providers/{provider}`
+
+**Resumo:** Save a versioned provider key in the authenticated scope
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | openrouter or openai |
+| request | body | v1.aiProviderSourceRequest | sim | Provider key, enabled flag and current version |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderSlot |
+
+## PUT `/profile/ai/providers/priority`
+
+**Resumo:** Choose the preferred provider in this authenticated scope
+
+Requires both configured credentials; disabled credentials may still be preferred. CAS revision is independent of credential versions. Admitted runs are never rerouted.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | v1.aiProviderPriorityRequest | sim | Preferred provider and current priority revision |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIProviderPriority |
+| 409 | Conflict | v1.ErrorResponse |
+
 ### Schemas
 
 #### entity.AIActionState
@@ -1344,10 +1719,15 @@ Sem propriedades.
 | spent_micros | integer | não |  |
 | workspace_id | string | não |  |
 
+#### entity.AICallState
+
+Sem propriedades.
+
 #### entity.AIChat
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| auto_approve | boolean | não |  |
 | created_at | string | não |  |
 | created_by | string | não |  |
 | deletion_pending | boolean | não |  |
@@ -1443,6 +1823,7 @@ Sem propriedades.
 | content | string | não |  |
 | created_at | string | não |  |
 | id | string | não |  |
+| references | array&lt;entity.AIReference&gt; | não |  |
 | role | string | não |  |
 | run_id | string | não |  |
 | sequence | integer | não |  |
@@ -1502,6 +1883,23 @@ Sem propriedades.
 | retrieved_at | string | não |  |
 | title | string | não |  |
 | url | string | não |  |
+
+#### entity.AIReference
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| data | object | não |  |
+| detail | string | não |  |
+| id | string | não |  |
+| kind | string | não |  |
+| label | string | não |  |
+
+#### entity.AIReferenceKey
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | não |  |
+| kind | string | não |  |
 
 #### entity.AIReport
 
@@ -1711,6 +2109,27 @@ Sem propriedades.
 | sequence | integer | não |  |
 | state | entity.AIRunState | não |  |
 
+#### entity.AIRunFailure
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| action_id | string | não |  |
+| billing_known | boolean | não |  |
+| call_id | string | não |  |
+| class | string | não |  |
+| generation_observed | boolean | não |  |
+| http_status | integer | não |  |
+| provider | string | não |  |
+| provider_parameter | string | não |  |
+| provider_reason | string | não |  |
+| provider_stage | string | não |  |
+| request_id | string | não |  |
+| required_scope | string | não |  |
+| stage | string | não |  |
+| tool | string | não |  |
+| tool_count | integer | não |  |
+| turn | integer | não |  |
+
 #### entity.AIRunState
 
 Sem propriedades.
@@ -1802,6 +2221,34 @@ Sem propriedades.
 | id | string | não |  |
 | kind | string | não |  |
 
+#### entity.AISubsidyBudgetMonth
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| period | string | não |  |
+| reserved_micros | integer | não |  |
+| spent_micros | integer | não |  |
+
+#### entity.AISubsidyPolicy
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| allowed_models | array&lt;string&gt; | não |  |
+| enabled | boolean | não |  |
+| monthly_limit_micros | integer | não |  |
+| revision | integer | não |  |
+| updated_at | string | não |  |
+| updated_by | string | não |  |
+
+#### entity.AISubsidyState
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| budget | entity.AISubsidyBudgetMonth | não |  |
+| currency | string | não |  |
+| policy | entity.AISubsidyPolicy | não |  |
+| timezone | string | não |  |
+
 #### entity.AIWorkspacePolicy
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -1849,6 +2296,36 @@ Sem propriedades.
 | page | integer | não |  |
 | total | integer | não |  |
 
+#### usecase.AIBudgetResetInput
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | sim |  |
+| mode | string | sim |  |
+| period | string | sim |  |
+| reserved_micros | integer | sim |  |
+| spent_micros | integer | sim |  |
+
+#### usecase.AIBudgetResetResult
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| period | string | não |  |
+| released_calls | integer | não |  |
+| reserved_micros | integer | não |  |
+| spent_micros | integer | não |  |
+
+#### usecase.AICallDiagnostic
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| actual_micros | integer | não |  |
+| created_at | string | não |  |
+| id | string | não |  |
+| reserved_micros | integer | não |  |
+| state | entity.AICallState | não |  |
+| updated_at | string | não |  |
+
 #### usecase.AIChatDetail
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -1868,6 +2345,16 @@ Sem propriedades.
 | page | integer | não |  |
 | total | integer | não |  |
 
+#### usecase.AIConfirmationDiagnostic
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| automatic | boolean | não |  |
+| expires_at | string | não |  |
+| id | string | não |  |
+| state | entity.AIActionState | não |  |
+| tool | string | não |  |
+
 #### usecase.AICreatePublicResearch
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -1884,6 +2371,7 @@ Sem propriedades.
 | configured | boolean | não |  |
 | fingerprint | string | não |  |
 | id | string | não |  |
+| provider | string | não |  |
 | scope_preset | string | não |  |
 | validated_at | string | não |  |
 | version | integer | não |  |
@@ -1964,6 +2452,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| automatic | boolean | não |  |
 | created_at | string | não |  |
 | digest | string | não |  |
 | expires_at | string | não |  |
@@ -2060,6 +2549,29 @@ Sem propriedades.
 | selected | integer | não |  |
 | unresolved | integer | não |  |
 
+#### usecase.AIModelCatalog
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| models | array&lt;usecase.AIModelCatalogItem&gt; | não |  |
+| provider | string | não |  |
+
+#### usecase.AIModelCatalogItem
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| id | string | não |  |
+| name | string | não |  |
+
+#### usecase.AIModelPolicy
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| allowed_models | array&lt;string&gt; | não |  |
+| default_model | string | não |  |
+| provider | string | não |  |
+| scope | string | não |  |
+
 #### usecase.AIMutationCapability
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -2113,11 +2625,46 @@ Sem propriedades.
 | remaining_tools | integer | não |  |
 | run | entity.AIRun | não |  |
 
+#### usecase.AIProviderPriority
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| priority | array&lt;string&gt; | não |  |
+| revision | integer | não |  |
+
+#### usecase.AIProviderSlot
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| configured | boolean | não |  |
+| enabled | boolean | não |  |
+| fingerprint | string | não |  |
+| openai_project_id | string | não |  |
+| provider | string | não |  |
+| validated_at | string | não |  |
+| version | integer | não |  |
+| zdr_confirmed | boolean | não |  |
+
+#### usecase.AIProviderSlots
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| priority | array&lt;string&gt; | não |  |
+| priority_revision | integer | não |  |
+| providers | array&lt;usecase.AIProviderSlot&gt; | não |  |
+
 #### usecase.AIPublicResearchPage
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | items | array&lt;entity.AIPublicResearch&gt; | não |  |
+
+#### usecase.AIReferencePage
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| has_more | boolean | não |  |
+| items | array&lt;entity.AIReference&gt; | não |  |
 
 #### usecase.AIRefreshReport
 
@@ -2168,6 +2715,13 @@ Sem propriedades.
 | items | array&lt;entity.AIReportVersion&gt; | não |  |
 | next_before_version | integer | não |  |
 
+#### usecase.AIResolvedProvider
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| provider | string | não |  |
+| scope | string | não |  |
+
 #### usecase.AIRunConfirmation
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -2181,8 +2735,18 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| diagnostic | usecase.AIRunDiagnostic | não |  |
 | events | array&lt;entity.AIRunEvent&gt; | não |  |
 | run | entity.AIRun | não |  |
+
+#### usecase.AIRunDiagnostic
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| action | usecase.AIConfirmationDiagnostic | não |  |
+| calls | array&lt;usecase.AICallDiagnostic&gt; | não |  |
+| failure | entity.AIRunFailure | não |  |
+| next_turn | integer | não |  |
 
 #### usecase.AISendResult
 
@@ -2233,6 +2797,14 @@ Sem propriedades.
 | id | string | não |  |
 | kind | string | não |  |
 
+#### usecase.AIStreamSnapshot
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| call_id | string | não |  |
+| content | string | não |  |
+| run | entity.AIRun | não |  |
+
 #### usecase.AIWorkspaceState
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -2241,6 +2813,15 @@ Sem propriedades.
 | currency | string | não |  |
 | policy | entity.AIWorkspacePolicy | não |  |
 | timezone | string | não |  |
+
+#### v1.aiAdminProvidersResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| priority | array&lt;string&gt; | não |  |
+| priority_revision | integer | não |  |
+| providers | array&lt;usecase.AIProviderSlot&gt; | não |  |
+| subsidy | entity.AISubsidyState | não |  |
 
 #### v1.aiAttachmentCapabilities
 
@@ -2252,6 +2833,12 @@ Sem propriedades.
 | max_prompt_bytes | integer | não |  |
 | max_prompt_items | integer | não |  |
 
+#### v1.aiAutoApprovalRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| enabled | boolean | sim |  |
+
 #### v1.aiCapabilitiesResponse
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -2261,6 +2848,13 @@ Sem propriedades.
 | inference_enabled | boolean | não |  |
 | mutations | array&lt;usecase.AIMutationCapability&gt; | não |  |
 | mutations_enabled | boolean | não |  |
+
+#### v1.aiChatDeletionConflictResponse
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| error | string | não |  |
+| reason | string | não |  |
 
 #### v1.aiConfirmationDecisionRequest
 
@@ -2276,8 +2870,10 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| auto_approve | boolean | não |  |
 | id | string | não |  |
 | model | string | não |  |
+| provider | string | não |  |
 | title | string | não |  |
 
 #### v1.aiCredentialRequest
@@ -2285,6 +2881,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | api_key | string | não |  |
+| provider | string | não |  |
 
 #### v1.aiFinancialRecoveryRequest
 
@@ -2307,6 +2904,36 @@ Sem propriedades.
 | enabled | boolean | não |  |
 | monthly_limit_micros | integer | não |  |
 | revision | integer | não |  |
+
+#### v1.aiProviderDeleteRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| version | integer | não |  |
+
+#### v1.aiProviderPriorityRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| provider | string | não |  |
+| revision | integer | não |  |
+
+#### v1.aiProviderSourceRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| api_key | string | não |  |
+| enabled | boolean | não |  |
+| openai_project_id | string | não | Optional explicit project; empty uses the key-associated project without a project header. |
+| version | integer | não |  |
+| zdr_confirmed | boolean | não | Historical metadata only; false uses standard provider policy, without a ZDR claim. |
+
+#### v1.aiProviderToggleRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| enabled | boolean | não |  |
+| version | integer | não |  |
 
 #### v1.aiReportCreateRequest
 
@@ -2342,6 +2969,8 @@ Sem propriedades.
 | content | string | não |  |
 | id | string | não |  |
 | model | string | não |  |
+| provider | string | não |  |
+| references | array&lt;entity.AIReferenceKey&gt; | não |  |
 | revision | integer | não |  |
 
 #### v1.aiSettingsResponse
@@ -2349,7 +2978,9 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | member_credential | usecase.AICredentialStatus | não |  |
+| model_options | array&lt;usecase.AIModelPolicy&gt; | não |  |
 | provider_credential | usecase.AICredentialStatus | não |  |
+| resolved_provider | usecase.AIResolvedProvider | não |  |
 | workspace | usecase.AIWorkspaceState | não |  |
 
 #### v1.aiSkillCreateRequest
@@ -2381,6 +3012,15 @@ Sem propriedades.
 | name | string | não |  |
 | revision | integer | não |  |
 | selection_mode | string | não |  |
+
+#### v1.aiSubsidyRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| allowed_models | array&lt;string&gt; | não |  |
+| enabled | boolean | não |  |
+| monthly_limit_micros | integer | não |  |
+| revision | integer | não |  |
 
 #### v1.ErrorResponse
 
