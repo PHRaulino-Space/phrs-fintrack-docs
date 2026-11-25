@@ -153,6 +153,62 @@ Workspace admin only, with expected revision. Retains immutable versions used by
 | --- | --- | --- |
 | 200 | OK | usecase.AIProviderSlot |
 
+## GET `/admin/ai/execution-limits`
+
+**Resumo:** Read global AI chat execution limits
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AIExecutionLimits |
+
+## GET `/admin/ai/model-policy`
+
+**Resumo:** Read the global chat model allowlist
+
+**Produces:** application/json
+
+### Parâmetros
+
+Sem parâmetros.
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AIGlobalModels |
+
+## GET `/admin/ai/models/{provider}`
+
+**Resumo:** List compatible chat models for a provider
+
+The admin catalog shows all supported chat models. The profile catalog only returns models permitted by the global policy. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| provider | path | string | sim | Provider |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | usecase.AIModelCatalog |
+| 400 | Bad Request | v1.ErrorResponse |
+| 401 | Unauthorized | v1.ErrorResponse |
+| 403 | Forbidden | v1.ErrorResponse |
+| 503 | Service Unavailable | v1.ErrorResponse |
+
 ## GET `/admin/ai/providers`
 
 **Resumo:** Read global AI providers and subsidy (system administrator)
@@ -807,7 +863,7 @@ Current workspace members read provenance, safe review issues, optional import s
 
 **Resumo:** List compatible chat models for a provider
 
-Read-only catalog for model allowlist selection. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.
+The admin catalog shows all supported chat models. The profile catalog only returns models permitted by the global policy. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.
 
 **Produces:** application/json
 
@@ -1366,9 +1422,9 @@ Requester-only local verification of the last settled provider turn and exact co
 
 ## POST `/ai/runs/{run_id}/resume`
 
-**Resumo:** Resume a run paused for budget or steps
+**Resumo:** Resume an interrupted AI run
 
-Only its requester may resume, using the last read revision and current access. A step-limited run requires a complete checkpoint and must still be the latest run in its chat. Keeps the original model and key and continues from the next step. Requires a human session and an enabled worker.
+Only its requester may resume using the last read revision and current access. Supports budget pauses, verified step and tool limits or a settled output truncation following a completed tool round (can_resume_limit), and eligible preparation failures (can_resume_preparation). After a paid turn the server verifies the latest message, matching checkpoint, call ledger and prior receipts. A failed local classification or opportunity update preview may resume at its saved tool call before approval. Requires a human session and an enabled worker.
 
 **Consumes:** application/json
 
@@ -1416,6 +1472,54 @@ Workspace admin and recent MFA when enabled. Instructions cannot authorize actio
 | 201 | Created | entity.AISkill |
 | 400 | Bad Request | v1.ErrorResponse |
 | 403 | Forbidden | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
+
+## PUT `/admin/ai/execution-limits`
+
+**Resumo:** Update global AI chat execution limits
+
+Requires a system administrator session and step-up. Changes apply at the next worker claim, including a resumed task. Zero concurrent_runs disables the per-workspace concurrency limit.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | entity.AIExecutionLimits | sim | Execution limits with their current revision |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AIExecutionLimits |
+| 400 | Bad Request | v1.ErrorResponse |
+| 409 | Conflict | v1.ErrorResponse |
+
+## PUT `/admin/ai/model-policy`
+
+**Resumo:** Select models permitted for personal and subsidized execution
+
+Requires a global admin session and step-up. Removing models also removes them from subsidy and workspace grants. A stale revision is rejected.
+
+**Consumes:** application/json
+
+**Produces:** application/json
+
+### Parâmetros
+
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| request | body | entity.AIGlobalModels | sim | Allowed model IDs and current revision |
+
+### Respostas
+
+| Status | Descrição | Schema |
+| --- | --- | --- |
+| 200 | OK | entity.AIGlobalModels |
+| 400 | Bad Request | v1.ErrorResponse |
 | 409 | Conflict | v1.ErrorResponse |
 
 ## PUT `/admin/ai/providers/{provider}`
@@ -1781,6 +1885,24 @@ Sem propriedades.
 | index | integer | não |  |
 | sub_category_id | string | não |  |
 
+#### entity.AIExecutionLimits
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| concurrent_runs | integer | sim |  |
+| max_output_tokens | integer | não |  |
+| revision | integer | sim |  |
+| tool_calls_per_turn | integer | sim |  |
+| turns_per_cycle | integer | sim |  |
+| turns_per_run | integer | sim |  |
+
+#### entity.AIGlobalModels
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| allowed_models | array&lt;string&gt; | não |  |
+| revision | integer | não |  |
+
 #### entity.AIMaintenanceItem
 
 | Campo | Tipo | Obrigatório | Descrição |
@@ -2095,6 +2217,7 @@ Sem propriedades.
 | id | string | não |  |
 | message_id | string | não |  |
 | model | string | não |  |
+| reasoning_effort | string | não |  |
 | requested_by | string | não |  |
 | revision | integer | não |  |
 | state | entity.AIRunState | não |  |
@@ -2119,12 +2242,15 @@ Sem propriedades.
 | class | string | não |  |
 | generation_observed | boolean | não |  |
 | http_status | integer | não |  |
+| output_token_limit | integer | não |  |
 | provider | string | não |  |
 | provider_parameter | string | não |  |
 | provider_reason | string | não |  |
 | provider_stage | string | não |  |
 | request_id | string | não |  |
+| requested_reservation_micros | integer | não |  |
 | required_scope | string | não |  |
+| sql_state | string | não |  |
 | stage | string | não |  |
 | tool | string | não |  |
 | tool_count | integer | não |  |
@@ -2562,6 +2688,7 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | id | string | não |  |
 | name | string | não |  |
+| reasoning_efforts | array&lt;string&gt; | não |  |
 
 #### usecase.AIModelPolicy
 
@@ -2640,6 +2767,7 @@ Sem propriedades.
 | enabled | boolean | não |  |
 | fingerprint | string | não |  |
 | openai_project_id | string | não |  |
+| preferred_model | string | não |  |
 | provider | string | não |  |
 | validated_at | string | não |  |
 | version | integer | não |  |
@@ -2745,6 +2873,8 @@ Sem propriedades.
 | --- | --- | --- | --- |
 | action | usecase.AIConfirmationDiagnostic | não |  |
 | calls | array&lt;usecase.AICallDiagnostic&gt; | não |  |
+| can_resume_limit | boolean | não |  |
+| can_resume_preparation | boolean | não |  |
 | failure | entity.AIRunFailure | não |  |
 | next_turn | integer | não |  |
 
@@ -2925,6 +3055,7 @@ Sem propriedades.
 | api_key | string | não |  |
 | enabled | boolean | não |  |
 | openai_project_id | string | não | Optional explicit project; empty uses the key-associated project without a project header. |
+| preferred_model | string | não |  |
 | version | integer | não |  |
 | zdr_confirmed | boolean | não | Historical metadata only; false uses standard provider policy, without a ZDR claim. |
 
@@ -2933,6 +3064,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | enabled | boolean | não |  |
+| preferred_model | string | não |  |
 | version | integer | não |  |
 
 #### v1.aiReportCreateRequest
@@ -2970,6 +3102,7 @@ Sem propriedades.
 | id | string | não |  |
 | model | string | não |  |
 | provider | string | não |  |
+| reasoning_effort | string | não |  |
 | references | array&lt;entity.AIReferenceKey&gt; | não |  |
 | revision | integer | não |  |
 

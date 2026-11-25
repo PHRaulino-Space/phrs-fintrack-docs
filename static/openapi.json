@@ -863,6 +863,214 @@
                 }
             }
         },
+        "/admin/ai/execution-limits": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read global AI chat execution limits",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIExecutionLimits"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires a system administrator session and step-up. Changes apply at the next worker claim, including a resumed task. Zero concurrent_runs disables the per-workspace concurrency limit.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Update global AI chat execution limits",
+                "parameters": [
+                    {
+                        "description": "Execution limits with their current revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIExecutionLimits"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIExecutionLimits"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/ai/model-policy": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Read the global chat model allowlist",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIGlobalModels"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires a global admin session and step-up. Removing models also removes them from subsidy and workspace grants. A stale revision is rejected.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "Select models permitted for personal and subsidized execution",
+                "parameters": [
+                    {
+                        "description": "Allowed model IDs and current revision",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIGlobalModels"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AIGlobalModels"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/ai/models/{provider}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "The admin catalog shows all supported chat models. The profile catalog only returns models permitted by the global policy. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ai"
+                ],
+                "summary": "List compatible chat models for a provider",
+                "parameters": [
+                    {
+                        "enum": [
+                            "openai",
+                            "openrouter"
+                        ],
+                        "type": "string",
+                        "description": "Provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.AIModelCatalog"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/ai/providers": {
             "get": {
                 "security": [
@@ -4936,7 +5144,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Only its requester may resume, using the last read revision and current access. A step-limited run requires a complete checkpoint and must still be the latest run in its chat. Keeps the original model and key and continues from the next step. Requires a human session and an enabled worker.",
+                "description": "Only its requester may resume using the last read revision and current access. Supports budget pauses, verified step and tool limits or a settled output truncation following a completed tool round (can_resume_limit), and eligible preparation failures (can_resume_preparation). After a paid turn the server verifies the latest message, matching checkpoint, call ledger and prior receipts. A failed local classification or opportunity update preview may resume at its saved tool call before approval. Requires a human session and an enabled worker.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4946,7 +5154,7 @@
                 "tags": [
                     "ai"
                 ],
-                "summary": "Resume a run paused for budget or steps",
+                "summary": "Resume an interrupted AI run",
                 "parameters": [
                     {
                         "type": "string",
@@ -18866,7 +19074,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Read-only catalog for model allowlist selection. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.",
+                "description": "The admin catalog shows all supported chat models. The profile catalog only returns models permitted by the global policy. Does not enable models or authorize inference. OpenAI uses reviewed text profiles; OpenRouter filters public metadata for text chat, tools and supported pricing.",
                 "produces": [
                     "application/json"
                 ],
@@ -23427,6 +23635,61 @@
                 }
             }
         },
+        "entity.AIExecutionLimits": {
+            "type": "object",
+            "required": [
+                "concurrent_runs",
+                "revision",
+                "tool_calls_per_turn",
+                "turns_per_cycle",
+                "turns_per_run"
+            ],
+            "properties": {
+                "concurrent_runs": {
+                    "type": "integer",
+                    "maximum": 128,
+                    "minimum": 0
+                },
+                "max_output_tokens": {
+                    "type": "integer",
+                    "maximum": 32768,
+                    "minimum": 16
+                },
+                "revision": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "tool_calls_per_turn": {
+                    "type": "integer",
+                    "maximum": 64,
+                    "minimum": 1
+                },
+                "turns_per_cycle": {
+                    "type": "integer",
+                    "maximum": 128,
+                    "minimum": 1
+                },
+                "turns_per_run": {
+                    "type": "integer",
+                    "maximum": 128,
+                    "minimum": 1
+                }
+            }
+        },
+        "entity.AIGlobalModels": {
+            "type": "object",
+            "properties": {
+                "allowed_models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.AIMaintenanceItem": {
             "type": "object",
             "properties": {
@@ -24197,6 +24460,18 @@
                 "model": {
                     "type": "string"
                 },
+                "reasoning_effort": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "minimal",
+                        "low",
+                        "medium",
+                        "high",
+                        "xhigh",
+                        "max"
+                    ]
+                },
                 "requested_by": {
                     "type": "string"
                 },
@@ -24249,6 +24524,9 @@
                 "http_status": {
                     "type": "integer"
                 },
+                "output_token_limit": {
+                    "type": "integer"
+                },
                 "provider": {
                     "type": "string"
                 },
@@ -24264,7 +24542,13 @@
                 "request_id": {
                     "type": "string"
                 },
+                "requested_reservation_micros": {
+                    "type": "integer"
+                },
                 "required_scope": {
+                    "type": "string"
+                },
+                "sql_state": {
                     "type": "string"
                 },
                 "stage": {
@@ -29122,6 +29406,12 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "reasoning_efforts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -29307,6 +29597,9 @@
                     "type": "string"
                 },
                 "openai_project_id": {
+                    "type": "string"
+                },
+                "preferred_model": {
                     "type": "string"
                 },
                 "provider": {
@@ -29535,6 +29828,12 @@
                     "items": {
                         "$ref": "#/definitions/usecase.AICallDiagnostic"
                     }
+                },
+                "can_resume_limit": {
+                    "type": "boolean"
+                },
+                "can_resume_preparation": {
+                    "type": "boolean"
                 },
                 "failure": {
                     "$ref": "#/definitions/entity.AIRunFailure"
@@ -33408,6 +33707,9 @@
                     "description": "Optional explicit project; empty uses the key-associated project without a project header.",
                     "type": "string"
                 },
+                "preferred_model": {
+                    "type": "string"
+                },
                 "version": {
                     "type": "integer"
                 },
@@ -33422,6 +33724,9 @@
             "properties": {
                 "enabled": {
                     "type": "boolean"
+                },
+                "preferred_model": {
+                    "type": "string"
                 },
                 "version": {
                     "type": "integer"
@@ -33489,6 +33794,18 @@
                     "enum": [
                         "openrouter",
                         "openai"
+                    ]
+                },
+                "reasoning_effort": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "minimal",
+                        "low",
+                        "medium",
+                        "high",
+                        "xhigh",
+                        "max"
                     ]
                 },
                 "references": {
