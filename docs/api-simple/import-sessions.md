@@ -95,7 +95,7 @@ Delete all staged transactions for a specific import session
 
 **Resumo:** List import sessions
 
-List all import sessions for the workspace
+List workspace import sessions. Use one destination ID to find its existing sessions. Automatic sessions can span billing months.
 
 **Consumes:** application/json
 
@@ -103,7 +103,11 @@ List all import sessions for the workspace
 
 ### Parâmetros
 
-Sem parâmetros.
+| Nome | Em | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- | --- |
+| account_id | query | string | não | Account UUID, mutually exclusive with card_id |
+| card_id | query | string | não | Card UUID, mutually exclusive with account_id |
+| is_active | query | boolean | não | Filter by active or inactive state |
 
 ### Respostas
 
@@ -662,6 +666,7 @@ Sem propriedades.
 | card_id | string | não |  |
 | context_value | number | não |  |
 | created_at | string | não |  |
+| currency_code | string | não |  |
 | current_total | number | não |  |
 | description | string | não |  |
 | id | string | não |  |

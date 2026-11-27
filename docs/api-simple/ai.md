@@ -611,6 +611,10 @@ Newest version first. Each version retains its exact definition revision, reques
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | run_id | path | string | sim | Run ID |
+| include_mutation_offers | query | boolean | não | Include recorded mutation tools per provider call. A call without a recorded catalog has unknown availability. |
+| include_tool_corrections | query | boolean | não | Include safe reason codes for recorded tool corrections and the CSV line or batch position when available |
+| include_worker_builds | query | boolean | não | Include each worker claim sequence and its executable SHA-256 when recorded |
+| include_read_offers | query | boolean | não | Include the recorded read tool catalog for each provider call |
 
 ### Respostas
 
@@ -1408,7 +1412,7 @@ Requester-only local verification of the last settled provider turn and exact co
 | --- | --- | --- | --- | --- |
 | X-Workspace-ID | header | string | sim | Workspace ID |
 | run_id | path | string | sim | Run ID |
-| request | body | v1.aiRunResumeRequest | sim | Expected run revision |
+| request | body | v1.aiProgressRecoveryRequest | sim | Expected run revision |
 
 ### Respostas
 
@@ -1424,7 +1428,7 @@ Requester-only local verification of the last settled provider turn and exact co
 
 **Resumo:** Resume an interrupted AI run
 
-Only its requester may resume using the last read revision and current access. Supports budget pauses, verified step and tool limits or a settled output truncation following a completed tool round (can_resume_limit), and eligible preparation failures (can_resume_preparation). After a paid turn the server verifies the latest message, matching checkpoint, call ledger and prior receipts. A failed local classification or opportunity update preview may resume at its saved tool call before approval. Requires a human session and an enabled worker.
+Only its requester may resume using the last read revision and current access. Supports budget pauses, verified step and tool limits or a settled provider output rejection with a verified continuation (can_resume_limit), and eligible preparation failures (can_resume_preparation). After a paid turn the server verifies the latest message, matching checkpoint, call ledger and prior receipts. A failed local classification or opportunity update preview may resume at its saved tool call before approval. Requires a human session and an enabled worker. When can_retry_missing_response is true, the requester may set retry_missing_response to request a new billable response to the original message after an interrupted first call. The server rechecks the ledger and journal before queueing work.
 
 **Consumes:** application/json
 
@@ -1620,7 +1624,7 @@ Session and recent MFA when enabled; only the chat creator can upload. Exactly o
 
 **Resumo:** Enable this member's managed FINTRACK API key for AI executions
 
-Requires a user session and recent MFA. Creates a dedicated key when AI is enabled for the workspace. Updating the access level keeps the same active key. The key is never returned.
+Requires a user session and recent MFA. Creates a dedicated key when AI is enabled for the workspace. To refresh permissions in place, send if_api_key_id and the current scope_preset. Returns 409 if the active managed key or its access level changed. The key secret is never returned.
 
 **Consumes:** application/json
 
@@ -1890,6 +1894,7 @@ Sem propriedades.
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | concurrent_runs | integer | sim |  |
+| max_history_kib | integer | não |  |
 | max_output_tokens | integer | não |  |
 | revision | integer | sim |  |
 | tool_calls_per_turn | integer | sim |  |
@@ -2241,6 +2246,7 @@ Sem propriedades.
 | call_id | string | não |  |
 | class | string | não |  |
 | generation_observed | boolean | não |  |
+| history_limit_kib | integer | não |  |
 | http_status | integer | não |  |
 | output_token_limit | integer | não |  |
 | provider | string | não |  |
@@ -2706,6 +2712,7 @@ Sem propriedades.
 | constraints | array&lt;string&gt; | não |  |
 | input_schema | object | não |  |
 | name | string | não |  |
+| proposal_required_scopes | array&lt;string&gt; | não | Minimum scopes bound to a proposal when they differ from the prerequisites for offering the tool. The reviewed effects can add more scopes at preview. |
 | reason | string | não |  |
 | reason_code | string | não |  |
 | required_scope | string | não |  |
@@ -2875,8 +2882,13 @@ Sem propriedades.
 | calls | array&lt;usecase.AICallDiagnostic&gt; | não |  |
 | can_resume_limit | boolean | não |  |
 | can_resume_preparation | boolean | não |  |
+| can_retry_missing_response | boolean | não |  |
 | failure | entity.AIRunFailure | não |  |
+| mutation_offers | usecase.AIToolOffersDiagnostic | não |  |
 | next_turn | integer | não |  |
+| read_offers | usecase.AIToolOffersDiagnostic | não |  |
+| tool_corrections | array&lt;usecase.AIToolCorrectionDiagnostic&gt; | não |  |
+| worker_claims | array&lt;usecase.AIWorkerClaimDiagnostic&gt; | não |  |
 
 #### usecase.AISendResult
 
@@ -2934,6 +2946,39 @@ Sem propriedades.
 | call_id | string | não |  |
 | content | string | não |  |
 | run | entity.AIRun | não |  |
+
+#### usecase.AIToolCorrectionDiagnostic
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| batch_row | integer | não |  |
+| call_id | string | não |  |
+| code | string | não |  |
+| line | integer | não |  |
+| reason | string | não |  |
+| stage | string | não |  |
+| tool | string | não |  |
+
+#### usecase.AIToolOfferCatalog
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| call_ids | array&lt;string&gt; | não |  |
+| tools | array&lt;string&gt; | não |  |
+
+#### usecase.AIToolOffersDiagnostic
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| catalogs | array&lt;usecase.AIToolOfferCatalog&gt; | não |  |
+| unknown_call_ids | array&lt;string&gt; | não |  |
+
+#### usecase.AIWorkerClaimDiagnostic
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| build | string | não |  |
+| sequence | integer | não |  |
 
 #### usecase.AIWorkspaceState
 
@@ -3023,6 +3068,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| if_api_key_id | string | não |  |
 | scope_preset | string | não |  |
 
 #### v1.aiPolicyRequest
@@ -3033,6 +3079,12 @@ Sem propriedades.
 | default_model | string | não |  |
 | enabled | boolean | não |  |
 | monthly_limit_micros | integer | não |  |
+| revision | integer | não |  |
+
+#### v1.aiProgressRecoveryRequest
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
 | revision | integer | não |  |
 
 #### v1.aiProviderDeleteRequest
@@ -3091,6 +3143,7 @@ Sem propriedades.
 
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
+| retry_missing_response | boolean | não |  |
 | revision | integer | não |  |
 
 #### v1.aiSendMessageRequest

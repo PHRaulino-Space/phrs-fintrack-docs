@@ -3382,7 +3382,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Requires a user session and recent MFA. Creates a dedicated key when AI is enabled for the workspace. Updating the access level keeps the same active key. The key is never returned.",
+                "description": "Requires a user session and recent MFA. Creates a dedicated key when AI is enabled for the workspace. To refresh permissions in place, send if_api_key_id and the current scope_preset. Returns 409 if the active managed key or its access level changed. The key secret is never returned.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4475,6 +4475,30 @@
                         "name": "run_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include recorded mutation tools per provider call. A call without a recorded catalog has unknown availability.",
+                        "name": "include_mutation_offers",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include safe reason codes for recorded tool corrections and the CSV line or batch position when available",
+                        "name": "include_tool_corrections",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include each worker claim sequence and its executable SHA-256 when recorded",
+                        "name": "include_worker_builds",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Include the recorded read tool catalog for each provider call",
+                        "name": "include_read_offers",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -5099,7 +5123,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.aiRunResumeRequest"
+                            "$ref": "#/definitions/v1.aiProgressRecoveryRequest"
                         }
                     }
                 ],
@@ -5144,7 +5168,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Only its requester may resume using the last read revision and current access. Supports budget pauses, verified step and tool limits or a settled output truncation following a completed tool round (can_resume_limit), and eligible preparation failures (can_resume_preparation). After a paid turn the server verifies the latest message, matching checkpoint, call ledger and prior receipts. A failed local classification or opportunity update preview may resume at its saved tool call before approval. Requires a human session and an enabled worker.",
+                "description": "Only its requester may resume using the last read revision and current access. Supports budget pauses, verified step and tool limits or a settled provider output rejection with a verified continuation (can_resume_limit), and eligible preparation failures (can_resume_preparation). After a paid turn the server verifies the latest message, matching checkpoint, call ledger and prior receipts. A failed local classification or opportunity update preview may resume at its saved tool call before approval. Requires a human session and an enabled worker.\nWhen can_retry_missing_response is true, the requester may set retry_missing_response to request a new billable response to the original message after an interrupted first call. The server rechecks the ledger and journal before queueing work.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14349,7 +14373,7 @@
         },
         "/import-sessions": {
             "get": {
-                "description": "List all import sessions for the workspace",
+                "description": "List workspace import sessions. Use one destination ID to find its existing sessions. Automatic sessions can span billing months.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14360,6 +14384,26 @@
                     "import-sessions"
                 ],
                 "summary": "List import sessions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account UUID, mutually exclusive with card_id",
+                        "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card UUID, mutually exclusive with account_id",
+                        "name": "card_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter by active or inactive state",
+                        "name": "is_active",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -23650,6 +23694,11 @@
                     "maximum": 128,
                     "minimum": 0
                 },
+                "max_history_kib": {
+                    "type": "integer",
+                    "maximum": 2048,
+                    "minimum": 256
+                },
                 "max_output_tokens": {
                     "type": "integer",
                     "maximum": 32768,
@@ -24520,6 +24569,9 @@
                 },
                 "generation_observed": {
                     "type": "boolean"
+                },
+                "history_limit_kib": {
+                    "type": "integer"
                 },
                 "http_status": {
                     "type": "integer"
@@ -29458,6 +29510,13 @@
                 "name": {
                     "type": "string"
                 },
+                "proposal_required_scopes": {
+                    "description": "Minimum scopes bound to a proposal when they differ from the prerequisites\nfor offering the tool. The reviewed effects can add more scopes at preview.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "reason": {
                     "type": "string"
                 },
@@ -29835,11 +29894,32 @@
                 "can_resume_preparation": {
                     "type": "boolean"
                 },
+                "can_retry_missing_response": {
+                    "type": "boolean"
+                },
                 "failure": {
                     "$ref": "#/definitions/entity.AIRunFailure"
                 },
+                "mutation_offers": {
+                    "$ref": "#/definitions/usecase.AIToolOffersDiagnostic"
+                },
                 "next_turn": {
                     "type": "integer"
+                },
+                "read_offers": {
+                    "$ref": "#/definitions/usecase.AIToolOffersDiagnostic"
+                },
+                "tool_corrections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIToolCorrectionDiagnostic"
+                    }
+                },
+                "worker_claims": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIWorkerClaimDiagnostic"
+                    }
                 }
             }
         },
@@ -29950,6 +30030,77 @@
                 },
                 "run": {
                     "$ref": "#/definitions/entity.AIRun"
+                }
+            }
+        },
+        "usecase.AIToolCorrectionDiagnostic": {
+            "type": "object",
+            "properties": {
+                "batch_row": {
+                    "type": "integer"
+                },
+                "call_id": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "line": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "stage": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.AIToolOfferCatalog": {
+            "type": "object",
+            "properties": {
+                "call_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tools": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "usecase.AIToolOffersDiagnostic": {
+            "type": "object",
+            "properties": {
+                "catalogs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.AIToolOfferCatalog"
+                    }
+                },
+                "unknown_call_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "usecase.AIWorkerClaimDiagnostic": {
+            "type": "object",
+            "properties": {
+                "build": {
+                    "type": "string"
+                },
+                "sequence": {
+                    "type": "integer"
                 }
             }
         },
@@ -31762,6 +31913,9 @@
                     "type": "number"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "currency_code": {
                     "type": "string"
                 },
                 "current_total": {
@@ -33639,6 +33793,10 @@
         "v1.aiMemberAccessRequest": {
             "type": "object",
             "properties": {
+                "if_api_key_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
                 "scope_preset": {
                     "type": "string",
                     "enum": [
@@ -33666,6 +33824,14 @@
                 "monthly_limit_micros": {
                     "type": "integer"
                 },
+                "revision": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.aiProgressRecoveryRequest": {
+            "type": "object",
+            "properties": {
                 "revision": {
                     "type": "integer"
                 }
@@ -33766,6 +33932,9 @@
         "v1.aiRunResumeRequest": {
             "type": "object",
             "properties": {
+                "retry_missing_response": {
+                    "type": "boolean"
+                },
                 "revision": {
                     "type": "integer"
                 }
